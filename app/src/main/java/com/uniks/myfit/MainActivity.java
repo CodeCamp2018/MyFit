@@ -11,20 +11,49 @@ import android.util.Log;
 
 public class MainActivity extends AppCompatActivity  implements SensorEventListener{
     private static final String TAG="MainActivity";
-    private SensorManager sensorManager;
-    Sensor accelerometer;
-
+    private Sensor mGyro;
+    private Sensor accelerometer;
 
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.d(TAG, "onCreate: registered Accelerometer Lisener");
+
+
+
+
+
+
         Log.d(TAG, "onCreate: intiliazing sensor services");
-        sensorManager=(SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        accelerometer=sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        SensorManager sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        //Creating proximity Sensor Object
+        Sensor proximitySensor=sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+
+        //proximity sensor Listeners
+        SensorEventListener proximitySensorListener=new SensorEventListener()
+        {
+            @Override
+            public void onSensorChanged(SensorEvent sensorEvent) {
+
+            }
+
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int i) {
+
+            }
+
+
+        }
+        //registered Accelerometer Lisener
+        Sensor accelerometer= sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         sensorManager.registerListener(MainActivity.this,accelerometer,SensorManager.SENSOR_DELAY_NORMAL);
+        //registered Proximity Lisenner
+        sensorManager.registerListener(proximitySensorListener,proximitySensor,2*1000*1000);
         Log.d(TAG, "onCreate: registered Accelerometer Lisener");
     }
+
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
