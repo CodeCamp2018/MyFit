@@ -11,7 +11,10 @@ public class User {
     private int uid;
 
     @ColumnInfo(name = "weight")
-    private int weight;
+    private int weight; // user weight in kg
+
+
+    // TODO: maybe the total distance, total time exercising, ... ?
 
 
     public int getUid() {

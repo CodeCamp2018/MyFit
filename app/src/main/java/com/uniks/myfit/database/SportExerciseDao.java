@@ -4,6 +4,9 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
+import android.arch.persistence.room.Update;
+
+import com.uniks.myfit.model.Exercise;
 
 import java.util.List;
 
@@ -16,34 +19,20 @@ public interface SportExerciseDao {
     @Query("SELECT * FROM sportexercise WHERE id IN (:ids)")
     List<SportExercise> loadAllByIds(int[] ids);
 
+    @Query("SELECT mode, distance, speed, trip_time, date, amount_of_repeats, coordinates FROM sportexercise")
+    List<Exercise> loadSportExercise();
 
+    @Update
+    void updateSportExercise(SportExercise sportExercise);
+
+    @Update
+    void updateSportExercises(SportExercise... sportExercises);
 
     @Insert
     void insertAll(SportExercise... sportExercises);
 
     @Delete
     void delete(SportExercise sportExercise);
+
+
 }
-
-
-/*
-* @Dao
-public interface UserDao {
-    @Query("SELECT * FROM user")
-    List<User> getAll();
-
-    @Query("SELECT * FROM user WHERE uid IN (:userIds)")
-    List<User> loadAllByIds(int[] userIds);
-
-    @Query("SELECT * FROM user WHERE first_name LIKE :first AND "
-           + "last_name LIKE :last LIMIT 1")
-    User findByName(String first, String last);
-
-    @Insert
-    void insertAll(User... users);
-
-    @Delete
-    void delete(User user);
-}
-
-* */

@@ -14,26 +14,24 @@ public class SportExercise {
     @PrimaryKey
     private int id;
 
-    @ColumnInfo(name = "mode")
-    private String mode;
+    private String mode; // Exercising Mode e.g. hiking, cycling, ...
 
-    @ColumnInfo(name = "distance")
-    private double distance;
+    private double distance; // the distance of the track
 
-    @ColumnInfo(name = "speed")
-    private double speed;
+    private double speed; // the measured speed of the track
 
-    @ColumnInfo(name = "tripTime")
-    private double tripTime;
+    @ColumnInfo(name = "trip_time")
+    private double tripTime; // the time spend on the track
 
-    @ColumnInfo(name = "date")
-    private Date date;
+    private Date date; // the day & time of the track
 
-    @ColumnInfo(name = "amountOfRepeats")
-    private double amountOfRepeats;
+    @ColumnInfo(name = "amount_of_repeats")
+    private double amountOfRepeats; // for steps, push-ups and sit-ups
 
-    @ColumnInfo(name = "coordinates")
-    private List<Location> coordinates;
+    private List<Location> coordinates; // list of coordinates to draw track on a map
+
+
+    // TODO: the burnt calories??
 
     public int getId() {
         return id;
