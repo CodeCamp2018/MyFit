@@ -20,7 +20,7 @@ public interface SportExerciseDao {
     List<SportExercise> loadAllByIds(int[] ids);
 
     @Query("SELECT mode, distance, speed, trip_time, date, amount_of_repeats, coordinates FROM sportexercise")
-    List<Exercise> loadSportExercise();
+    List<Exercise> loadSportExercise(); // TODO?: maybe use LiveData<List<Exercise>>
 
     @Update
     void updateSportExercise(SportExercise sportExercise);
