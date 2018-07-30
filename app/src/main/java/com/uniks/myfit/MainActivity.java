@@ -6,6 +6,11 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,8 +22,19 @@ public class MainActivity extends AppCompatActivity  implements SensorEventListe
     private SensorManager sensorManager;
     AppDatabase db;
 
+public class MainActivity extends AppCompatActivity  implements SensorEventListener{
+    private static final String TAG="BasicSensorsApi";
+    private static final float NS2S = 1.0f / 1000000000.0f;
+    private final float[] deltaRotationVector = new float[4];
+    private float timestamp;
+
     private Sensor mGyro;
     private Sensor accelerometer;
+    private SensorManager sensorManager;
+    Sensor gyroscope;
+    Sensor accelerometer;
+    Sensor stepDetector;
+    Sensor proximity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,12 +50,38 @@ public class MainActivity extends AppCompatActivity  implements SensorEventListe
 
 
 
+        Log.d(TAG, "onCreate: initializing sensor services");
 
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+
+        if (sensorManager!= null) {
+            //Accelerometer=SensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
+                // Success! There's a Accelerometer
+                accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
         Log.d(TAG, "onCreate: intiliazing sensor services");
         SensorManager sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         //Creating proximity Sensor Object
         Sensor proximitySensor=sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+            } else {// Failure! No Accelerometer.
+            }
+            if (sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null) {
+                gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+            } else {// Failure! No gyroscope.
+            }
+            if (sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER) != null) {
+                stepDetector = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+            } else {// Failure! No Step counter.
+            }
+            if (sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY) != null) {
+                proximity = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+            } else {// Failure! No proximity.
+            }
+        }
+        //SensorManager.registerListener(MainActivity.this,Accelerometer,SensorManager.SENSOR_DELAY_NORMAL);
+
+        Log.d(TAG, "onCreate: registered Accelerometer Listener");
 
         //proximity sensor Listeners
         SensorEventListener proximitySensorListener=new SensorEventListener()
@@ -53,6 +95,12 @@ public class MainActivity extends AppCompatActivity  implements SensorEventListe
             public void onAccuracyChanged(Sensor sensor, int i) {
 
             }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
+    }
 
 
         }
@@ -69,6 +117,11 @@ public class MainActivity extends AppCompatActivity  implements SensorEventListe
 
     }
 
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        Log.d(TAG, "onSensorChanged: X:"+sensorEvent.values[0]+"Y:"+sensorEvent.values[1]+"z"+sensorEvent.values[2]);
+    }
+}
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         Log.d(TAG, "onSensorChanged: X:"+sensorEvent.values[0]+"Y:"+sensorEvent.values[1]+"z"+sensorEvent.values[2]);
