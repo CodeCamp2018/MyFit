@@ -17,7 +17,7 @@ import android.util.Log;
 
 import com.uniks.myfit.database.AppDatabase;
 
-public class MainActivity extends AppCompatActivity  implements SensorEventListener{
+public class MainActivity extends AppCompatActivity {
     private static final String TAG="BasicSensorsApi";
     private static final float NS2S = 1.0f / 1000000000.0f;
     private final float[] deltaRotationVector = new float[4];

@@ -1,5 +1,5 @@
 package com.uniks.myfit.controller;
 
-public class accelerometer {
+public class AccelerometerCtrl {
 
 }
