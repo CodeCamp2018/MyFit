@@ -27,8 +27,9 @@ public class Accelerometer implements SensorEventListener{
     }
 
     public void init() {
-        Log.d(TAG, "onCreate: Intializing Sensor Services");
+
         sensorManager = (SensorManager) mainActivity.getSystemService(Context.SENSOR_SERVICE);
+        Log.d(TAG, "onCreate: Intializing Accelerometer Services");
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
         sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         Log.d(TAG, "onCreate: Registered Accelerometer Listener");

@@ -17,6 +17,8 @@ import com.uniks.myfit.controller.AccelerometerCtrl;
 import com.uniks.myfit.database.AppDatabase;
 import com.uniks.myfit.database.SportExercise;
 import com.uniks.myfit.database.User;
+import com.uniks.myfit.model.ProximitySensorService;
+import com.uniks.myfit.model.StepCounterService;
 import com.uniks.myfit.helper.WeightTxtListener;
 
 import java.util.ArrayList;
@@ -30,12 +32,11 @@ public class MainActivity extends AppCompatActivity {
 
     public ArrayList<Float> list = new ArrayList<>();
 
-    Sensor gyroscope;
-    Sensor stepDetector;
-    Sensor proximity;
     Accelerometer accelerometerSensor;
-    Gyroscope gyroscopeSensor;
     AccelerometerCtrl accelerometerCtrl;
+    Gyroscope gyroscopeSensor;
+    StepCounterService stepcounter;
+    ProximitySensorService proximity;
     AppDatabase db;
     User user;
     List<SportExercise> sportExercises;
@@ -48,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         // setup the database
         db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, databaseName).allowMainThreadQueries().build();
         //AppDatabase.getInstance(this);
@@ -69,12 +69,20 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d(TAG, "onCreate: initializing sensor services");
         accelerometerSensor = new Accelerometer(this);
+        /* Accelerometer Control Class*/
         accelerometerCtrl = new AccelerometerCtrl(accelerometerSensor);
+        /* Initialize The Accelerometer Sensor*/
         accelerometerSensor.init();
+        /* Gyroscope Sensor Class*/
         gyroscopeSensor = new Gyroscope(this);
+        /* Gyroscope Init*/
         gyroscopeSensor.init();
-
-        accelerometerCtrl = new AccelerometerCtrl(accelerometerSensor);
+        /* StepCounter Software Sensor*/
+        stepcounter = new StepCounterService(this);
+        /* Step Count Init*/
+        stepcounter.onStart();
+        proximity= new ProximitySensorService(this);
+        proximity.onStart();
 
         // set layout
         setContentView(R.layout.activity_main);
@@ -85,34 +93,15 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d(TAG, "onCreate: registered Accelerometer Lisener");
 
-        sensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
-                //Creating proximity Sensor Object
-                Sensor proximitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
-        if (sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY) != null) {
-            proximity = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
-        } else
-        {
-            // Failure! No proximity.
-        }
-        if (sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER) != null)
-            {
-                stepDetector = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
-            }
-            else
-                {
-                    // Failure! No Step counter.
-                }
-        //proximity sensor Listeners
-        SensorEventListener proximitySensorListener=new SensorEventListener()
+       /* SensorEventListener proximitySensorListener=new SensorEventListener()
         {
             @Override
             public void onSensorChanged(SensorEvent sensorEvent) {
             }
-
             @Override
             public void onAccuracyChanged(Sensor sensor, int i) {
             }
-        };
+        };*/
     }
 
     @Override
