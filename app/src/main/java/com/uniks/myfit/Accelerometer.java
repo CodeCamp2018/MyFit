@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.TextureView;
 import android.widget.TextView;
 
+import java.lang.reflect.Array;
+
 public class Accelerometer implements SensorEventListener{
     private static final String TAG = "MainActivity";
     private SensorManager sensorManager;
@@ -29,18 +31,18 @@ public class Accelerometer implements SensorEventListener{
         //zValue=(TextView)findViewById(R.id.zValue);
         Log.d(TAG, "onCreate: Intializing Sensor Services");
         sensorManager = (SensorManager) mainActivity.getSystemService(Context.SENSOR_SERVICE);
-        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
         sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         Log.d(TAG, "onCreate: Registered Accelerometer Listener");
     }
 
     @Override
-    public void onSensorChanged(SensorEvent sensorEvent) {
+    public void onSensorChanged(SensorEvent sensorEvent)
+    {
         Log.d(TAG, "onSensorChanged: X:"+sensorEvent.values[0]+"Y:"+sensorEvent.values[1]+"Z:"+sensorEvent.values[2]);
-
-       // xValue.setText("xValue:"+sensorEvent.values[0]);
-        //yValue.setText("yValue:"+sensorEvent.values[1]);
-       // zValue.setText("xValue:"+sensorEvent.values[2]);
+        mainActivity.list.add(sensorEvent.values[0]);
+        mainActivity.list.add(sensorEvent.values[1]);
+        mainActivity.list.add(sensorEvent.values[2]);
 
     }
 
