@@ -69,12 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
         accelerometerCtrl = new AccelerometerCtrl(accelerometerSensor);
 
-
         setContentView(R.layout.activity_main);
-
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(myToolbar);
-
         Log.d(TAG, "onCreate: registered Accelerometer Lisener");
 
 
@@ -83,11 +78,12 @@ public class MainActivity extends AppCompatActivity {
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
 
-        // Success! There's a Accelerometer
+                // Success! There's a Accelerometer
 
 
-        //Creating proximity Sensor Object
-        Sensor proximitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+
+                //Creating proximity Sensor Object
+                Sensor proximitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
 
         if (sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null) {
             gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
@@ -107,9 +103,10 @@ public class MainActivity extends AppCompatActivity {
 
         SensorManager sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         //Creating proximity Sensor Object
-        proximitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+        proximitySensor=sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
         //proximity sensor Listeners
-        SensorEventListener proximitySensorListener = new SensorEventListener() {
+        SensorEventListener proximitySensorListener=new SensorEventListener()
+        {
             @Override
             public void onSensorChanged(SensorEvent sensorEvent) {
             }

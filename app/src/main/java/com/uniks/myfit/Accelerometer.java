@@ -19,6 +19,7 @@ public class Accelerometer implements SensorEventListener{
     private SensorManager sensorManager;
     Sensor accelerometer;
     MainActivity mainActivity;
+    float accelerationX,accelerationY,accelerationZ;
     //TextView xValue, yValue, zValue;
 
     public Accelerometer(MainActivity mainActivity) {
@@ -26,9 +27,6 @@ public class Accelerometer implements SensorEventListener{
     }
 
     public void init() {
-        //xValue= (TextView) findViewById(R.id.xValue);
-        //yValue=(TextView) findViewById(R.id.yValue);
-        //zValue=(TextView)findViewById(R.id.zValue);
         Log.d(TAG, "onCreate: Intializing Sensor Services");
         sensorManager = (SensorManager) mainActivity.getSystemService(Context.SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
@@ -39,10 +37,21 @@ public class Accelerometer implements SensorEventListener{
     @Override
     public void onSensorChanged(SensorEvent sensorEvent)
     {
-        //Stroing The data
-        float accelerationX = sensorEvent.values[0];
-        float accelerationY = sensorEvent.values[1];
-        float accelerationZ = sensorEvent.values[2];
+        accelerationX= sensorEvent.values[0];
+        accelerationY = sensorEvent.values[1];
+        accelerationZ  = sensorEvent.values[2];
+
+        displayAccValues();
+
+        // store it into a list
+        mainActivity.list.add(accelerationX);
+        mainActivity.list.add(accelerationY);
+        mainActivity.list.add(accelerationZ);
+
+    }
+    public void displayAccValues()
+    {
+
         //Filtering the data
         if (Math.abs(accelerationX) < 1)
         { accelerationX = 0; }
@@ -50,17 +59,11 @@ public class Accelerometer implements SensorEventListener{
         { accelerationY = 0; }
         if (Math.abs(accelerationZ) < 1)
         { accelerationZ = 0; }
-        //printing the data
+        //display The data
         Log.d(TAG, "onSensorChanged: X:"+accelerationX+"Y:"+accelerationY+"Z:"+accelerationZ);
-
-        // store it into a list
-        mainActivity.list.add(sensorEvent.values[0]);
-        mainActivity.list.add(sensorEvent.values[1]);
-        mainActivity.list.add(sensorEvent.values[2]);
-
-
-
     }
+
+
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
