@@ -60,50 +60,32 @@ public class MainActivity extends AppCompatActivity {
             db.userDao().insert(newUser);
             users = db.userDao().getAll();
         }
-
+        Log.d(TAG, "onCreate: initializing sensor services");
         accelerometerSensor = new Accelerometer(this);
         accelerometerCtrl = new AccelerometerCtrl(accelerometerSensor);
         accelerometerSensor.init();
         gyroscopeSensor = new Gyroscope(this);
         gyroscopeSensor.init();
-
-        accelerometerCtrl=new AccelerometerCtrl(accelerometerSensor);
-
         setContentView(R.layout.activity_main);
         Log.d(TAG, "onCreate: registered Accelerometer Lisener");
 
-
-        Log.d(TAG, "onCreate: initializing sensor services");
-
-        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-
-
-                // Success! There's a Accelerometer
-
-
-
+        sensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
                 //Creating proximity Sensor Object
                 Sensor proximitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
-
-            if (sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null) {
-                gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-            } else {// Failure! No gyroscope.
-            }
-            if (sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER) != null) {
+        if (sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY) != null) {
+            proximity = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+        } else
+        {
+            // Failure! No proximity.
+        }
+        if (sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER) != null)
+            {
                 stepDetector = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
-            } else {// Failure! No Step counter.
             }
-            if (sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY) != null) {
-                proximity = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
-            } else {// Failure! No proximity.
-            }
-        //SensorManager.registerListener(MainActivity.this,Accelerometer,SensorManager.SENSOR_DELAY_NORMAL);
-
-        Log.d(TAG, "onCreate: registered Accelerometer Listener");
-
-        SensorManager sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        //Creating proximity Sensor Object
-        proximitySensor=sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+            else
+                {
+                    // Failure! No Step counter.
+                }
         //proximity sensor Listeners
         SensorEventListener proximitySensorListener=new SensorEventListener()
         {
