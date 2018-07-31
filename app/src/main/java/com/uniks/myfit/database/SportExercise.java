@@ -3,6 +3,7 @@ package com.uniks.myfit.database;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverters;
 import android.location.Location;
 
 import java.util.Date;
@@ -23,7 +24,7 @@ public class SportExercise {
     @ColumnInfo(name = "trip_time")
     private double tripTime; // the time spend on the track
 
-//    private Date date; // the day & time of the track
+    private Date date; // the day & time of the track
 
     @ColumnInfo(name = "amount_of_repeats")
     private double amountOfRepeats; // for steps, push-ups and sit-ups
@@ -73,13 +74,13 @@ public class SportExercise {
         this.tripTime = tripTime;
     }
 
-//    public Date getDate() {
-//        return date;
-//    }
-//
-//    public void setDate(Date date) {
-//        this.date = date;
-//    }
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
 
     public double getAmountOfRepeats() {
         return amountOfRepeats;
