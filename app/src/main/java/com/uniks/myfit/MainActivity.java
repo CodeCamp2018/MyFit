@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     Sensor stepDetector;
     Sensor proximity;
     Accelerometer accelerometerSensor;
+    Gyroscope gyroscopeSensor;
 
     AppDatabase db;
 
@@ -41,6 +42,9 @@ public class MainActivity extends AppCompatActivity {
         db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "myFitDB").build();
 
         accelerometerSensor = new Accelerometer(this);
+        accelerometerSensor.init();
+        gyroscopeSensor = new Gyroscope(this);
+        gyroscopeSensor.init();
 
 
         setContentView(R.layout.activity_main);
