@@ -2,4 +2,9 @@
     <string name="app_name">MyFit</string>
 
     <string name="weight">Weight</string>
+    <string name="title_activity_detail_tracked">DetailTrackedActivity</string>
+
+    <string name="start">Start</string>
+    <string name="duration">Duration</string>
+    <string name="end">End</string>
 </resources>
