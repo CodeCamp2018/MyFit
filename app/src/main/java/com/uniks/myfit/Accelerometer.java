@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.TextureView;
 import android.widget.TextView;
 
+import java.lang.reflect.Array;
+
 public class Accelerometer implements SensorEventListener{
     private static final String TAG = "MainActivity";
     private SensorManager sensorManager;
@@ -29,18 +31,34 @@ public class Accelerometer implements SensorEventListener{
         //zValue=(TextView)findViewById(R.id.zValue);
         Log.d(TAG, "onCreate: Intializing Sensor Services");
         sensorManager = (SensorManager) mainActivity.getSystemService(Context.SENSOR_SERVICE);
-        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
         sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         Log.d(TAG, "onCreate: Registered Accelerometer Listener");
     }
 
     @Override
-    public void onSensorChanged(SensorEvent sensorEvent) {
-        Log.d(TAG, "onSensorChanged: X:"+sensorEvent.values[0]+"Y:"+sensorEvent.values[1]+"Z:"+sensorEvent.values[2]);
+    public void onSensorChanged(SensorEvent sensorEvent)
+    {
+        //Stroing The data
+        float accelerationX = sensorEvent.values[0];
+        float accelerationY = sensorEvent.values[1];
+        float accelerationZ = sensorEvent.values[2];
+        //Filtering the data
+        if (Math.abs(accelerationX) < 1)
+        { accelerationX = 0; }
+        if (Math.abs(accelerationY) < 1)
+        { accelerationY = 0; }
+        if (Math.abs(accelerationZ) < 1)
+        { accelerationZ = 0; }
+        //printing the data
+        Log.d(TAG, "onSensorChanged: X:"+accelerationX+"Y:"+accelerationY+"Z:"+accelerationZ);
 
-       // xValue.setText("xValue:"+sensorEvent.values[0]);
-        //yValue.setText("yValue:"+sensorEvent.values[1]);
-       // zValue.setText("xValue:"+sensorEvent.values[2]);
+        // store it into a list
+        mainActivity.list.add(sensorEvent.values[0]);
+        mainActivity.list.add(sensorEvent.values[1]);
+        mainActivity.list.add(sensorEvent.values[2]);
+
+
 
     }
 
