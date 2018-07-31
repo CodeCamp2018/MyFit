@@ -7,7 +7,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -16,7 +15,6 @@ import com.uniks.myfit.controller.AccelerometerCtrl;
 import com.uniks.myfit.database.AppDatabase;
 import com.uniks.myfit.database.SportExercise;
 import com.uniks.myfit.database.User;
-import com.uniks.myfit.model.UserData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     Gyroscope gyroscopeSensor;
     AccelerometerCtrl accelerometerCtrl;
     AppDatabase db;
-    List<User> users;
+    User user;
     List<SportExercise> sportExercises;
 
     private float timestamp;
@@ -52,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, databaseName).build();
 
         // if there is no user, create one
-        users = db.userDao().getAll();
+        List<User> users = db.userDao().getAll();
 
         if (users.isEmpty()) {
             User newUser = new User();
@@ -61,13 +59,15 @@ public class MainActivity extends AppCompatActivity {
             users = db.userDao().getAll();
         }
 
+        user = users.get(0); // for this small project there is only one user
+
         accelerometerSensor = new Accelerometer(this);
         accelerometerCtrl = new AccelerometerCtrl(accelerometerSensor);
         accelerometerSensor.init();
         gyroscopeSensor = new Gyroscope(this);
         gyroscopeSensor.init();
 
-        accelerometerCtrl=new AccelerometerCtrl(accelerometerSensor);
+        accelerometerCtrl = new AccelerometerCtrl(accelerometerSensor);
 
 
         setContentView(R.layout.activity_main);
@@ -89,18 +89,18 @@ public class MainActivity extends AppCompatActivity {
         //Creating proximity Sensor Object
         Sensor proximitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
 
-            if (sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null) {
-                gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-            } else {// Failure! No gyroscope.
-            }
-            if (sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER) != null) {
-                stepDetector = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
-            } else {// Failure! No Step counter.
-            }
-            if (sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY) != null) {
-                proximity = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
-            } else {// Failure! No proximity.
-            }
+        if (sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null) {
+            gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        } else {// Failure! No gyroscope.
+        }
+        if (sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER) != null) {
+            stepDetector = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+        } else {// Failure! No Step counter.
+        }
+        if (sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY) != null) {
+            proximity = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+        } else {// Failure! No proximity.
+        }
         //SensorManager.registerListener(MainActivity.this,Accelerometer,SensorManager.SENSOR_DELAY_NORMAL);
 
         Log.d(TAG, "onCreate: registered Accelerometer Listener");
@@ -113,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSensorChanged(SensorEvent sensorEvent) {
             }
+
             @Override
             public void onAccuracyChanged(Sensor sensor, int i) {
             }
@@ -121,6 +122,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        db.userDao().updateUser(user);
+        for (SportExercise exercise : sportExercises) {
+            db.sportExerciseDao().updateSportExercises(exercise);
+        }
         db.close();
         super.onDestroy();
     }
