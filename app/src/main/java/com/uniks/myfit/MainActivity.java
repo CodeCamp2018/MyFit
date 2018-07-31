@@ -16,6 +16,7 @@ import com.uniks.myfit.controller.AccelerometerCtrl;
 import com.uniks.myfit.database.AppDatabase;
 import com.uniks.myfit.database.SportExercise;
 import com.uniks.myfit.database.User;
+import com.uniks.myfit.model.StepCounterService;
 import com.uniks.myfit.model.UserData;
 
 import java.util.ArrayList;
@@ -28,13 +29,11 @@ public class MainActivity extends AppCompatActivity {
     private final float[] deltaRotationVector = new float[4];
 
     public ArrayList<Float> list = new ArrayList<>();
-
-    Sensor gyroscope;
-    Sensor stepDetector;
     Sensor proximity;
     Accelerometer accelerometerSensor;
-    Gyroscope gyroscopeSensor;
     AccelerometerCtrl accelerometerCtrl;
+    Gyroscope gyroscopeSensor;
+    StepCounterService stepcounter;
     AppDatabase db;
     List<User> users;
     List<SportExercise> sportExercises;
@@ -61,13 +60,25 @@ public class MainActivity extends AppCompatActivity {
             users = db.userDao().getAll();
         }
         Log.d(TAG, "onCreate: initializing sensor services");
+
+        /* Accelerometer Sensor Class*/
         accelerometerSensor = new Accelerometer(this);
+        /* Accelerometer Control Class*/
         accelerometerCtrl = new AccelerometerCtrl(accelerometerSensor);
+        /* Initialize The Accelerometer Sensor*/
         accelerometerSensor.init();
+        /* Gyroscope Sensor Class*/
         gyroscopeSensor = new Gyroscope(this);
+        /* Gyroscope Init*/
         gyroscopeSensor.init();
+        /* StepCounter Software Sensor*/
+       stepcounter = new StepCounterService(this);
+       stepcounter.onStart();
+
+
+
         setContentView(R.layout.activity_main);
-        Log.d(TAG, "onCreate: registered Accelerometer Lisener");
+
 
         sensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
                 //Creating proximity Sensor Object
@@ -78,14 +89,7 @@ public class MainActivity extends AppCompatActivity {
         {
             // Failure! No proximity.
         }
-        if (sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER) != null)
-            {
-                stepDetector = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
-            }
-            else
-                {
-                    // Failure! No Step counter.
-                }
+
         //proximity sensor Listeners
         SensorEventListener proximitySensorListener=new SensorEventListener()
         {
