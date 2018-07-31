@@ -19,8 +19,8 @@ public interface SportExerciseDao {
     @Query("SELECT * FROM sportexercise WHERE id IN (:ids)")
     List<SportExercise> loadAllByIds(int[] ids);
 
-//    @Query("SELECT mode, distance, speed, trip_time, amount_of_repeats FROM sportexercise")
-//    List<Exercise> loadSportExercise(); // TODO?: maybe use LiveData<List<Exercise>>
+    @Query("SELECT mode, distance, speed, date, trip_time, amount_of_repeats FROM sportexercise")
+    List<Exercise> loadSportExercise(); // TODO?: maybe use LiveData<List<Exercise>>
 
     @Update
     void updateSportExercise(SportExercise sportExercise);

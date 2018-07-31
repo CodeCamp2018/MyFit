@@ -2,17 +2,19 @@ package com.uniks.myfit.database;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.PrimaryKey;
-import android.location.Location;
 
 import java.util.Date;
-import java.util.List;
 
-@Entity
+@Entity(foreignKeys = @ForeignKey(entity = SportExercise.class, parentColumns = "id", childColumns = "user_id", onUpdate = ForeignKey.CASCADE, onDelete = ForeignKey.CASCADE))
 public class SportExercise {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     private int id;
+
+    @ColumnInfo(name = "user_id")
+    private int userId;
 
     private String mode; // Exercising Mode e.g. hiking, cycling, ...
 
@@ -23,7 +25,7 @@ public class SportExercise {
     @ColumnInfo(name = "trip_time")
     private double tripTime; // the time spend on the track
 
-//    private Date date; // the day & time of the track
+    private Date date; // the day & time of the track
 
     @ColumnInfo(name = "amount_of_repeats")
     private double amountOfRepeats; // for steps, push-ups and sit-ups
@@ -73,13 +75,13 @@ public class SportExercise {
         this.tripTime = tripTime;
     }
 
-//    public Date getDate() {
-//        return date;
-//    }
-//
-//    public void setDate(Date date) {
-//        this.date = date;
-//    }
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
 
     public double getAmountOfRepeats() {
         return amountOfRepeats;
@@ -87,6 +89,14 @@ public class SportExercise {
 
     public void setAmountOfRepeats(double amountOfRepeats) {
         this.amountOfRepeats = amountOfRepeats;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
 //    public List<Location> getCoordinates() {
