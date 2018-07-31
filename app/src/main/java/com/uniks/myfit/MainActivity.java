@@ -69,7 +69,12 @@ public class MainActivity extends AppCompatActivity {
 
         accelerometerCtrl = new AccelerometerCtrl(accelerometerSensor);
 
+        // set layout
         setContentView(R.layout.activity_main);
+
+        
+
+
         Log.d(TAG, "onCreate: registered Accelerometer Lisener");
 
 
