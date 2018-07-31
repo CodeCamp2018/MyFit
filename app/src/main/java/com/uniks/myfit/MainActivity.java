@@ -13,6 +13,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
 import com.uniks.myfit.database.AppDatabase;
@@ -41,6 +42,10 @@ public class MainActivity extends AppCompatActivity  implements SensorEventListe
 
 
         setContentView(R.layout.activity_main);
+
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(myToolbar);
+
         Log.d(TAG, "onCreate: registered Accelerometer Lisener");
 
 
