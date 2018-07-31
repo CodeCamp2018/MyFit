@@ -22,17 +22,12 @@ public interface UserDao {
     @Update
     void updateUser(User user);
 
-    @Update
-    void updateUser(UserData userData);
-
     @Insert
     void insertAll(User... users);
 
-
+    @Insert
+    void insert(User user);
 
     @Delete
     void delete(User user);
-
-    @Query("SELECT weight FROM user")
-    List<UserData> loadUserData();
 }

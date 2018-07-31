@@ -2,18 +2,19 @@ package com.uniks.myfit.database;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.PrimaryKey;
-import android.arch.persistence.room.TypeConverters;
-import android.location.Location;
 
 import java.util.Date;
-import java.util.List;
 
-@Entity
+@Entity(foreignKeys = @ForeignKey(entity = SportExercise.class, parentColumns = "id", childColumns = "user_id", onUpdate = ForeignKey.CASCADE, onDelete = ForeignKey.CASCADE))
 public class SportExercise {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
+
+    @ColumnInfo(name = "user_id")
+    private int userId;
 
     private String mode; // Exercising Mode e.g. hiking, cycling, ...
 
@@ -88,6 +89,14 @@ public class SportExercise {
 
     public void setAmountOfRepeats(double amountOfRepeats) {
         this.amountOfRepeats = amountOfRepeats;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
 //    public List<Location> getCoordinates() {

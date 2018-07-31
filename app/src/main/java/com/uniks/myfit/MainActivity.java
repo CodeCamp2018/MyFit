@@ -12,10 +12,15 @@ import android.util.Log;
 
 import com.uniks.myfit.controller.AccelerometerCtrl;
 import com.uniks.myfit.database.AppDatabase;
+import com.uniks.myfit.database.SportExercise;
+import com.uniks.myfit.database.User;
+import com.uniks.myfit.model.UserData;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    static final String databaseName = "myFitDB.db";
     private static final String TAG = "BasicSensorsApi";
     private static final float NS2S = 1.0f / 1000000000.0f;
     private final float[] deltaRotationVector = new float[4];
@@ -29,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
     Gyroscope gyroscopeSensor;
     AccelerometerCtrl accelerometerCtrl;
     AppDatabase db;
+    List<User> users;
+    List<SportExercise> sportExercises;
 
     private float timestamp;
     private Sensor mGyro;
@@ -40,7 +47,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         // setup the database
-        db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "myFitDB").build();
+        db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, databaseName).build();
+
+        // if there is no user, create one
+        users = db.userDao().getAll();
+
+        if (users.isEmpty()) {
+            User newUser = new User();
+            newUser.setWeight(65);
+            db.userDao().insert(newUser);
+            users = db.userDao().getAll();
+        }
 
         accelerometerSensor = new Accelerometer(this);
         accelerometerCtrl = new AccelerometerCtrl(accelerometerSensor);

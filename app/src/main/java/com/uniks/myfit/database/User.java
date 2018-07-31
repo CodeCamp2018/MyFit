@@ -13,7 +13,6 @@ public class User {
     @ColumnInfo(name = "weight")
     private int weight; // user weight in kg
 
-
     // TODO: maybe the total distance, total time exercising, ... ?
 
 
