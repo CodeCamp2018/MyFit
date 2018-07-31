@@ -16,6 +16,7 @@ import com.uniks.myfit.controller.AccelerometerCtrl;
 import com.uniks.myfit.database.AppDatabase;
 import com.uniks.myfit.database.SportExercise;
 import com.uniks.myfit.database.User;
+import com.uniks.myfit.model.ProximitySensorService;
 import com.uniks.myfit.model.StepCounterService;
 import com.uniks.myfit.model.UserData;
 
@@ -29,11 +30,12 @@ public class MainActivity extends AppCompatActivity {
     private final float[] deltaRotationVector = new float[4];
 
     public ArrayList<Float> list = new ArrayList<>();
-    Sensor proximity;
+
     Accelerometer accelerometerSensor;
     AccelerometerCtrl accelerometerCtrl;
     Gyroscope gyroscopeSensor;
     StepCounterService stepcounter;
+    ProximitySensorService proximity;
     AppDatabase db;
     List<User> users;
     List<SportExercise> sportExercises;
@@ -46,20 +48,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         // setup the database
         db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, databaseName).build();
-
         // if there is no user, create one
         users = db.userDao().getAll();
-
         if (users.isEmpty()) {
             User newUser = new User();
             newUser.setWeight(65);
             db.userDao().insert(newUser);
             users = db.userDao().getAll();
         }
-        Log.d(TAG, "onCreate: initializing sensor services");
+        Log.d(TAG, "onCreate: Initializing sensor services");
 
         /* Accelerometer Sensor Class*/
         accelerometerSensor = new Accelerometer(this);
@@ -72,26 +71,15 @@ public class MainActivity extends AppCompatActivity {
         /* Gyroscope Init*/
         gyroscopeSensor.init();
         /* StepCounter Software Sensor*/
-       stepcounter = new StepCounterService(this);
-       stepcounter.onStart();
-
-
+        stepcounter = new StepCounterService(this);
+        /* Step Count Init*/
+        stepcounter.onStart();
+        proximity= new ProximitySensorService(this);
+        proximity.onStart();
 
         setContentView(R.layout.activity_main);
 
-
-        sensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
-                //Creating proximity Sensor Object
-                Sensor proximitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
-        if (sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY) != null) {
-            proximity = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
-        } else
-        {
-            // Failure! No proximity.
-        }
-
-        //proximity sensor Listeners
-        SensorEventListener proximitySensorListener=new SensorEventListener()
+       /* SensorEventListener proximitySensorListener=new SensorEventListener()
         {
             @Override
             public void onSensorChanged(SensorEvent sensorEvent) {
@@ -99,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onAccuracyChanged(Sensor sensor, int i) {
             }
-        };
+        };*/
     }
 
     @Override
