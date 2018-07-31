@@ -17,7 +17,7 @@ import android.util.Log;
 
 import com.uniks.myfit.database.AppDatabase;
 
-public class MainActivity extends AppCompatActivity  implements SensorEventListener{
+public class MainActivity extends AppCompatActivity {
     private static final String TAG="BasicSensorsApi";
     private static final float NS2S = 1.0f / 1000000000.0f;
     private final float[] deltaRotationVector = new float[4];
@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity  implements SensorEventListe
     Sensor gyroscope;
     Sensor stepDetector;
     Sensor proximity;
+    Accelerometer accelerometerSensor;
 
     AppDatabase db;
 
@@ -38,6 +39,8 @@ public class MainActivity extends AppCompatActivity  implements SensorEventListe
 
         // setup the database
         db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "myFitDB").build();
+
+        accelerometerSensor = new Accelerometer(this);
 
 
         setContentView(R.layout.activity_main);
@@ -90,22 +93,6 @@ public class MainActivity extends AppCompatActivity  implements SensorEventListe
             public void onAccuracyChanged(Sensor sensor, int i) {
             }
         };
-        //registered Accelerometer Lisener
-        Sensor accelerometer= sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        sensorManager.registerListener(MainActivity.this,accelerometer,SensorManager.SENSOR_DELAY_NORMAL);
-        //registered Proximity Lisenner
-        sensorManager.registerListener(proximitySensorListener,proximitySensor,2*1000*1000);
-        Log.d(TAG, "onCreate: registered Accelerometer Lisener");
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int i) {
-
-    }
-
-    @Override
-    public void onSensorChanged(SensorEvent sensorEvent) {
-        Log.d(TAG, "onSensorChanged: X:"+sensorEvent.values[0]+"Y:"+sensorEvent.values[1]+"z"+sensorEvent.values[2]);
     }
 
     @Override
