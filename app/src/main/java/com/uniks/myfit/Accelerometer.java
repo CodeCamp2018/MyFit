@@ -39,10 +39,26 @@ public class Accelerometer implements SensorEventListener{
     @Override
     public void onSensorChanged(SensorEvent sensorEvent)
     {
-        Log.d(TAG, "onSensorChanged: X:"+sensorEvent.values[0]+"Y:"+sensorEvent.values[1]+"Z:"+sensorEvent.values[2]);
+        //Stroing The data
+        float accelerationX = sensorEvent.values[0];
+        float accelerationY = sensorEvent.values[1];
+        float accelerationZ = sensorEvent.values[2];
+        //Filtering the data
+        if (Math.abs(accelerationX) < 1)
+        { accelerationX = 0; }
+        if (Math.abs(accelerationY) < 1)
+        { accelerationY = 0; }
+        if (Math.abs(accelerationZ) < 1)
+        { accelerationZ = 0; }
+        //printing the data
+        Log.d(TAG, "onSensorChanged: X:"+accelerationX+"Y:"+accelerationY+"Z:"+accelerationZ);
+
+        // store it into a list
         mainActivity.list.add(sensorEvent.values[0]);
         mainActivity.list.add(sensorEvent.values[1]);
         mainActivity.list.add(sensorEvent.values[2]);
+
+
 
     }
 
