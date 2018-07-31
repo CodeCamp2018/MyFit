@@ -61,11 +61,6 @@ public class MainActivity extends AppCompatActivity {
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
-
-                // Success! There's a Accelerometer
-
-
-
                 //Creating proximity Sensor Object
                 Sensor proximitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
 
