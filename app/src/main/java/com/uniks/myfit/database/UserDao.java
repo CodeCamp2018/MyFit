@@ -6,6 +6,8 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
+import com.uniks.myfit.model.UserData;
+
 import java.util.List;
 
 @Dao
@@ -22,6 +24,9 @@ public interface UserDao {
 
     @Insert
     void insertAll(User... users);
+
+    @Insert
+    void insert(User user);
 
     @Delete
     void delete(User user);
