@@ -7,16 +7,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-public class DetailTrackedActivity extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // TODO: set title based on the exercise type
+        // TODO: set title based on the exercise type from stored data
         this.setTitle("Exercise");
 
-        setContentView(R.layout.activity_detail_tracked);
+        // TODO: also choose layout based on exercise type from stored data
+        if (true) {
+            setContentView(R.layout.activity_detail_tracked);
+        } else {
+            setContentView(R.layout.activity_detail_repetitions);
+        }
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 

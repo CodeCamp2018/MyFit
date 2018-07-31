@@ -22,7 +22,7 @@
         </activity>
 
         <activity
-            android:name=".DetailTrackedActivity"
+            android:name=".DetailActivity"
             android:label="@string/title_activity_detail_tracked"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait"
