@@ -23,12 +23,12 @@ public class SportExercise {
     @ColumnInfo(name = "trip_time")
     private double tripTime; // the time spend on the track
 
-    private Date date; // the day & time of the track
+//    private Date date; // the day & time of the track
 
     @ColumnInfo(name = "amount_of_repeats")
     private double amountOfRepeats; // for steps, push-ups and sit-ups
 
-    private List<Location> coordinates; // list of coordinates to draw track on a map
+//    private List<Location> coordinates; // list of coordinates to draw track on a map
 
 
     // TODO: the burnt calories??
@@ -73,13 +73,13 @@ public class SportExercise {
         this.tripTime = tripTime;
     }
 
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
+//    public Date getDate() {
+//        return date;
+//    }
+//
+//    public void setDate(Date date) {
+//        this.date = date;
+//    }
 
     public double getAmountOfRepeats() {
         return amountOfRepeats;
@@ -89,11 +89,11 @@ public class SportExercise {
         this.amountOfRepeats = amountOfRepeats;
     }
 
-    public List<Location> getCoordinates() {
-        return coordinates;
-    }
-
-    public void setCoordinates(List<Location> coordinates) {
-        this.coordinates = coordinates;
-    }
+//    public List<Location> getCoordinates() {
+//        return coordinates;
+//    }
+//
+//    public void setCoordinates(List<Location> coordinates) {
+//        this.coordinates = coordinates;
+//    }
 }
