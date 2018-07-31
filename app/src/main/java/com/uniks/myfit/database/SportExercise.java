@@ -12,7 +12,7 @@ import java.util.List;
 @Entity
 public class SportExercise {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     private int id;
 
     private String mode; // Exercising Mode e.g. hiking, cycling, ...
