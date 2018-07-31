@@ -16,15 +16,19 @@ public class SportExercise {
     @ColumnInfo(name = "user_id")
     private int userId;
 
+    @ColumnInfo(name = "mode")
     private String mode; // Exercising Mode e.g. hiking, cycling, ...
 
+    @ColumnInfo(name = "distance")
     private double distance; // the distance of the track
 
+    @ColumnInfo(name = "speed")
     private double speed; // the measured speed of the track
 
     @ColumnInfo(name = "trip_time")
     private double tripTime; // the time spend on the track
 
+    @ColumnInfo(name = "date_of_track")
     private Date date; // the day & time of the track
 
     @ColumnInfo(name = "amount_of_repeats")
