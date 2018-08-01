@@ -3,12 +3,14 @@ package com.uniks.myfit.controller;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 
@@ -33,6 +35,7 @@ public class MapsController implements OnMapReadyCallback {
     //class type-which manages the location
     LocationManager locationManager;
     DetailActivity detailActivity;
+   // private Object googleMap;
 
     public MapsController(DetailActivity detailActivity) {
         this.detailActivity = detailActivity;
@@ -45,6 +48,7 @@ public class MapsController implements OnMapReadyCallback {
         mapFragment.getMapAsync(this);
         //intialing the location manager
         locationManager = (LocationManager) detailActivity.getSystemService(LOCATION_SERVICE);
+        //asking for the marker
         // ask user for the location after certian time & distance
         if (ActivityCompat.checkSelfPermission(detailActivity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(detailActivity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -65,6 +69,14 @@ public class MapsController implements OnMapReadyCallback {
                     //get the longitude
                     double longitude = location.getLongitude();
                     //instance latitude & Longitude class
+                    //Navigation Toool for the map
+                    double lat=latitude;
+                    double lng=longitude;
+                    String format="geo:0,0?q"+lat+","+lng+"(str)";
+                    Uri uri=Uri.parse(format);
+                    Intent intent=new Intent(Intent.ACTION_VIEW,uri);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    detailActivity.startActivity(intent);
                     LatLng latLng = new LatLng(latitude, longitude);
                     //instantiate the class,Geocoder
                     Geocoder geocoder = new Geocoder(detailActivity.getApplicationContext());
