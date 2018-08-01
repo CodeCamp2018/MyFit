@@ -23,6 +23,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.uniks.myfit.DetailActivity;
 import com.uniks.myfit.MainActivity;
 import com.uniks.myfit.R;
+import com.uniks.myfit.TrackingViewActivity;
 
 import java.io.IOException;
 import java.util.List;
@@ -34,23 +35,23 @@ public class MapsController implements OnMapReadyCallback {
     private GoogleMap mMap;
     //class type-which manages the location
     LocationManager locationManager;
-    DetailActivity detailActivity;
+    TrackingViewActivity trackingViewActivity;
    // private Object googleMap;
 
-    public MapsController(DetailActivity detailActivity) {
-        this.detailActivity = detailActivity;
+    public MapsController(TrackingViewActivity trackingViewActivity) {
+        this.trackingViewActivity = trackingViewActivity;
     }
 
     public void init() {
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) detailActivity.getSupportFragmentManager()
+        SupportMapFragment mapFragment = (SupportMapFragment) trackingViewActivity.getSupportFragmentManager()
                 .findFragmentById(R.id.map); // TODO
         mapFragment.getMapAsync(this);
         //intialing the location manager
-        locationManager = (LocationManager) detailActivity.getSystemService(LOCATION_SERVICE);
+        locationManager = (LocationManager) trackingViewActivity.getSystemService(LOCATION_SERVICE);
         //asking for the marker
         // ask user for the location after certian time & distance
-        if (ActivityCompat.checkSelfPermission(detailActivity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(detailActivity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(trackingViewActivity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(trackingViewActivity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -64,6 +65,8 @@ public class MapsController implements OnMapReadyCallback {
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, new LocationListener() {
                 @Override
                 public void onLocationChanged(Location location) {
+                    trackingViewActivity.getLocationQueue().add(location);
+
                     //get the latitude
                     double latitude = location.getLatitude();
                     //get the longitude
@@ -76,10 +79,13 @@ public class MapsController implements OnMapReadyCallback {
                     Uri uri=Uri.parse(format);
                     Intent intent=new Intent(Intent.ACTION_VIEW,uri);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    detailActivity.startActivity(intent);
+                    trackingViewActivity.startActivity(intent);
                     LatLng latLng = new LatLng(latitude, longitude);
+                    LatLng userLocation=new LatLng(location.getLatitude(),location.getLatitude());
+                    mMap.addMarker(new MarkerOptions().position(userLocation).title("Your Starting Point"));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation,10.2f));
                     //instantiate the class,Geocoder
-                    Geocoder geocoder = new Geocoder(detailActivity.getApplicationContext());
+                    Geocoder geocoder = new Geocoder(trackingViewActivity.getApplicationContext());
                     try {
                         List<Address> adressList = geocoder.getFromLocation(latitude, longitude, 1);
                         String str = adressList.get(0).getLocality() + ",";
@@ -119,9 +125,20 @@ public class MapsController implements OnMapReadyCallback {
                     //get the longitude
                     double longitude = location.getLongitude();
                     //instance latitude & Longitude class
+                    //Navigation Toool for the map
+                    double lat=latitude;
+                    double lng=longitude;
+                    String format="geo:0,0?q"+lat+","+lng+"(str)";
+                    Uri uri=Uri.parse(format);
+                    Intent intent=new Intent(Intent.ACTION_VIEW,uri);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    trackingViewActivity.startActivity(intent);
                     LatLng latLng = new LatLng(latitude, longitude);
+                    LatLng userLocation=new LatLng(location.getLatitude(),location.getLatitude());
+                    mMap.addMarker(new MarkerOptions().position(userLocation).title("Your Starting Point"));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation,10.2f));
                     //instantiate the class,Geocoder
-                    Geocoder geocoder = new Geocoder(detailActivity.getApplicationContext());
+                    Geocoder geocoder = new Geocoder(trackingViewActivity.getApplicationContext());
                     try {
                         List<Address> adressList = geocoder.getFromLocation(latitude, longitude, 1);
                         String str = adressList.get(0).getLocality() + ",";

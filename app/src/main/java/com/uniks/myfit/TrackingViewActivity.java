@@ -1,6 +1,7 @@
 package com.uniks.myfit;
 
 import android.app.FragmentTransaction;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -10,12 +11,29 @@ import android.view.View;
 import android.widget.ImageButton;
 
 import com.google.android.gms.maps.MapFragment;
+import com.uniks.myfit.controller.MapsController;
+
+import java.util.ArrayList;
+import java.util.Locale;
 
 public class TrackingViewActivity extends AppCompatActivity {
+
+    private ArrayList<Location> locationQueue;
+
+    public ArrayList<Location> getLocationQueue() {
+        return locationQueue;
+    }
+
+    public void setLocationQueue(ArrayList<Location> locationQueue) {
+        this.locationQueue = locationQueue;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        locationQueue = new ArrayList<>();
+        MapsController mapsController = new MapsController(this);
 
         // TODO: set title based on the exercise type (and set it from @string resource)
         this.setTitle("Exercising");
