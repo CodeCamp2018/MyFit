@@ -6,9 +6,9 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import java.util.List;
 
-public class AccelerometerCtrl implements SensorEventListener {
+public class SitUpsCtrl  {
 
-    public AccelerometerCtrl(Accelerometer accelerometerSensor) {
+    public SitUpsCtrl(Accelerometer accelerometerSensor) {
     }
 
 
@@ -19,7 +19,7 @@ public class AccelerometerCtrl implements SensorEventListener {
     public void onSensorChanged(SensorEvent event) {
     }
 
-    @Override
+
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }

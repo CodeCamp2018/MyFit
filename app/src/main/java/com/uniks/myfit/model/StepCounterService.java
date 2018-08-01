@@ -12,6 +12,8 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.uniks.myfit.MainActivity;
+import com.uniks.myfit.controller.SitUpsCtrl;
+import com.uniks.myfit.controller.StepsCtrl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +22,9 @@ import java.util.List;
 
 public class StepCounterService  implements SensorEventListener {
     private SensorManager sensorManager;
-    Sensor sensor;
+    Sensor sensorcount;
     MainActivity mainActivity;
+    StepsCtrl stepsCtrl;
 
     public StepCounterService(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
@@ -29,6 +32,17 @@ public class StepCounterService  implements SensorEventListener {
 
     public void onStart()//Command(Intent intent, int flags, int startId)
     {
+        //If it's available we can retrieve the value using following code
+        sensorManager = (SensorManager) mainActivity.getSystemService(Context.SENSOR_SERVICE);
+        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+        sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+
+
+        sensorcount= sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+
+        stepsCtrl = new StepsCtrl();
+        sensorManager.registerListener(this, sensorcount, SensorManager.SENSOR_DELAY_NORMAL);
+
         //Check if the stepCounter is available first.
         List<Sensor> gravSensors = sensorManager.getSensorList(Sensor.TYPE_ALL);
 
@@ -37,11 +51,6 @@ public class StepCounterService  implements SensorEventListener {
             Log.d("Sesnor_list", each.getName());
         }
 
-
-        //If it's available we can retrieve the value using following code
-        sensorManager = (SensorManager) mainActivity.getSystemService(Context.SENSOR_SERVICE);
-        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
-        sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
         //return START_STICKY;
     }
 
@@ -58,9 +67,11 @@ public class StepCounterService  implements SensorEventListener {
     @Override
     public void onSensorChanged(SensorEvent event) {
 
-        if(event.sensor.getType() == sensor.TYPE_STEP_COUNTER)
+        if(event.sensor.getType() == sensorcount.TYPE_STEP_COUNTER)
         {
-            Log.d("step_count = ", String.valueOf(event.values));
+            //tolerance can be put here after testing walking
+            Log.d("step_count = ", String.valueOf(sensorcount.getFifoMaxEventCount()));
+            stepsCtrl.addStep();
         }
 
     }
