@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.uniks.myfit.controller.AccelerometerCtrl;
 import com.uniks.myfit.database.AppDatabase;
@@ -51,21 +52,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         // setup the database
         db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, databaseName).allowMainThreadQueries().build();
-        //AppDatabase.getInstance(this);
-        System.out.println("db open: " + db.isOpen());
+
         // if there is no user, create one
-//        if (db.isOpen()) {
-            List<User> users = db.userDao().getAll();
+        List<User> users = db.userDao().getAll();
 
-            if (users.isEmpty()) {
-                User newUser = new User();
-                newUser.setWeight(65);
-                db.userDao().insert(newUser);
-                users = db.userDao().getAll();
-            }
+        if (users == null || users.isEmpty()) {
+            // empty table so create an dummy user
+            User newUser = new User();
+            newUser.setWeight(65);
+            db.userDao().insert(newUser);
+            users = db.userDao().getAll();
+        }
 
-            user = users.get(0); // for this small project there is only one user
-//        }
+        user = users.get(0); // for this small project there is only one user
 
         Log.d(TAG, "onCreate: initializing sensor services");
         accelerometerSensor = new Accelerometer(this);
@@ -81,14 +80,14 @@ public class MainActivity extends AppCompatActivity {
         stepcounter = new StepCounterService(this);
         /* Step Count Init*/
         stepcounter.onStart();
-        proximity= new ProximitySensorService(this);
+        proximity = new ProximitySensorService(this);
         proximity.onStart();
 
         // set layout
         setContentView(R.layout.activity_main);
         EditText weightTxt = findViewById(R.id.input_weight);
-//        weightTxt.setText(user.getWeight());
-//        weightTxt.addTextChangedListener(new WeightTxtListener(db, user));
+        weightTxt.setText(String.valueOf(user.getWeight()), TextView.BufferType.EDITABLE);
+        weightTxt.addTextChangedListener(new WeightTxtListener(db, user));
 
 
         Log.d(TAG, "onCreate: registered Accelerometer Lisener");
@@ -106,13 +105,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-//        if (db.isOpen()) {
-            db.userDao().updateUser(user);
-            for (SportExercise exercise : sportExercises) {
-                db.sportExerciseDao().updateSportExercises(exercise);
-            }
-            db.close();
-//        }
+        db.userDao().updateUser(user);
+        for (SportExercise exercise : sportExercises) {
+            db.sportExerciseDao().updateSportExercises(exercise);
+        }
+        db.close();
         // TODO: close the sensors!
         super.onDestroy();
     }

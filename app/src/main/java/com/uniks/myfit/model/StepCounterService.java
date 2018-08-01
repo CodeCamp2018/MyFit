@@ -33,7 +33,7 @@ public class StepCounterService  implements SensorEventListener {
         sensorManager = (SensorManager) mainActivity.getSystemService(Context.SENSOR_SERVICE);
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
         sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
-        
+
         //Check if the stepCounter is available first.
         List<Sensor> gravSensors = sensorManager.getSensorList(Sensor.TYPE_ALL);
 
