@@ -10,8 +10,11 @@ import android.view.View;
 import android.widget.ImageButton;
 
 import com.google.android.gms.maps.MapFragment;
+import com.uniks.myfit.model.StepCounterService;
 
 public class TrackingViewActivity extends AppCompatActivity {
+
+    StepCounterService stepcounter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +43,12 @@ public class TrackingViewActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
-
+    private void startStepCounting() {
+        /* StepCounter Software Sensor*/
+        stepcounter = new StepCounterService(this);
+        /* Step Count Init*/
+        stepcounter.onStart();
+    }
 
     // handle playing and pausing tracking
     private View.OnClickListener playPauseListener = new View.OnClickListener() {

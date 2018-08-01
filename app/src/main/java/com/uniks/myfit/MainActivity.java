@@ -36,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
     Accelerometer accelerometerSensor;
     SitUpsCtrl accelerometerCtrl;
     Gyroscope gyroscopeSensor;
-    StepCounterService stepcounter;
     ProximitySensorService proximity;
     public AppDatabase db;
     User user;
@@ -78,10 +77,6 @@ public class MainActivity extends AppCompatActivity {
         gyroscopeSensor = new Gyroscope(this);
         /* Gyroscope Init*/
         gyroscopeSensor.init();
-        /* StepCounter Software Sensor*/
-        stepcounter = new StepCounterService(this);
-        /* Step Count Init*/
-        stepcounter.onStart();
         proximity = new ProximitySensorService(this);
         proximity.onStart();
         /*  End Author: Arundhati*/
