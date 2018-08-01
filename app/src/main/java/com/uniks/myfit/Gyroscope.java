@@ -4,11 +4,12 @@ import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
-
+import android.hardware.SensorEventListener;
 import static android.util.Half.EPSILON;
 import static java.lang.Math.sqrt;
-
-public class Gyroscope {
+import android.app.Activity;
+import android.os.Bundle;
+public class Gyroscope implements SensorEventListener {
     private SensorManager sensorManager;
     private Sensor gyro;
 
@@ -29,7 +30,10 @@ public class Gyroscope {
         sensorManager = (SensorManager) mainActivity.getSystemService(Context.SENSOR_SERVICE);
         gyro = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
     }
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
 
+    }
     public void onSensorChanged(SensorEvent event) {
 
         if (timestamp != 0) {
@@ -63,4 +67,3 @@ public class Gyroscope {
 
     }
 }
-
