@@ -40,7 +40,6 @@ public class TrackingViewActivity extends AppCompatActivity {
         }
 
         locationQueue = new ArrayList<>();
-        MapsController mapsController = new MapsController(this);
 
         // TODO: set title based on the exercise type (and set it from @string resource)
 
@@ -56,11 +55,10 @@ public class TrackingViewActivity extends AppCompatActivity {
 
         //TODO: decide map creation based on chosen exercise
         //Insert map in our view
-        MapFragment mapFragment = MapFragment.newInstance();
-        FragmentTransaction fragmentTransaction =
-                getFragmentManager().beginTransaction();
-        fragmentTransaction.add(R.id.map_container, mapFragment);
-        fragmentTransaction.commit();
+
+        if (exerciseMode <= 1) {
+            MapsController mapsController = new MapsController(this);
+        }
     }
 
     // handle tracking stop
