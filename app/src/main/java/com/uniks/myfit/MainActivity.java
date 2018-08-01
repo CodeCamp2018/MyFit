@@ -14,7 +14,6 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.uniks.myfit.controller.SitUpsCtrl;
-import com.uniks.myfit.controller.SitUpsCtrl;
 import com.uniks.myfit.database.AppDatabase;
 import com.uniks.myfit.database.SportExercise;
 import com.uniks.myfit.database.User;
@@ -44,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
 
     private float timestamp;
     private Sensor mGyro;
-    //private Sensor accelerometer;
     private SensorManager sensorManager;
 
     @Override
@@ -55,9 +53,8 @@ public class MainActivity extends AppCompatActivity {
         //AppDatabase.getInstance(this);
         System.out.println("db open: " + db.isOpen());
         // if there is no user, create one
-//        if (db.isOpen()) {
+        // if (db.isOpen()) {
             List<User> users = db.userDao().getAll();
-
             if (users.isEmpty()) {
                 User newUser = new User();
                 newUser.setWeight(65);
@@ -67,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
             user = users.get(0); // for this small project there is only one user
 //        }
-
+        /*  Start Author: Arundhati*/
         Log.d(TAG, "onCreate: initializing sensor services");
         accelerometerSensor = new Accelerometer(this);
         /* Accelerometer Control Class*/
@@ -84,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
         stepcounter.onStart();
         proximity= new ProximitySensorService(this);
         proximity.onStart();
+        /*  End Author: Arundhati*/
 
         // set layout
         setContentView(R.layout.activity_main);
@@ -91,18 +89,6 @@ public class MainActivity extends AppCompatActivity {
 //        weightTxt.setText(user.getWeight());
 //        weightTxt.addTextChangedListener(new WeightTxtListener(db, user));
 
-
-        Log.d(TAG, "onCreate: registered Accelerometer Lisener");
-
-       /* SensorEventListener proximitySensorListener=new SensorEventListener()
-        {
-            @Override
-            public void onSensorChanged(SensorEvent sensorEvent) {
-            }
-            @Override
-            public void onAccuracyChanged(Sensor sensor, int i) {
-            }
-        };*/
     }
 
     @Override
