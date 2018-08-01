@@ -9,6 +9,8 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -16,6 +18,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.uniks.myfit.controller.CardsRecyclerViewAdapter;
+import com.uniks.myfit.controller.SitUpsCtrl;
 import com.uniks.myfit.controller.SitUpsCtrl;
 import com.uniks.myfit.database.AppDatabase;
 import com.uniks.myfit.database.SportExercise;
@@ -43,6 +47,10 @@ public class MainActivity extends AppCompatActivity {
     User user;
     List<SportExercise> sportExercises;
 
+    private RecyclerView cardRecyclerView;
+    private RecyclerView.Adapter cardsAdapter;
+    private RecyclerView.LayoutManager cardsLayoutManager;
+
     private float timestamp;
     private Sensor mGyro;
     private SensorManager sensorManager;
@@ -50,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // model
         // setup the database
         db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, databaseName).allowMainThreadQueries().build();
 
@@ -66,9 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
         user = users.get(0); // for this small project there is only one user
 
-            user = users.get(0); // for this small project there is only one user
-//        }
-        /*  Start Author: Arundhati*/
+        // controllers
         Log.d(TAG, "onCreate: initializing sensor services");
         accelerometerSensor = new Accelerometer(this);
         /* Accelerometer Control Class*/
@@ -83,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
         proximity.onStart();
         /*  End Author: Arundhati*/
 
-        // set layout
+        // view
         setContentView(R.layout.activity_main);
 
         // set toolbar
@@ -109,6 +117,44 @@ public class MainActivity extends AppCompatActivity {
         FloatingActionButton startSitups = (FloatingActionButton) findViewById(R.id.add_exercise_situps);
         startSitups.setOnClickListener(startSitupsListener);
 
+        cardRecyclerView = findViewById(R.id.cards_recycler_view);
+        cardRecyclerView.setHasFixedSize(true);
+        cardsLayoutManager = new LinearLayoutManager(this);
+        cardRecyclerView.setLayoutManager(cardsLayoutManager);
+        cardsAdapter = new CardsRecyclerViewAdapter(getDataSet());
+        cardRecyclerView.setAdapter(cardsAdapter);
+
+
+        Log.d(TAG, "onCreate: registered Accelerometer Listener");
+
+       /* SensorEventListener proximitySensorListener=new SensorEventListener()
+        {
+            @Override
+            public void onSensorChanged(SensorEvent sensorEvent) {
+            }
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int i) {
+            }
+        };*/
+    }
+
+    private ArrayList<SportExercise> getDataSet() {
+
+        List<SportExercise> allUsers = db.sportExerciseDao().getAllFromUser(user.getUid());
+
+        return new ArrayList<SportExercise>(allUsers);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ((CardsRecyclerViewAdapter) cardsAdapter).setOnItemClickListener(
+                new CardsRecyclerViewAdapter.MyClickListener() {
+            @Override
+            public void onItemClick(int position, View v) {
+                Log.i("ClickEvent on Card:", " Clicked on Item " + position);
+            }
+        });
     }
 
     @Override
