@@ -10,29 +10,31 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation|screenSize">
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".DetailActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_detail_tracked"
-            android:theme="@style/AppTheme"
             android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation|screenSize"></activity>
+            android:theme="@style/AppTheme" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCpfl7vIqgv1U-L3Fa3rQSBi3w3BHv2J14"/>
+            android:value="AIzaSyCpfl7vIqgv1U-L3Fa3rQSBi3w3BHv2J14" />
 
+        <activity
+            android:name=".TrackingViewActivity"
+            android:label="@string/title_activity_tracking_view"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

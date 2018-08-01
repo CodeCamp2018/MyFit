@@ -7,4 +7,12 @@
     <string name="start">Start</string>
     <string name="duration">Duration</string>
     <string name="end">End</string>
+    <string name="distance">Distance</string>
+    <string name="speed">Speed</string>
+    <string name="title_activity_tracking_view">TrackingViewActivity</string>
+
+    <string name="pullups">Pull-ups</string>
+    <string name="pushups">Push-ups</string>
+    <string name="running">Running</string>
+    <string name="cycling">Cycling</string>
 </resources>
