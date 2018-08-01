@@ -23,6 +23,8 @@ public class Accelerometer implements SensorEventListener{
 
     MainActivity mainActivity;
     float accelerationX,accelerationY,accelerationZ;
+    private final float[] accelerometerReading = new float[3];
+
     //TextView xValue, yValue, zValue;
 
     public Accelerometer(MainActivity mainActivity) {
@@ -63,6 +65,12 @@ public class Accelerometer implements SensorEventListener{
         mainActivity.list.add(accelerationX);
         mainActivity.list.add(accelerationY);
         mainActivity.list.add(accelerationZ);
+
+        if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            System.arraycopy(sensorEvent.values, 0, accelerometerReading,
+                    0, accelerometerReading.length);
+        }
+
         displayAccValues();
     }
     public void displayAccValues()

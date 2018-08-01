@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.uniks.myfit.MainActivity;
 import com.uniks.myfit.R;
 import com.uniks.myfit.TrackingViewActivity;
-import com.uniks.myfit.controller.StepsCtrl;
 
 import java.util.List;
 
@@ -38,7 +37,6 @@ public class StepCounterService implements SensorEventListener {
 
         sensorCount = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
 
-        stepsCtrl = new StepsCtrl();
         if (sensorCount != null) {
             sensorManager.registerListener(this, sensorCount, SensorManager.SENSOR_DELAY_UI);
         } else {
@@ -98,11 +96,5 @@ public class StepCounterService implements SensorEventListener {
 
     }
 
-    public StepsCtrl getStepsCtrl() {
-        return stepsCtrl;
-    }
-
-    public void setStepsCtrl(StepsCtrl stepsCtrl) {
-        this.stepsCtrl = stepsCtrl;
-    }
+    
 }
