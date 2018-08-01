@@ -12,8 +12,9 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
-import com.uniks.myfit.controller.AccelerometerCtrl;
+import com.uniks.myfit.controller.SitUpsCtrl;
 import com.uniks.myfit.database.AppDatabase;
 import com.uniks.myfit.database.SportExercise;
 import com.uniks.myfit.database.User;
@@ -33,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     public ArrayList<Float> list = new ArrayList<>();
 
     Accelerometer accelerometerSensor;
-    AccelerometerCtrl accelerometerCtrl;
+    SitUpsCtrl accelerometerCtrl;
     Gyroscope gyroscopeSensor;
     StepCounterService stepcounter;
     ProximitySensorService proximity;
@@ -43,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
 
     private float timestamp;
     private Sensor mGyro;
-    //private Sensor accelerometer;
     private SensorManager sensorManager;
 
     @Override
@@ -51,26 +51,27 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         // setup the database
         db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, databaseName).allowMainThreadQueries().build();
-        //AppDatabase.getInstance(this);
-        System.out.println("db open: " + db.isOpen());
-        // if there is no user, create one
-//        if (db.isOpen()) {
-            List<User> users = db.userDao().getAll();
 
-            if (users.isEmpty()) {
-                User newUser = new User();
-                newUser.setWeight(65);
-                db.userDao().insert(newUser);
-                users = db.userDao().getAll();
-            }
+        // if there is no user, create one
+        List<User> users = db.userDao().getAll();
+
+        if (users == null || users.isEmpty()) {
+            // empty table so create an dummy user
+            User newUser = new User();
+            newUser.setWeight(65);
+            db.userDao().insert(newUser);
+            users = db.userDao().getAll();
+        }
+
+        user = users.get(0); // for this small project there is only one user
 
             user = users.get(0); // for this small project there is only one user
 //        }
-
+        /*  Start Author: Arundhati*/
         Log.d(TAG, "onCreate: initializing sensor services");
         accelerometerSensor = new Accelerometer(this);
         /* Accelerometer Control Class*/
-        accelerometerCtrl = new AccelerometerCtrl(accelerometerSensor);
+        accelerometerCtrl = new SitUpsCtrl(accelerometerSensor);
         /* Initialize The Accelerometer Sensor*/
         accelerometerSensor.init();
         /* Gyroscope Sensor Class*/
@@ -81,38 +82,25 @@ public class MainActivity extends AppCompatActivity {
         stepcounter = new StepCounterService(this);
         /* Step Count Init*/
         stepcounter.onStart();
-        proximity= new ProximitySensorService(this);
+        proximity = new ProximitySensorService(this);
         proximity.onStart();
+        /*  End Author: Arundhati*/
 
         // set layout
         setContentView(R.layout.activity_main);
         EditText weightTxt = findViewById(R.id.input_weight);
-//        weightTxt.setText(user.getWeight());
-//        weightTxt.addTextChangedListener(new WeightTxtListener(db, user));
+        weightTxt.setText(String.valueOf(user.getWeight()), TextView.BufferType.EDITABLE);
+        weightTxt.addTextChangedListener(new WeightTxtListener(db, user));
 
-
-        Log.d(TAG, "onCreate: registered Accelerometer Lisener");
-
-       /* SensorEventListener proximitySensorListener=new SensorEventListener()
-        {
-            @Override
-            public void onSensorChanged(SensorEvent sensorEvent) {
-            }
-            @Override
-            public void onAccuracyChanged(Sensor sensor, int i) {
-            }
-        };*/
     }
 
     @Override
     protected void onDestroy() {
-//        if (db.isOpen()) {
-            db.userDao().updateUser(user);
-            for (SportExercise exercise : sportExercises) {
-                db.sportExerciseDao().updateSportExercises(exercise);
-            }
-            db.close();
-//        }
+        db.userDao().updateUser(user);
+        for (SportExercise exercise : sportExercises) {
+            db.sportExerciseDao().updateSportExercises(exercise);
+        }
+        db.close();
         // TODO: close the sensors!
         super.onDestroy();
     }
