@@ -27,15 +27,6 @@
                 android:layout_gravity="end"
                 android:src="@drawable/ic_stop" />
 
-            <ImageButton
-                android:id="@+id/play_pause_button"
-                style="?android:attr/borderlessButtonStyle"
-                android:minWidth="0dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:src="@drawable/ic_pause" />
-
         </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
