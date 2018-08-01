@@ -135,7 +135,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:textSize="24sp"
-            android:margin="16dp"
+            android:layout_margin="16dp"
             android:text="57 kcal"/>
 
         <TextView
@@ -145,7 +145,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:textSize="24sp"
-            android:margin="16dp"
+            android:layout_margin="16dp"
             android:text="30 repetitions"/>
     </LinearLayout>
 
