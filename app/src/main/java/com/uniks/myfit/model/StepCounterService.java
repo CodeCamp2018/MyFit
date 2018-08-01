@@ -96,5 +96,5 @@ public class StepCounterService implements SensorEventListener {
 
     }
 
-    
+
 }

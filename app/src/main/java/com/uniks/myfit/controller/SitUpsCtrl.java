@@ -15,6 +15,7 @@ public class SitUpsCtrl  {
 
     public SitUpsCtrl(Accelerometer accelerometerSensor) {
         this.accelerometerSensor=accelerometerSensor;
+
     }
 
 
