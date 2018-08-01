@@ -36,13 +36,11 @@
 
     </android.support.v7.widget.Toolbar>
 
-    <LinearLayout
-        android:id="@+id/fragment_sport_exercise_container"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/cards_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:scrollbars="vertical"/>
 
     <com.getbase.floatingactionbutton.FloatingActionsMenu
         android:id="@+id/add_exercise"

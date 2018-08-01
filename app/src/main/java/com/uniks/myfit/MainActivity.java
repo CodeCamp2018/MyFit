@@ -8,12 +8,15 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.uniks.myfit.controller.CardsRecyclerViewAdapter;
 import com.uniks.myfit.controller.SitUpsCtrl;
 import com.uniks.myfit.controller.SitUpsCtrl;
 import com.uniks.myfit.database.AppDatabase;
@@ -43,6 +46,10 @@ public class MainActivity extends AppCompatActivity {
     User user;
     List<SportExercise> sportExercises;
 
+    private RecyclerView cardRecyclerView;
+    private RecyclerView.Adapter cardsAdapter;
+    private RecyclerView.LayoutManager cardsLayoutManager;
+
     private float timestamp;
     private Sensor mGyro;
     //private Sensor accelerometer;
@@ -51,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // model
         // setup the database
         db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, databaseName).allowMainThreadQueries().build();
 
@@ -67,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
         user = users.get(0); // for this small project there is only one user
 
+        // controllers
         Log.d(TAG, "onCreate: initializing sensor services");
         accelerometerSensor = new Accelerometer(this);
         /* Accelerometer Control Class*/
@@ -84,14 +94,21 @@ public class MainActivity extends AppCompatActivity {
         proximity = new ProximitySensorService(this);
         proximity.onStart();
 
-        // set layout
+        // view
         setContentView(R.layout.activity_main);
         EditText weightTxt = findViewById(R.id.input_weight);
         weightTxt.setText(String.valueOf(user.getWeight()), TextView.BufferType.EDITABLE);
         weightTxt.addTextChangedListener(new WeightTxtListener(db, user));
 
+        cardRecyclerView = findViewById(R.id.cards_recycler_view);
+        cardRecyclerView.setHasFixedSize(true);
+        cardsLayoutManager = new LinearLayoutManager(this);
+        cardRecyclerView.setLayoutManager(cardsLayoutManager);
+        cardsAdapter = new CardsRecyclerViewAdapter(getDataSet());
+        cardRecyclerView.setAdapter(cardsAdapter);
 
-        Log.d(TAG, "onCreate: registered Accelerometer Lisener");
+
+        Log.d(TAG, "onCreate: registered Accelerometer Listener");
 
        /* SensorEventListener proximitySensorListener=new SensorEventListener()
         {
@@ -102,6 +119,25 @@ public class MainActivity extends AppCompatActivity {
             public void onAccuracyChanged(Sensor sensor, int i) {
             }
         };*/
+    }
+
+    private ArrayList<SportExercise> getDataSet() {
+
+        List<SportExercise> allUsers = db.sportExerciseDao().getAllFromUser(user.getUid());
+
+        return new ArrayList<SportExercise>(allUsers);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ((CardsRecyclerViewAdapter) cardsAdapter).setOnItemClickListener(
+                new CardsRecyclerViewAdapter.MyClickListener() {
+            @Override
+            public void onItemClick(int position, View v) {
+                Log.i("ClickEvent on Card:", " Clicked on Item " + position);
+            }
+        });
     }
 
     @Override
