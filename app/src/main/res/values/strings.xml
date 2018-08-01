@@ -11,7 +11,7 @@
     <string name="speed">Speed</string>
     <string name="title_activity_tracking_view">TrackingViewActivity</string>
 
-    <string name="pullups">Pull-ups</string>
+    <string name="situps">Sit-ups</string>
     <string name="pushups">Push-ups</string>
     <string name="running">Running</string>
     <string name="cycling">Cycling</string>

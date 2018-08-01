@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public class TrackingViewActivity extends AppCompatActivity {
+    private int exerciseMode;
+    private String customTitle = "Exercise";
 
     private ArrayList<Location> locationQueue;
 
@@ -32,19 +34,33 @@ public class TrackingViewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        exerciseMode = getIntent().getIntExtra("EXERCISE", 0);
+
+        switch(exerciseMode) {
+            case 0: customTitle = getString(R.string.running);
+                    break;
+            case 1: customTitle = getString(R.string.cycling);
+                    break;
+            case 2: customTitle = getString(R.string.pushups);
+                    break;
+            case 3: customTitle = getString(R.string.situps);
+                    break;
+        }
+
         locationQueue = new ArrayList<>();
         MapsController mapsController = new MapsController(this);
 
         // TODO: set title based on the exercise type (and set it from @string resource)
-        this.setTitle("Exercising");
+
+        this.setTitle(customTitle);
 
         setContentView(R.layout.activity_tracking_view);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        ImageButton StopButton = (ImageButton) findViewById(R.id.stop_button);
-        StopButton.setOnClickListener(stopListener);
+        ImageButton stopButton = (ImageButton) findViewById(R.id.stop_button);
+        stopButton.setOnClickListener(stopListener);
 
         //TODO: decide map creation based on chosen exercise
         //Insert map in our view
