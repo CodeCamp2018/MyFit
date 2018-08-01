@@ -14,6 +14,9 @@ public interface SportExerciseDao {
     @Query("SELECT * FROM sportexercise")
     List<SportExercise> getAll();
 
+    @Query("SELECT * FROM sportexercise WHERE user_id = :userId")
+    List<SportExercise> getAllFromUser(int userId);
+
     @Query("SELECT * FROM sportexercise WHERE id IN (:ids)")
     List<SportExercise> loadAllByIds(int[] ids);
 
