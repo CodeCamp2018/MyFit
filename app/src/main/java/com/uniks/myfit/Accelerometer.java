@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.TextureView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.lang.reflect.Array;
 
@@ -20,6 +21,7 @@ public class Accelerometer implements SensorEventListener{
     private SensorManager sensorManager;
     Sensor accelerometer;
     public float[] gravity;
+    public  Context context;
 
     MainActivity mainActivity;
     float accelerationX,accelerationY,accelerationZ;
@@ -35,7 +37,7 @@ public class Accelerometer implements SensorEventListener{
     public void init() {
         // Get an instance of the SensorManager
         sensorManager = (SensorManager) mainActivity.getSystemService(Context.SENSOR_SERVICE);
-        Log.d(TAG, "onCreate: Intializing Accelerometer Services");
+        Log.d(TAG, "onCreate: Initializing Accelerometer Services");
 
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
         sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
@@ -51,25 +53,29 @@ public class Accelerometer implements SensorEventListener{
         accelerationY = sensorEvent.values[1];
         accelerationZ  = sensorEvent.values[2];
 
-
-
         // Isolate the force of gravity with the low-pass filter.
         gravity[0] = alpha * gravity[0] + (1 - alpha) * sensorEvent.values[0];
         gravity[1] = alpha * gravity[1] + (1 - alpha) * sensorEvent.values[1];
         gravity[2] = alpha * gravity[2] + (1 - alpha) * sensorEvent.values[2];
+
         // Remove the gravity contribution with the high-pass filter.
         accelerationX =  sensorEvent.values[0] -  gravity[0];
         accelerationY =  sensorEvent.values[1] -  gravity[1];
         accelerationZ =  sensorEvent.values[2] -  gravity[2];
-        // store it into a list
+
+        float currentAcceleration = (float) Math.sqrt(accelerationX*accelerationX + accelerationY*accelerationY + accelerationZ*accelerationZ);
+        Log.d("onSensorChanged",System.currentTimeMillis()+","+currentAcceleration);
+                // store it into a list to send it to controller
         mainActivity.list.add(accelerationX);
         mainActivity.list.add(accelerationY);
         mainActivity.list.add(accelerationZ);
 
-        if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+
+        /*if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
+        {
             System.arraycopy(sensorEvent.values, 0, accelerometerReading,
                     0, accelerometerReading.length);
-        }
+        }*/
 
         displayAccValues();
     }
@@ -84,5 +90,9 @@ public class Accelerometer implements SensorEventListener{
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
 
+    }
+    public void unregisterSensor() {
+        sensorManager.unregisterListener(this);
+        Toast.makeText(context, "Accelerometer Closed", Toast.LENGTH_SHORT).show();
     }
 }
