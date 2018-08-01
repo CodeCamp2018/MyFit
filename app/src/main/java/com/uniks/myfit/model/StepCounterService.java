@@ -18,9 +18,7 @@ import java.util.List;
 public class StepCounterService implements SensorEventListener {
     private SensorManager sensorManager;
     private Sensor sensorCount;
-    //MainActivity mainActivity;
     TrackingViewActivity trackingViewActivity;
-    private StepsCtrl stepsCtrl;
     private int startStepCounter = 0;
     private int endStepCounter = 0;
     private boolean active;

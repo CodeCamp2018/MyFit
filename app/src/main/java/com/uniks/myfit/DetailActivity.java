@@ -39,8 +39,8 @@ public class DetailActivity extends AppCompatActivity {
         });
 
         // Controllers
-//        MapsController mapsController = new MapsController(this);
-//        mapsController.init();
+        /*MapsController mapsController = new MapsController(this);
+        mapsController.init();*/
 
 
 

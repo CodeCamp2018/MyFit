@@ -43,11 +43,8 @@ public class TrackingViewActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        ImageButton PlayPauseButton = (ImageButton) findViewById(R.id.play_pause_button);
-        PlayPauseButton.setOnClickListener(playPauseListener);
-
         ImageButton StopButton = (ImageButton) findViewById(R.id.stop_button);
-        PlayPauseButton.setOnClickListener(stopListener);
+        StopButton.setOnClickListener(stopListener);
 
         //TODO: decide map creation based on chosen exercise
         //Insert map in our view
@@ -57,16 +54,6 @@ public class TrackingViewActivity extends AppCompatActivity {
         fragmentTransaction.add(R.id.map_container, mapFragment);
         fragmentTransaction.commit();
     }
-
-
-
-    // handle playing and pausing tracking
-    private View.OnClickListener playPauseListener = new View.OnClickListener() {
-        public void onClick(View v) {
-            //TODO: play/pause tracking
-
-        }
-    };
 
     // handle tracking stop
     private View.OnClickListener stopListener = new View.OnClickListener() {
