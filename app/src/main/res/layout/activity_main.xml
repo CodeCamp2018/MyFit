@@ -62,7 +62,7 @@
             android:layout_height="wrap_content"
             fab:fab_colorNormal="@color/white"
             fab:fab_colorPressed="@color/white_pressed"
-            fab:fab_title="Running"
+            fab:fab_title="@string/running"
             fab:fab_size="mini"/>
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/add_exercise_cycling"
@@ -70,7 +70,7 @@
             android:layout_height="wrap_content"
             fab:fab_colorNormal="@color/white"
             fab:fab_colorPressed="@color/white_pressed"
-            fab:fab_title="Cycling"
+            fab:fab_title="@string/cycling"
             fab:fab_size="mini"/>
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/add_exercise_pushups"
@@ -78,7 +78,7 @@
             android:layout_height="wrap_content"
             fab:fab_colorNormal="@color/white"
             fab:fab_colorPressed="@color/white_pressed"
-            fab:fab_title="Push-ups"
+            fab:fab_title="@string/pushups"
             fab:fab_size="mini"/>
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/add_exercise_pullups"
@@ -86,7 +86,7 @@
             android:layout_height="wrap_content"
             fab:fab_colorNormal="@color/white"
             fab:fab_colorPressed="@color/white_pressed"
-            fab:fab_title="Pull-ups"
+            fab:fab_title="@string/pullups"
             fab:fab_size="mini"/>
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
