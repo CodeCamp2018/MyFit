@@ -59,9 +59,9 @@ public class Accelerometer implements SensorEventListener{
         gravity[1] = alpha * gravity[1] + (1 - alpha) * sensorEvent.values[1];
         gravity[2] = alpha * gravity[2] + (1 - alpha) * sensorEvent.values[2];
         // Remove the gravity contribution with the high-pass filter.
-        accelerationX = sensorEvent.values[0] -  gravity[0];
-        accelerationY= sensorEvent.values[1] - gravity[1];
-        accelerationZ = sensorEvent.values[2] - gravity[2];
+        accelerationX =  sensorEvent.values[0] -  gravity[0];
+        accelerationY =  sensorEvent.values[1] -  gravity[1];
+        accelerationZ =  sensorEvent.values[2] -  gravity[2];
 
     }
     public void displayAccValues()

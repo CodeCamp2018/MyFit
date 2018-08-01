@@ -9,12 +9,11 @@ import android.hardware.SensorManager;
 import java.util.List;
 
 public class SitUpsCtrl  {
-    Gyroscope gyro;
-    Accelerometer accelerometerSensor;
-    final  float alpha = (float) 0.8;
 
-    public SitUpsCtrl(Accelerometer accelerometerSensor, Gyroscope gyro) {
-        this.gyro = gyro;
+    Accelerometer accelerometerSensor;
+
+
+    public SitUpsCtrl(Accelerometer accelerometerSensor) {
         this.accelerometerSensor=accelerometerSensor;
     }
 

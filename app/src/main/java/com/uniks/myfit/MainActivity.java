@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     Gyroscope gyroscopeSensor;
     StepCounterService stepcounter;
     ProximitySensorService proximity;
-    AppDatabase db;
+    public AppDatabase db;
     User user;
     List<SportExercise> sportExercises;
 
