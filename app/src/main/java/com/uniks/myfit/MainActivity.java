@@ -40,9 +40,8 @@ public class MainActivity extends AppCompatActivity {
     Accelerometer accelerometerSensor;
     SitUpsCtrl accelerometerCtrl;
     Gyroscope gyroscopeSensor;
-    StepCounterService stepcounter;
     ProximitySensorService proximity;
-    AppDatabase db;
+    public AppDatabase db;
     User user;
     List<SportExercise> sportExercises;
 
@@ -52,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
 
     private float timestamp;
     private Sensor mGyro;
-    //private Sensor accelerometer;
     private SensorManager sensorManager;
 
     @Override
@@ -87,15 +85,17 @@ public class MainActivity extends AppCompatActivity {
         gyroscopeSensor = new Gyroscope(this);
         /* Gyroscope Init*/
         gyroscopeSensor.init();
-        /* StepCounter Software Sensor*/
-        stepcounter = new StepCounterService(this);
-        /* Step Count Init*/
-        stepcounter.onStart();
         proximity = new ProximitySensorService(this);
         proximity.onStart();
+        /*  End Author: Arundhati*/
 
         // view
         setContentView(R.layout.activity_main);
+
+        // set toolbar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         EditText weightTxt = findViewById(R.id.input_weight);
         weightTxt.setText(String.valueOf(user.getWeight()), TextView.BufferType.EDITABLE);
         weightTxt.addTextChangedListener(new WeightTxtListener(db, user));

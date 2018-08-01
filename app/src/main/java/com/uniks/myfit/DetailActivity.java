@@ -7,12 +7,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.uniks.myfit.controller.MapsController;
+
 public class DetailActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // View
         // TODO: set title based on the exercise type from stored data
         this.setTitle("Exercise");
 
@@ -34,6 +37,15 @@ public class DetailActivity extends AppCompatActivity {
                 //TODO: Implement sharing
             }
         });
+
+        // Controllers
+        /*MapsController mapsController = new MapsController(this);
+        mapsController.init();*/
+
+
+
+        // Model
+
     }
 
 }
