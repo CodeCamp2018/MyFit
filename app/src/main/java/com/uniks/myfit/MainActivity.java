@@ -13,7 +13,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
-import com.uniks.myfit.controller.AccelerometerCtrl;
+import com.uniks.myfit.controller.SitUpsCtrl;
+import com.uniks.myfit.controller.SitUpsCtrl;
 import com.uniks.myfit.database.AppDatabase;
 import com.uniks.myfit.database.SportExercise;
 import com.uniks.myfit.database.User;
@@ -33,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     public ArrayList<Float> list = new ArrayList<>();
 
     Accelerometer accelerometerSensor;
-    AccelerometerCtrl accelerometerCtrl;
+    SitUpsCtrl accelerometerCtrl;
     Gyroscope gyroscopeSensor;
     StepCounterService stepcounter;
     ProximitySensorService proximity;
@@ -70,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate: initializing sensor services");
         accelerometerSensor = new Accelerometer(this);
         /* Accelerometer Control Class*/
-        accelerometerCtrl = new AccelerometerCtrl(accelerometerSensor);
+        accelerometerCtrl = new SitUpsCtrl(accelerometerSensor);
         /* Initialize The Accelerometer Sensor*/
         accelerometerSensor.init();
         /* Gyroscope Sensor Class*/
