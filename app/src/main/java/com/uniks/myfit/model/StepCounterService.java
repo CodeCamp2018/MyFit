@@ -29,6 +29,11 @@ public class StepCounterService  implements SensorEventListener {
 
     public void onStart()//Command(Intent intent, int flags, int startId)
     {
+        //If it's available we can retrieve the value using following code
+        sensorManager = (SensorManager) mainActivity.getSystemService(Context.SENSOR_SERVICE);
+        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+        sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+        
         //Check if the stepCounter is available first.
         List<Sensor> gravSensors = sensorManager.getSensorList(Sensor.TYPE_ALL);
 
@@ -38,10 +43,7 @@ public class StepCounterService  implements SensorEventListener {
         }
 
 
-        //If it's available we can retrieve the value using following code
-        sensorManager = (SensorManager) mainActivity.getSystemService(Context.SENSOR_SERVICE);
-        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
-        sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+
         //return START_STICKY;
     }
 
