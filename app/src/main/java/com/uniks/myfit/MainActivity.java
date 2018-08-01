@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     Gyroscope gyroscopeSensor;
     StepCounterService stepcounter;
     ProximitySensorService proximity;
-    AppDatabase db;
+    public AppDatabase db;
     User user;
     List<SportExercise> sportExercises;
 
@@ -88,6 +88,11 @@ public class MainActivity extends AppCompatActivity {
 
         // set layout
         setContentView(R.layout.activity_main);
+
+        // set toolbar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         EditText weightTxt = findViewById(R.id.input_weight);
         weightTxt.setText(String.valueOf(user.getWeight()), TextView.BufferType.EDITABLE);
         weightTxt.addTextChangedListener(new WeightTxtListener(db, user));

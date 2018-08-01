@@ -17,13 +17,13 @@ public class Gyroscope implements SensorEventListener {
     private static final float NS2S = 1.0f / 1000000000.0f;
     private final float[] deltaRotationVector = new float[4];
     float[] deltaRotationMatrix = new float[9];
-    public float[] gravity; ;
+    public float[] axis;
     private float timestamp;
     private MainActivity mainActivity;
 
     public Gyroscope(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
-        gravity = new float[4];
+        axis = new float[4];
     }
 
     public void init() {
@@ -54,10 +54,10 @@ public class Gyroscope implements SensorEventListener {
             float thetaOverTwo = norm * dT / 2.0f;
             float sinThetaOverTwo = (float) Math.sin(thetaOverTwo);
             float cosThetaOverTwo = (float) Math.cos(thetaOverTwo);
-            gravity[0]=sinThetaOverTwo *gravityX;
-            gravity[1]=sinThetaOverTwo *gravityY;
-            gravity[2]=sinThetaOverTwo *gravityZ;
-            gravity[3]=cosThetaOverTwo;
+            axis[0]=sinThetaOverTwo *gravityX;
+            axis[1]=sinThetaOverTwo *gravityY;
+            axis[2]=sinThetaOverTwo *gravityZ;
+            axis[3]=cosThetaOverTwo;
 
         }
 
