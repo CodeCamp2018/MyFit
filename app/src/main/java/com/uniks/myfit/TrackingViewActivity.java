@@ -22,14 +22,6 @@ public class TrackingViewActivity extends AppCompatActivity {
 
     private ArrayList<Location> locationQueue;
 
-    public ArrayList<Location> getLocationQueue() {
-        return locationQueue;
-    }
-
-    public void setLocationQueue(ArrayList<Location> locationQueue) {
-        this.locationQueue = locationQueue;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,4 +71,11 @@ public class TrackingViewActivity extends AppCompatActivity {
     };
 
 
+    public ArrayList<Location> getLocationQueue() {
+        return locationQueue;
+    }
+
+    public void setLocationQueue(ArrayList<Location> locationQueue) {
+        this.locationQueue = locationQueue;
+    }
 }

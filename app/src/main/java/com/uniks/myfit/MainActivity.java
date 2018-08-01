@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
         // model
         // setup the database
-        db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, databaseName).allowMainThreadQueries().build();
+        db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, databaseName).allowMainThreadQueries().fallbackToDestructiveMigration().build();
 
         // if there is no user, create one
         List<User> users = db.userDao().getAll();
