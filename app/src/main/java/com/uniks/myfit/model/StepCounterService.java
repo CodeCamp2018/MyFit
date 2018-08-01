@@ -20,9 +20,11 @@ import java.util.List;
 
 import java.util.List;
 
+import static android.content.ContentValues.TAG;
+
 public class StepCounterService  implements SensorEventListener {
     private SensorManager sensorManager;
-    Sensor sensorcount;
+    private Sensor sensorCount;
     MainActivity mainActivity;
     StepsCtrl stepsCtrl;
 
@@ -34,14 +36,17 @@ public class StepCounterService  implements SensorEventListener {
     {
         //If it's available we can retrieve the value using following code
         sensorManager = (SensorManager) mainActivity.getSystemService(Context.SENSOR_SERVICE);
-        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
-        sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
 
-
-        sensorcount= sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+        sensorCount= sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
 
         stepsCtrl = new StepsCtrl();
-        sensorManager.registerListener(this, sensorcount, SensorManager.SENSOR_DELAY_NORMAL);
+        if(sensorCount!= null) {
+            sensorManager.registerListener(this, sensorCount, SensorManager.SENSOR_DELAY_UI);
+        }
+        else
+        {
+            //Log.e(TAG, "No step counter present: ", );
+        }
 
         //Check if the stepCounter is available first.
         List<Sensor> gravSensors = sensorManager.getSensorList(Sensor.TYPE_ALL);
@@ -67,10 +72,10 @@ public class StepCounterService  implements SensorEventListener {
     @Override
     public void onSensorChanged(SensorEvent event) {
 
-        if(event.sensor.getType() == sensorcount.TYPE_STEP_COUNTER)
+        if(event.sensor.getType() == sensorCount.TYPE_STEP_COUNTER)
         {
             //tolerance can be put here after testing walking
-            Log.d("step_count = ", String.valueOf(sensorcount.getFifoMaxEventCount()));
+            Log.d("step_count = ", String.valueOf(sensorCount.getFifoMaxEventCount()));
             stepsCtrl.addStep();
         }
 
