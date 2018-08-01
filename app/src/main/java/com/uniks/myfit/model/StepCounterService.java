@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.uniks.myfit.MainActivity;
 import com.uniks.myfit.R;
+import com.uniks.myfit.TrackingViewActivity;
 import com.uniks.myfit.controller.StepsCtrl;
 
 import java.util.List;
@@ -17,24 +18,25 @@ import java.util.List;
 public class StepCounterService implements SensorEventListener {
     private SensorManager sensorManager;
     private Sensor sensorCount;
-    MainActivity mainActivity;
+    //MainActivity mainActivity;
+    TrackingViewActivity trackingViewActivity;
     private StepsCtrl stepsCtrl;
     private int startStepCounter = 0;
     private int endStepCounter = 0;
     private boolean active;
 
-    public StepCounterService(MainActivity mainActivity) {
-        this.mainActivity = mainActivity;
+    public StepCounterService(TrackingViewActivity trackingViewActivity) {
+        this.trackingViewActivity = trackingViewActivity;
     }
 
     public void onStart()//Command(Intent intent, int flags, int startId)
     {
         active = true;
-        TextView stepCounterTitleUI = mainActivity.findViewById(R.id.title_2);
+        TextView stepCounterTitleUI = trackingViewActivity.findViewById(R.id.title_2);
         stepCounterTitleUI.setText("Steps");
 
         //If it's available we can retrieve the value using following code
-        sensorManager = (SensorManager) mainActivity.getSystemService(Context.SENSOR_SERVICE);
+        sensorManager = (SensorManager) trackingViewActivity.getSystemService(Context.SENSOR_SERVICE);
 
         sensorCount = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
 
@@ -84,7 +86,7 @@ public class StepCounterService implements SensorEventListener {
 
                 int actualCount = endStepCounter - startStepCounter;
 
-                TextView stepCounterValueUI = mainActivity.findViewById(R.id.value_2);
+                TextView stepCounterValueUI = trackingViewActivity.findViewById(R.id.value_2);
 
                 stepCounterValueUI.setText(Integer.toString(actualCount));
             }

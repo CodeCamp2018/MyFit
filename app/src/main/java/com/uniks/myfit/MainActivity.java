@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
         /* Gyroscope Init*/
         gyroscopeSensor.init();
         /* StepCounter Software Sensor*/
-        stepcounter = new StepCounterService(this);
+       // stepcounter = new StepCounterService(this);
         /* Step Count Init*/
         stepcounter.onStart();
         proximity = new ProximitySensorService(this);

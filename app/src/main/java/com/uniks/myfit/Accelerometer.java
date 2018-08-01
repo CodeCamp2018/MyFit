@@ -48,12 +48,9 @@ public class Accelerometer implements SensorEventListener{
         accelerationX= sensorEvent.values[0];
         accelerationY = sensorEvent.values[1];
         accelerationZ  = sensorEvent.values[2];
-        //Filtering the data
-        displayAccValues();
-        // store it into a list
-        mainActivity.list.add(accelerationX);
-        mainActivity.list.add(accelerationY);
-        mainActivity.list.add(accelerationZ);
+
+
+
         // Isolate the force of gravity with the low-pass filter.
         gravity[0] = alpha * gravity[0] + (1 - alpha) * sensorEvent.values[0];
         gravity[1] = alpha * gravity[1] + (1 - alpha) * sensorEvent.values[1];
@@ -62,20 +59,16 @@ public class Accelerometer implements SensorEventListener{
         accelerationX =  sensorEvent.values[0] -  gravity[0];
         accelerationY =  sensorEvent.values[1] -  gravity[1];
         accelerationZ =  sensorEvent.values[2] -  gravity[2];
-
+        // store it into a list
+        mainActivity.list.add(accelerationX);
+        mainActivity.list.add(accelerationY);
+        mainActivity.list.add(accelerationZ);
+        displayAccValues();
     }
     public void displayAccValues()
     {
-
-        //Filtering the data
-        if (Math.abs(accelerationX) < 1)
-        { accelerationX = 0; }
-        if (Math.abs(accelerationY) < 1)
-        { accelerationY = 0; }
-        if (Math.abs(accelerationZ) < 1)
-        { accelerationZ = 0; }
         //display The data
-        Log.d(TAG, "onSensorChanged: X:"+accelerationX+"Y:"+accelerationY+"Z:"+accelerationZ);
+        Log.i(TAG, "onSensorChanged: X:"+accelerationX+"Y:"+accelerationY+"Z:"+accelerationZ);
     }
 
 
