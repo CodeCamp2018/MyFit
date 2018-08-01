@@ -2,6 +2,7 @@
 package com.uniks.myfit.controller;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -17,7 +18,9 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.uniks.myfit.DetailActivity;
 import com.uniks.myfit.MainActivity;
+import com.uniks.myfit.R;
 
 import java.io.IOException;
 import java.util.List;
@@ -29,21 +32,21 @@ public class MapsController implements OnMapReadyCallback {
     private GoogleMap mMap;
     //class type-which manages the location
     LocationManager locationManager;
-    MainActivity mainActivity;
+    DetailActivity detailActivity;
 
-    public MapsController(MainActivity mainActivity) {
-        this.mainActivity = mainActivity;
+    public MapsController(DetailActivity detailActivity) {
+        this.detailActivity = detailActivity;
     }
 
-    protected void onInit() {
+    public void init() {
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) mainActivity.getSupportFragmentManager()
+        SupportMapFragment mapFragment = (SupportMapFragment) detailActivity.getSupportFragmentManager()
                 .findFragmentById(R.id.map); // TODO
         mapFragment.getMapAsync(this);
         //intialing the location manager
-        locationManager = (LocationManager) mainActivity.getSystemService(LOCATION_SERVICE);
+        locationManager = (LocationManager) detailActivity.getSystemService(LOCATION_SERVICE);
         // ask user for the location after certian time & distance
-        if (ActivityCompat.checkSelfPermission(mainActivity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mainActivity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(detailActivity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(detailActivity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -64,7 +67,7 @@ public class MapsController implements OnMapReadyCallback {
                     //instance latitude & Longitude class
                     LatLng latLng = new LatLng(latitude, longitude);
                     //instantiate the class,Geocoder
-                    Geocoder geocoder = new Geocoder(mainActivity.getApplicationContext());
+                    Geocoder geocoder = new Geocoder(detailActivity.getApplicationContext());
                     try {
                         List<Address> adressList = geocoder.getFromLocation(latitude, longitude, 1);
                         String str = adressList.get(0).getLocality() + ",";
@@ -106,7 +109,7 @@ public class MapsController implements OnMapReadyCallback {
                     //instance latitude & Longitude class
                     LatLng latLng = new LatLng(latitude, longitude);
                     //instantiate the class,Geocoder
-                    Geocoder geocoder = new Geocoder(mainActivity.getApplicationContext());
+                    Geocoder geocoder = new Geocoder(detailActivity.getApplicationContext());
                     try {
                         List<Address> adressList = geocoder.getFromLocation(latitude, longitude, 1);
                         String str = adressList.get(0).getLocality() + ",";
