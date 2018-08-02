@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -26,7 +27,8 @@ import java.util.Date;
 public class TrackingViewActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final int REQUEST_FINE_LOCATION = 351;
-    private static final int MIN_NUMBER_OF_ELEMENTS = 10;
+    private static final int MIN_NUMBER_OF_ELEMENTS = 3;
+    private static final String TRACKING_LOG = "TrackingViewActivity: ";
     private SitUpsCtrl sitUpsCtrl;
     private StepCounterService stepCounterService;
     private MapsController mapsController;
@@ -180,7 +182,11 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
     private boolean isThereEnoughData() {
         boolean enough = false;
         switch (exerciseMode) {
-            case 0: case 1:// running and cycling
+            case 0: // running
+                if (mapsController.getLinePoints().size() >= MIN_NUMBER_OF_ELEMENTS || stepCounterService.getActualCount() >= 1) {
+                    enough = true;
+                }
+            case 1: // cycling
                 if (mapsController.getLinePoints().size() >= MIN_NUMBER_OF_ELEMENTS) {
                     enough = true;
                 }
@@ -199,44 +205,61 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void processSensorData() {
-        String duration = getFormattedCurrentDuration();
+        final String duration = getFormattedCurrentDuration();
         switch (exerciseMode) {
             case 0: // running
-                int stepsCounted = stepCounterService.getActualCount();
+                final int stepsCounted = stepCounterService.getActualCount();
+                Log.i(TRACKING_LOG, "stepsCounted: " + stepsCounted);
                 // TODO: do the measuring of distance from mapsController
 
-                // set view - show distance, steps
-
-                /* ------ example for calling ui-thread
-                final Bitmap bitmap =
-                        processBitMap("image.png");
-                mImageView.post(new Runnable() {
-                    public void run() {
-                        mImageView.setImageBitmap(bitmap);
-                    }
-                });*/
-
+                // set view - show distance and steps
                 // distance
-                TextView runningDistanceValueUI = findViewById(R.id.value_1);
+                final TextView runningDistanceValueUI = findViewById(R.id.value_1);
+                // call this because of thread
+                runningDistanceValueUI.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.e(TrackingViewActivity.TRACKING_LOG, "set runningDistance in UI");
+                        runningDistanceValueUI.setText(String.valueOf(mapsController.getTotalDistance()));
+                    }
+                });
 
-                runningDistanceValueUI.setText(String.valueOf(mapsController.getTotalDistance()));
-                // TODO: fill UI-Element here
                 //steps
-                TextView stepCounterValueUI = findViewById(R.id.value_2);
-                stepCounterValueUI.setText(String.valueOf(stepsCounted));
+                final TextView stepCounterValueUI = findViewById(R.id.value_2);
+                // call this because of thread
+                stepCounterValueUI.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.e(TrackingViewActivity.TRACKING_LOG, "set stepCounter in UI");
+                        stepCounterValueUI.setText(String.valueOf(stepsCounted));
+                    }
+                });
+
 
                 break;
             case 1: // cycling
-                // TODO: get the measured traveling distance from mapsController
                 // TODO: get the measured current speed from mapsController
 
                 // set view - show distance, speed
                 // distance
-                TextView cyclingDistanceValueUI = findViewById(R.id.value_1);
-                // TODO: fill UI-Element
+                final TextView cyclingDistanceValueUI = findViewById(R.id.value_1);
+                cyclingDistanceValueUI.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        cyclingDistanceValueUI.setText(String.valueOf(mapsController.getTotalDistance()));
+                    }
+                });
+
                 // speed
-                TextView cyclingSpeedValueUI = findViewById(R.id.value_2);
-                // TODO: fill UI-Element
+                final TextView cyclingSpeedValueUI = findViewById(R.id.value_2);
+                cyclingSpeedValueUI.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        // TODO: fill UI-Element
+                        cyclingSpeedValueUI.setText("");
+                    }
+                });
+
                 break;
             case 2: // pushups
                 // TODO: get the count of pushups from pushupController
@@ -247,17 +270,27 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 break;
             case 3: // situps
 
-                int situpCount = sitUpsCtrl.calculateSitups();
+                final int situpCount = sitUpsCtrl.calculateSitups();
 
                 // set view - show count
-                TextView situpCountValueUI = findViewById(R.id.value_1);
-                situpCountValueUI.setText(String.valueOf(situpCount));
+                final TextView situpCountValueUI = findViewById(R.id.value_1);
+                situpCountValueUI.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        situpCountValueUI.setText(String.valueOf(situpCount));
+                    }
+                });
                 break;
         }
 
         // set time in UI
-        TextView runningTimeValueUI = findViewById(R.id.value_3);
-        runningTimeValueUI.setText(duration);
+        final TextView timeValueUI = findViewById(R.id.value_3);
+        timeValueUI.post(new Runnable() {
+            @Override
+            public void run() {
+                timeValueUI.setText(duration);
+            }
+        });
     }
 
     public ArrayList<Location> getLocationQueue() {
