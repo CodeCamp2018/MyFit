@@ -19,9 +19,10 @@ public class ProximitySensorService  implements SensorEventListener {
     private Sensor proximity;
     private static final int SENSOR_SENSITIVITY = 4;
     private static boolean isSensorPresent = true;
+    private static boolean Inrange;
     public static Context context;
     TrackingViewActivity trackingViewActivity;
-    private static boolean running = true;
+    private float distanceFromPhone;
 
     public ProximitySensorService(TrackingViewActivity trackingViewActivity)
     {
@@ -60,12 +61,14 @@ public class ProximitySensorService  implements SensorEventListener {
     //proximity sensor Listeners
     @Override
     public void onSensorChanged(SensorEvent event) {
-        if (running) {
-            if (event.sensor.getType() == Sensor.TYPE_PROXIMITY) {
-                Log.d("step_count = ", String.valueOf(event.values));
+        if (isSensorPresent) {
+            distanceFromPhone = event.values[0];
+            if (distanceFromPhone < proximity.getMaximumRange()) {
+                Inrange=true;
             }
         }
     }
+
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
@@ -79,7 +82,6 @@ public class ProximitySensorService  implements SensorEventListener {
 
                 } };
     public void stopListening() {
-        running = false;
         sensorManager.unregisterListener(sensorEventListener,proximity );
         Toast.makeText(context, "Sensor Stopped..", Toast.LENGTH_SHORT).show();
     }

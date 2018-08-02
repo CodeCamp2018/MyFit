@@ -1,6 +1,21 @@
 package com.uniks.myfit.controller;
 
+
+import com.uniks.myfit.TrackingViewActivity;
+import com.uniks.myfit.model.ProximitySensorService;
+
 public class PushupCtrl {
 
-    // proximity.unregisterListener();
+    ProximitySensorService Proximity;
+    TrackingViewActivity trackingViewActivity;
+
+    public PushupCtrl(TrackingViewActivity trackingViewActivity) {
+        this.trackingViewActivity=trackingViewActivity;
+        Proximity = new ProximitySensorService(trackingViewActivity);
+    }
+
+    public void proximityInit()
+    {
+        Proximity.initialize();
+    }
 }
