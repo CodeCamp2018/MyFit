@@ -27,7 +27,7 @@ import java.util.Date;
 public class TrackingViewActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final int REQUEST_FINE_LOCATION = 351;
-    private static final int MIN_NUMBER_OF_ELEMENTS = 10;
+    private static final int MIN_NUMBER_OF_ELEMENTS = 100;
     private SitUpsCtrl sitUpsCtrl;
     private PushupCtrl pushupCtrl;
     private StepCounterService stepCounterService;
@@ -143,7 +143,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 sitUpsCtrl.init();
 
                 // set headlines
-                // count
+                // calculateSitups();
                 TextView situpCountTitleUI = findViewById(R.id.title_1);
                 situpCountTitleUI.setText(getResources().getString(R.string.countHeadline));
 
