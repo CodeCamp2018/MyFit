@@ -188,7 +188,6 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 }
                 break;
         }
-
         return enough;
     }
 
@@ -198,9 +197,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
             case 0: // running
                 int stepsCounted = stepCounterService.getActualCount();
                 // TODO: do the measuring of distance from mapsController
-
                 // set view - show distance, steps
-
                 /* ------ example for calling ui-thread
                 final Bitmap bitmap =
                         processBitMap("image.png");
@@ -209,7 +206,6 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                         mImageView.setImageBitmap(bitmap);
                     }
                 });*/
-
                 // distance
                 TextView runningDistanceValueUI = findViewById(R.id.value_1);
 
@@ -234,21 +230,17 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 break;
             case 2: // pushups
                 // TODO: get the count of pushups from pushupController
-
                 // set view - show count
                 TextView pushupCountValueUI = findViewById(R.id.value_1);
                 // TODO: fill UI-Element
                 break;
             case 3: // situps
-
                 int situpCount = sitUpsCtrl.calculateSitups();
-
                 // set view - show count
                 TextView situpCountValueUI = findViewById(R.id.value_1);
                 situpCountValueUI.setText(String.valueOf(situpCount));
                 break;
         }
-
         // set time in UI
         TextView runningTimeValueUI = findViewById(R.id.value_3);
         runningTimeValueUI.setText(duration);
@@ -272,7 +264,6 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
             fragmentTransaction.commit();
         }
     }
-
     /**
      * onClickListener for CloseBtn
      */
@@ -282,8 +273,6 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
         activeStateMachine = false;
         sitUpsCtrl.stop();
         pushupCtrl.pstop();
-
-
         // TODO save data to database
         Date now = Calendar.getInstance().getTime();
         long exerciseDuration = now.getTime() - startExercisingTime.getTime(); // TODO: save to db
