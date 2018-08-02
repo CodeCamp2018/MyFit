@@ -12,6 +12,7 @@ import android.widget.ImageButton;
 
 import com.google.android.gms.maps.MapFragment;
 import com.uniks.myfit.controller.MapsController;
+import com.uniks.myfit.model.AccTriple;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -21,6 +22,7 @@ public class TrackingViewActivity extends AppCompatActivity {
     private String customTitle = "Exercise";
 
     private ArrayList<Location> locationQueue;
+    private ArrayList<AccTriple> accelerometerQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +42,7 @@ public class TrackingViewActivity extends AppCompatActivity {
         }
 
         locationQueue = new ArrayList<>();
+        accelerometerQueue = new ArrayList<>();
 
         // TODO: set title based on the exercise type (and set it from @string resource)
 
@@ -75,5 +78,9 @@ public class TrackingViewActivity extends AppCompatActivity {
 
     public void setLocationQueue(ArrayList<Location> locationQueue) {
         this.locationQueue = locationQueue;
+    }
+
+    public ArrayList<AccTriple> getAccelerometerQueue() {
+        return accelerometerQueue;
     }
 }
