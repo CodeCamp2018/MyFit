@@ -66,6 +66,7 @@ public class Accelerometer implements SensorEventListener {
                         // store it into a list to send it to controller
                         trackingViewActivity.getAccelerometerQueue().add(new AccTripleVec(accelerationX, accelerationY,accelerationZ));
                         displayAccValues();
+
                         TotACC = (float) Math.sqrt(accelerationX * accelerationX + accelerationY * accelerationY + accelerationZ * accelerationZ);
                         Log.d("onSensorChanged", System.currentTimeMillis() + "," + TotACC);
 
@@ -84,7 +85,7 @@ public class Accelerometer implements SensorEventListener {
     public void stopListening() {
         running = false;
         sensorManager.unregisterListener(sensorEventListener, accelerometer);
-        Toast.makeText(context, "Sensor Stopped..", Toast.LENGTH_SHORT).show();
+        Toast.makeText (context, "Sensor Stopped..", Toast.LENGTH_SHORT).show();
     }
 }
 
