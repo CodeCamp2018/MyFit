@@ -37,8 +37,6 @@ public class MainActivity extends AppCompatActivity {
     private static final float NS2S = 1.0f / 1000000000.0f;
     private final float[] deltaRotationVector = new float[4];
 
-    public ArrayList<Float> list = new ArrayList<>();
-
     Accelerometer accelerometerSensor;
     SitUpsCtrl accelerometerCtrl;
     Gyroscope gyroscopeSensor;
@@ -78,11 +76,6 @@ public class MainActivity extends AppCompatActivity {
 
         // controllers
         Log.d(TAG, "onCreate: initializing sensor services");
-        accelerometerSensor = new Accelerometer(this);
-        /* Accelerometer Control Class*/
-        accelerometerCtrl = new SitUpsCtrl(accelerometerSensor);
-        /* Initialize The Accelerometer Sensor*/
-        accelerometerSensor.init();
         /* Gyroscope Sensor Class*/
         gyroscopeSensor = new Gyroscope(this);
         /* Gyroscope Init*/

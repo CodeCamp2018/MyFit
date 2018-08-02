@@ -15,4 +15,11 @@
     <string name="pushups">Push-ups</string>
     <string name="running">Running</string>
     <string name="cycling">Cycling</string>
+
+    <string name="stepsHeadline">steps</string>
+    <string name="currentSpeedHeadline">current speed</string>
+    <string name="averageSpeedHeadline">average speed</string>
+    <string name="distanceHeadline">distance</string>
+    <string name="timeHeadline">spend time</string>
+    <string name="countHeadline">count</string>
 </resources>

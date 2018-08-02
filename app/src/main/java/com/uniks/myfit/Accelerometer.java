@@ -1,19 +1,11 @@
 package com.uniks.myfit;
 
-import android.app.Activity;
-import android.os.Bundle;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
-import android.view.TextureView;
-import android.widget.TextView;
-
-import java.lang.reflect.Array;
 
 public class Accelerometer implements SensorEventListener{
     private static final String TAG = "MainActivity";
@@ -21,20 +13,20 @@ public class Accelerometer implements SensorEventListener{
     Sensor accelerometer;
     public float[] gravity;
 
-    MainActivity mainActivity;
+    TrackingViewActivity trackingViewActivity;
     float accelerationX,accelerationY,accelerationZ;
     private final float[] accelerometerReading = new float[3];
 
     //TextView xValue, yValue, zValue;
 
-    public Accelerometer(MainActivity mainActivity) {
-        this.mainActivity = mainActivity;
+    public Accelerometer(TrackingViewActivity trackingViewActivity) {
+        this.trackingViewActivity = trackingViewActivity;
         gravity = new float[4];
     }
 
     public void init() {
         // Get an instance of the SensorManager
-        sensorManager = (SensorManager) mainActivity.getSystemService(Context.SENSOR_SERVICE);
+        sensorManager = (SensorManager) trackingViewActivity.getSystemService(Context.SENSOR_SERVICE);
         Log.d(TAG, "onCreate: Intializing Accelerometer Services");
 
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
@@ -61,10 +53,10 @@ public class Accelerometer implements SensorEventListener{
         accelerationX =  sensorEvent.values[0] -  gravity[0];
         accelerationY =  sensorEvent.values[1] -  gravity[1];
         accelerationZ =  sensorEvent.values[2] -  gravity[2];
-        // store it into a list
-        mainActivity.list.add(accelerationX);
-        mainActivity.list.add(accelerationY);
-        mainActivity.list.add(accelerationZ);
+        // store it into a accelerometerQueue
+        trackingViewActivity.getAccelerometerQueue().add(accelerationX);
+        trackingViewActivity.getAccelerometerQueue().add(accelerationY);
+        trackingViewActivity.getAccelerometerQueue().add(accelerationZ);
 
         if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             System.arraycopy(sensorEvent.values, 0, accelerometerReading,
