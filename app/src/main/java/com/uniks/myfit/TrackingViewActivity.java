@@ -127,26 +127,17 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 cyclingSpeedTitleUI.setText(getResources().getString(R.string.currentSpeedHeadline));
 
                 break;
-            case 2: // pushups
-
-                // TODO: init pushupCtrl here
+            case 2: // pushups Init
                 pushupCtrl.proximityInit();
-
                 // set headlines
                 // count
                 TextView pushupCountTitleUI = findViewById(R.id.title_1);
                 pushupCountTitleUI.setText(getResources().getString(R.string.countHeadline));
-
                 break;
-            case 3: // situps
-
+            case 3: // situps init
                 sitUpsCtrl.init();
-
-                // set headlines
-                // calculateSitups();
                 TextView situpCountTitleUI = findViewById(R.id.title_1);
                 situpCountTitleUI.setText(getResources().getString(R.string.countHeadline));
-
                 break;
         }
 
@@ -289,8 +280,8 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
     public void onClick(View v) {
         //end tracking
         activeStateMachine = false;
-
         sitUpsCtrl.stop();
+        pushupCtrl.pstop();
 
 
         // TODO save data to database
