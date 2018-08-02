@@ -36,7 +36,8 @@
         <activity
             android:name=".TrackingViewActivity"
             android:label="@string/title_activity_tracking_view"
-            android:theme="@style/AppTheme"></activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>
