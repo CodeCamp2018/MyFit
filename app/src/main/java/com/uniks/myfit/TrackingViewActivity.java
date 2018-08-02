@@ -1,20 +1,19 @@
 package com.uniks.myfit;
 
 import android.content.pm.PackageManager;
-import android.support.v4.app.FragmentTransaction;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.MapFragment;
 import com.uniks.myfit.controller.MapsController;
 import com.uniks.myfit.controller.SitUpsCtrl;
-import com.uniks.myfit.model.StepCounterService;
 import com.uniks.myfit.model.AccTriple;
+import com.uniks.myfit.model.StepCounterService;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -24,6 +23,7 @@ import java.util.Date;
 public class TrackingViewActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final int REQUEST_FINE_LOCATION = 351;
+    private static final int MIN_NUMBER_OF_ELEMENTS = 10;
     private SitUpsCtrl sitUpsCtrl;
     private StepCounterService stepCounterService;
     private MapsController mapsController;
@@ -82,10 +82,6 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
         ImageButton stopButton = (ImageButton) findViewById(R.id.stop_button);
         stopButton.setOnClickListener(this);
 
-
-        /* TODO: depending on which mode this activity is, start the sensors, than maybe wait a bit and than call the controllers and update UI, than wait again, than call controllers....
-         */
-
         // start sensors
         startSensors();
 
@@ -98,10 +94,8 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
             case 0: // running
 
                 stepCounterService.onStart();
-                mapsController.init();
 
                 // set headlines
-                includeMap();
                 // distance
                 TextView runningDistanceTitleUI = findViewById(R.id.title_1);
                 runningDistanceTitleUI.setText(getResources().getString(R.string.distanceHeadline));
@@ -112,10 +106,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 break;
             case 1: // cycling
 
-                mapsController.init();
-
                 // set headlines
-                includeMap();
                 // distance
                 TextView cyclingDistanceTitleUI = findViewById(R.id.title_1);
                 cyclingDistanceTitleUI.setText(getResources().getString(R.string.distanceHeadline));
@@ -136,7 +127,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 break;
             case 3: // situps
 
-                // TODO: put calling of accelerometer sensor to situp controller and init the controller here
+                sitUpsCtrl.init();
 
                 // set headlines
                 // count
@@ -152,6 +143,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void startStateMachine() {
+        // TODO: start processing-Thread who also updates UI-elements
         int waitStateCounter = 0;
         Date waitStartTime = Calendar.getInstance().getTime();
         while (activeStateMachine) {
@@ -188,7 +180,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
         switch (exerciseMode) {
             case 0: // running
                 int stepsCounted = stepCounterService.getActualCount();
-                // TODO: do the measuring of distance
+                // TODO: do the measuring of distance from mapsController
 
                 // set view - show distance, steps
                 // distance
@@ -219,11 +211,12 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 // TODO: fill UI-Element
                 break;
             case 3: // situps
-                // TODO: get the count of situp from situpController
+
+                int situpCount = sitUpsCtrl.calculateSitups();
 
                 // set view - show count
                 TextView situpCountValueUI = findViewById(R.id.value_1);
-                // TODO: fill UI-Element
+                situpCountValueUI.setText(String.valueOf(situpCount));
                 break;
         }
 
@@ -232,21 +225,12 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
         runningTimeValueUI.setText(duration);
     }
 
-    private void includeMap() {
-        //Insert map in our view
-        if (exerciseMode <= 1) {
-            mapsController = new MapsController(this);
-            FragmentTransaction fragmentTransaction =
-                    getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.add(R.id.map_container, mapsController.mapFragment);
-            fragmentTransaction.commit();
-
-        }
-    }
-
-
     public ArrayList<Location> getLocationQueue() {
         return locationQueue;
+    }
+
+    public ArrayList<AccTriple> getAccelerometerQueue() {
+        return accelerometerQueue;
     }
 
     /**
@@ -308,9 +292,5 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
             }
 
         }
-    }
-
-    public ArrayList<AccTriple> getAccelerometerQueue() {
-        return accelerometerQueue;
     }
 }
