@@ -23,4 +23,9 @@ public class PushupCtrl {
     {
 
     }
+
+    public void pstop()
+    {
+        Proximity .stopListening();
+    }
 }

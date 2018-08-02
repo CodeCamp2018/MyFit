@@ -131,7 +131,6 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 break;
             case 2: // pushups
 
-                // TODO: init pushupCtrl here
                 pushupCtrl.proximityInit();
 
                 // set headlines
@@ -334,12 +333,13 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 mapsController.stopTracking();
                 break;
             case 2: // pushups
+                pushupCtrl.pstop();
                 break;
             case 3: // situps
                 sitUpsCtrl.stop();
                 break;
         }
-        
+
         // TODO save data to database
         Date now = Calendar.getInstance().getTime();
         long exerciseDuration = now.getTime() - startExercisingTime.getTime(); // TODO: save to db
