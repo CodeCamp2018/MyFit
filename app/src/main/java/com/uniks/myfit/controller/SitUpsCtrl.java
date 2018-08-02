@@ -78,4 +78,8 @@ public class SitUpsCtrl {
         return situpCount;
     }
 
+    public void stop()
+    {
+        accelerometerSensor.stopListening();
+    }
 }

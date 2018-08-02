@@ -33,7 +33,7 @@ public class Accelerometer implements SensorEventListener {
     public void init() {
         running = true;
         // Get an instance of the SensorManager
-        sensorManager = (SensorManager) trackingViewActivity.getSystemService(Context.SENSOR_SERVICE);
+        sensorManager = (SensorManager) trackingViewActivity.getSystemService(context.SENSOR_SERVICE);
         Log.d(TAG, "onCreate: Initializing Accelerometer Services");
 
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);

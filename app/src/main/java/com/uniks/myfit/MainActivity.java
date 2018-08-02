@@ -72,19 +72,13 @@ public class MainActivity extends AppCompatActivity {
             db.userDao().insert(newUser);
             users = db.userDao().getAll();
         }
-
         user = users.get(0); // for this small project there is only one user
-
         // controllers
         Log.d(TAG, "onCreate: initializing sensor services");
         /* Gyroscope Sensor Class*/
         gyroscopeSensor = new Gyroscope(this);
         /* Gyroscope Init*/
         gyroscopeSensor.init();
-        proximity = new ProximitySensorService(this);
-        proximity.onStart();
-        /*  End Author: Arundhati*/
-
         // view
         setContentView(R.layout.activity_main);
 
@@ -121,15 +115,7 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d(TAG, "onCreate: registered Accelerometer Listener");
 
-       /* SensorEventListener proximitySensorListener=new SensorEventListener()
-        {
-            @Override
-            public void onSensorChanged(SensorEvent sensorEvent) {
-            }
-            @Override
-            public void onAccuracyChanged(Sensor sensor, int i) {
-            }
-        };*/
+
     }
 
     private ArrayList<SportExercise> getDataSet() {
@@ -158,8 +144,6 @@ public class MainActivity extends AppCompatActivity {
             db.sportExerciseDao().updateSportExercises(exercise);
         }
         db.close();
-        // TODO: close the sensors!
-        accelerometerSensor.stopListening();
         super.onDestroy();
     }
 

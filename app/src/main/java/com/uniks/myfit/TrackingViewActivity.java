@@ -241,6 +241,9 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
         //end tracking
         activeStateMachine = false;
 
+        sitUpsCtrl.stop();
+
+
         // TODO save data to database
         Date now = Calendar.getInstance().getTime();
         long exerciseDuration = now.getTime() - startExercisingTime.getTime(); // TODO: save to db
