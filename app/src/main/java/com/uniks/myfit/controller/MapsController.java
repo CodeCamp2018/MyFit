@@ -42,9 +42,8 @@ public class MapsController implements OnMapReadyCallback, LocationListener {
     private TrackingViewActivity trackingViewActivity;
 
     private boolean firstLocation = true;
-    private PolylineOptions polylineOptions;
     private Polyline polyline;
-    private List linePoints = new ArrayList();
+    private ArrayList<LatLng> linePoints = new ArrayList<>();
 
     public MapsController(TrackingViewActivity trackingViewActivity) {
         this.trackingViewActivity = trackingViewActivity;
@@ -62,17 +61,16 @@ public class MapsController implements OnMapReadyCallback, LocationListener {
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        //intialing the location manager
+        //intialize the location manager
         locationManager = (LocationManager) trackingViewActivity.getSystemService(LOCATION_SERVICE);
-        //asking for the marker
-        // ask user for the location after certian time & distance
-        if (ActivityCompat.checkSelfPermission(trackingViewActivity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(trackingViewActivity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(trackingViewActivity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, trackingViewActivity.REQUEST_FINE_LOCATION );
-            // TODO:
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+
+        // ask for location permissions if not granted already
+        if (ActivityCompat.checkSelfPermission(trackingViewActivity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(trackingViewActivity,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    trackingViewActivity.REQUEST_FINE_LOCATION );
+
             return;
         } else {
             startLocation();
@@ -90,20 +88,21 @@ public class MapsController implements OnMapReadyCallback, LocationListener {
     @Override
     public void onLocationChanged(Location location) {
         //get the latitude and longitude
-        double latitude = location.getLatitude();
-        double longitude = location.getLongitude();
-        LatLng userLocation = new LatLng(latitude, longitude);
+        LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
 
         if (firstLocation) {
+            // mark the starting point
             mMap.addMarker(new MarkerOptions().position(userLocation).title("Your Starting Point"));
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 10.2f));
-            polylineOptions = new PolylineOptions().add(userLocation);
-            polyline = mMap.addPolyline(polylineOptions);
+
+            polyline = mMap.addPolyline(new PolylineOptions().add(userLocation).color(0xff0564ff));
 
             linePoints.add(0, userLocation);
 
             firstLocation = false;
         } else {
+            // track path
+
             linePoints.add(userLocation);
 
             polyline.setPoints(linePoints);
@@ -125,6 +124,45 @@ public class MapsController implements OnMapReadyCallback, LocationListener {
     @Override
     public void onProviderDisabled(String provider) {
 
+    }
+
+    public List getPath() {
+        return linePoints;
+    }
+
+    public void stopTracking() {
+        locationManager.removeUpdates(this);
+    }
+
+    private double twoPointDistance(LatLng pointOne, LatLng pointTwo) {
+        double R = 6371000f; // Radius of the earth in m
+        double dLat = (pointOne.latitude - pointTwo.latitude) * Math.PI / 180f;
+        double dLon = (pointOne.longitude - pointTwo.longitude) * Math.PI / 180f;
+        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(pointOne.latitude * Math.PI / 180f) * Math.cos(pointTwo.latitude * Math.PI / 180f) *
+                        Math.sin(dLon/2) * Math.sin(dLon/2);
+        double c = 2f * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        double d = R * c;
+        return d;
+    }
+
+    public double getTotalDistance() {
+
+        double totalDistance = 0;
+        LatLng prevElement = new LatLng(0, 0);
+
+        for (LatLng currElement: linePoints) {
+            if (prevElement.longitude == 0 && prevElement.latitude == 0) { // NOT for Santa
+                prevElement = currElement;
+                continue;
+            }
+
+            totalDistance += twoPointDistance(currElement, prevElement);
+
+            prevElement = currElement;
+        }
+
+        return totalDistance;
     }
 }
 

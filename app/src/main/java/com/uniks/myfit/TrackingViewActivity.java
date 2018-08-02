@@ -47,8 +47,6 @@ public class TrackingViewActivity extends AppCompatActivity {
         locationQueue = new ArrayList<>();
         accelerometerQueue = new ArrayList<>();
 
-        // TODO: set title based on the exercise type (and set it from @string resource)
-
         this.setTitle(customTitle);
 
         setContentView(R.layout.activity_tracking_view);
@@ -59,9 +57,7 @@ public class TrackingViewActivity extends AppCompatActivity {
         ImageButton stopButton = (ImageButton) findViewById(R.id.stop_button);
         stopButton.setOnClickListener(stopListener);
 
-        //TODO: decide map creation based on chosen exercise
         //Insert map in our view
-
         if (exerciseMode <= 1) {
             mapsController = new MapsController(this);
             FragmentTransaction fragmentTransaction =
