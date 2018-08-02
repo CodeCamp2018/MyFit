@@ -30,6 +30,7 @@ public class SitUpsCtrl {
         situpCount = 0;
         actualState = 0;
         active = true;
+
         accSensor.init();
     }
 
