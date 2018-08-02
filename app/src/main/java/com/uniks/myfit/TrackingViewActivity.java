@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.uniks.myfit.controller.MapsController;
 import com.uniks.myfit.controller.SitUpsCtrl;
-import com.uniks.myfit.model.AccTriple;
+import com.uniks.myfit.model.AccTripleVec;
 import com.uniks.myfit.model.StepCounterService;
 
 import java.text.MessageFormat;
@@ -35,7 +35,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
     private String customTitle = "Exercise";
 
     private ArrayList<Location> locationQueue;
-    private ArrayList<AccTriple> accelerometerQueue;
+    private ArrayList<AccTripleVec> accelerometerQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -252,7 +252,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
         return locationQueue;
     }
 
-    public ArrayList<AccTriple> getAccelerometerQueue() {
+    public ArrayList<AccTripleVec> getAccelerometerQueue() {
         return accelerometerQueue;
     }
 
