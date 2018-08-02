@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.MapFragment;
 import com.uniks.myfit.controller.MapsController;
-import com.uniks.myfit.controller.PushupCtrl;
+
 import com.uniks.myfit.controller.SitUpsCtrl;
 import com.uniks.myfit.database.AppDatabase;
 import com.uniks.myfit.model.AccTripleVec;
@@ -27,12 +27,10 @@ import java.util.Date;
 public class TrackingViewActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final int REQUEST_FINE_LOCATION = 351;
-    private static final int MIN_NUMBER_OF_ELEMENTS = 100;
+    private static final int MIN_NUMBER_OF_ELEMENTS = 10;
     private SitUpsCtrl sitUpsCtrl;
-    private PushupCtrl pushupCtrl;
     private StepCounterService stepCounterService;
     private MapsController mapsController;
-
     private int exerciseMode;
     private boolean activeStateMachine;
     private int actualState;
@@ -128,7 +126,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
 
                 break;
             case 2: // pushups Init
-                pushupCtrl.proximityInit();
+                //pushupCtrl.proximityInit();
                 // set headlines
                 // count
                 TextView pushupCountTitleUI = findViewById(R.id.title_1);
@@ -272,7 +270,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
         //end tracking
         activeStateMachine = false;
         sitUpsCtrl.stop();
-        pushupCtrl.pstop();
+        //pushupCtrl.pstop();
         // TODO save data to database
         Date now = Calendar.getInstance().getTime();
         long exerciseDuration = now.getTime() - startExercisingTime.getTime(); // TODO: save to db
