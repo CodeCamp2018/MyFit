@@ -37,6 +37,9 @@ import static android.content.Context.LOCATION_SERVICE;
 
 public class MapsController implements OnMapReadyCallback, LocationListener {
     public SupportMapFragment mapFragment;
+
+    public Location location;
+
     private GoogleMap mMap;
     //class type-which manages the location
     private LocationManager locationManager;
@@ -74,9 +77,9 @@ public class MapsController implements OnMapReadyCallback, LocationListener {
                     trackingViewActivity.REQUEST_FINE_LOCATION );
 
             return;
-        } else {
-            startLocation();
         }
+
+        startLocation();
 
     }
 
@@ -89,6 +92,9 @@ public class MapsController implements OnMapReadyCallback, LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
+
+        this.location = location;
+
         //get the latitude and longitude
         LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
 
@@ -126,6 +132,14 @@ public class MapsController implements OnMapReadyCallback, LocationListener {
     @Override
     public void onProviderDisabled(String provider) {
 
+    }
+
+    public float getSpeed() {
+        if (location == null) {
+            return 0;
+        }
+
+        return location.getSpeed();
     }
 
     public List getPath() {

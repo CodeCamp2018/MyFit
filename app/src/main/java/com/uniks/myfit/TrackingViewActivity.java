@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.MapFragment;
 import com.uniks.myfit.controller.MapsController;
+import com.uniks.myfit.controller.PushupCtrl;
 import com.uniks.myfit.controller.SitUpsCtrl;
 import com.uniks.myfit.database.AppDatabase;
 import com.uniks.myfit.model.AccTripleVec;
@@ -30,6 +31,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
     private static final int MIN_NUMBER_OF_ELEMENTS = 3;
     private static final String TRACKING_LOG = "TrackingViewActivity: ";
     private SitUpsCtrl sitUpsCtrl;
+    private PushupCtrl pushupCtrl;
     private StepCounterService stepCounterService;
     private MapsController mapsController;
 
@@ -130,6 +132,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
             case 2: // pushups
 
                 // TODO: init pushupCtrl here
+                pushupCtrl.proximityInit();
 
                 // set headlines
                 // count
