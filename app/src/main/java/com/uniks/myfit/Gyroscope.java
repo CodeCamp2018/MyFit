@@ -9,6 +9,8 @@ import static android.util.Half.EPSILON;
 import static java.lang.Math.sqrt;
 import android.app.Activity;
 import android.os.Bundle;
+import android.widget.Toast;
+
 public class Gyroscope implements SensorEventListener {
     private SensorManager sensorManager;
     private Sensor gyro;
@@ -66,4 +68,8 @@ public class Gyroscope implements SensorEventListener {
 
 
     }
+
+
+
+
 }
