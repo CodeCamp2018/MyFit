@@ -43,6 +43,7 @@ public class MapsController implements OnMapReadyCallback, LocationListener {
 
     private boolean firstLocation = true;
     private Polyline polyline;
+
     private ArrayList<LatLng> linePoints = new ArrayList<>();
 
     public MapsController(TrackingViewActivity trackingViewActivity) {
@@ -163,6 +164,10 @@ public class MapsController implements OnMapReadyCallback, LocationListener {
         }
 
         return totalDistance;
+    }
+
+    public ArrayList<LatLng> getLinePoints() {
+        return linePoints;
     }
 }
 
