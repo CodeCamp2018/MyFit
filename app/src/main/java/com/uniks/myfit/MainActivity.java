@@ -166,6 +166,7 @@ public class MainActivity extends AppCompatActivity {
         }
         db.close();
         // TODO: close the sensors!
+        accelerometerSensor.stopListening();
         super.onDestroy();
     }
 

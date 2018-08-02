@@ -9,15 +9,22 @@ import android.hardware.SensorManager;
 import java.util.List;
 
 public class SitUpsCtrl  {
-
+    int idxCount = 0; // index counter
+    double previousacc = 0; // start Timestamp
+    double currentacc = 0; // current timestamp for iteration
     Accelerometer accelerometerSensor;
 
 
     public SitUpsCtrl(Accelerometer accelerometerSensor) {
-        this.accelerometerSensor=accelerometerSensor;
+        this.accelerometerSensor = accelerometerSensor;
+        /*do {
+
+        }while ( != 0.0);
+
+    }*/
+
 
     }
-
 
 
 }
