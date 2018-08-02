@@ -1,5 +1,6 @@
 package com.uniks.myfit;
 
+import android.arch.persistence.room.Room;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -10,8 +11,10 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.MapFragment;
 import com.uniks.myfit.controller.MapsController;
 import com.uniks.myfit.controller.SitUpsCtrl;
+import com.uniks.myfit.database.AppDatabase;
 import com.uniks.myfit.model.AccTriple;
 import com.uniks.myfit.model.StepCounterService;
 
@@ -37,9 +40,14 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
     private ArrayList<Location> locationQueue;
     private ArrayList<AccTriple> accelerometerQueue;
 
+    public AppDatabase db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, MainActivity.databaseName).allowMainThreadQueries().fallbackToDestructiveMigration().build();
+
         sitUpsCtrl = new SitUpsCtrl(this);
         stepCounterService = new StepCounterService(this);
         mapsController = new MapsController(this);
@@ -185,6 +193,8 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 // set view - show distance, steps
                 // distance
                 TextView runningDistanceValueUI = findViewById(R.id.value_1);
+
+                runningDistanceValueUI.setText(String.valueOf(mapsController.getTotalDistance()));
                 // TODO: fill UI-Element here
                 //steps
                 TextView stepCounterValueUI = findViewById(R.id.value_2);

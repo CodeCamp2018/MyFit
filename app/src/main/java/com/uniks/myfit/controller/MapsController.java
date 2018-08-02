@@ -148,6 +148,10 @@ public class MapsController implements OnMapReadyCallback, LocationListener {
 
     public double getTotalDistance() {
 
+        if (linePoints.size() < 2) {
+            return 0;
+        }
+
         double totalDistance = 0;
         LatLng prevElement = new LatLng(0, 0);
 
