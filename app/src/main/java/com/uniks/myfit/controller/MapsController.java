@@ -14,6 +14,7 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -184,6 +185,7 @@ public class MapsController implements OnMapReadyCallback, LocationListener {
 
             prevElement = currElement;
         }
+        Log.e("MapsController: ", "called getTotalDistance! Which is: " + totalDistance);
 
         return totalDistance;
     }

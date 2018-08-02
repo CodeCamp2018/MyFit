@@ -68,8 +68,9 @@ public class Accelerometer implements SensorEventListener {
                         displayAccValues();
 
                         TotACC = (float) Math.sqrt(accelerationX * accelerationX + accelerationY * accelerationY + accelerationZ * accelerationZ);
-                        Log.d("onSensorChanged", System.currentTimeMillis() + "," + TotACC);
-
+                        if(TotACC>0.5) {
+                            Log.d("Device motion detected!", System.currentTimeMillis() + "," + TotACC);
+                        }
                     }
                 }
 
