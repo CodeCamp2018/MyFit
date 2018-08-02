@@ -49,11 +49,6 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView cardRecyclerView;
     private RecyclerView.Adapter cardsAdapter;
     private RecyclerView.LayoutManager cardsLayoutManager;
-
-    private float timestamp;
-    private Sensor mGyro;
-    private SensorManager sensorManager;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,20 +99,15 @@ public class MainActivity extends AppCompatActivity {
 
         FloatingActionButton startSitups = (FloatingActionButton) findViewById(R.id.add_exercise_situps);
         setStartListener(3, startSitups);
-
         cardRecyclerView = findViewById(R.id.cards_recycler_view);
         cardRecyclerView.setHasFixedSize(true);
         cardsLayoutManager = new LinearLayoutManager(this);
         cardRecyclerView.setLayoutManager(cardsLayoutManager);
         cardsAdapter = new CardsRecyclerViewAdapter(getDataSet());
         cardRecyclerView.setAdapter(cardsAdapter);
-
-
         Log.d(TAG, "onCreate: registered Accelerometer Listener");
 
-
     }
-
     private ArrayList<SportExercise> getDataSet() {
 
         List<SportExercise> allUsers = db.sportExerciseDao().getAllFromUser(user.getUid());
@@ -144,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
             db.sportExerciseDao().updateSportExercises(exercise);
         }
         db.close();
+        accelerometerSensor=null;
         super.onDestroy();
     }
 
