@@ -1,6 +1,7 @@
 package com.uniks.myfit;
 
-import android.app.FragmentTransaction;
+import android.content.pm.PackageManager;
+import android.support.v4.app.FragmentTransaction;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
