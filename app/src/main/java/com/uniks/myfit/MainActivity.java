@@ -148,6 +148,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setStartListener(int modeCode, FloatingActionButton startButton) {
-        startButton.setOnClickListener(new StartButtonHelper(modeCode, this));
+        startButton.setOnClickListener(new StartButtonHelper(modeCode , this));
     }
 }
