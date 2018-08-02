@@ -18,4 +18,9 @@ public class PushupCtrl {
     {
         Proximity.initialize();
     }
+
+    public  void calculatepushUps()
+    {
+
+    }
 }

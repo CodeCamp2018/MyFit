@@ -58,7 +58,7 @@ public class ProximitySensorService  implements SensorEventListener {
             sensorManager.unregisterListener(this);
         }
     }
-    //proximity sensor Listeners
+
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (isSensorPresent) {
@@ -68,8 +68,6 @@ public class ProximitySensorService  implements SensorEventListener {
             }
         }
     }
-
-
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
