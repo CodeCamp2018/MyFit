@@ -1,6 +1,7 @@
 package com.uniks.myfit.model;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -18,8 +19,8 @@ public class StepCounterService implements SensorEventListener {
     private SensorManager sensorManager;
     private Sensor sensorCount;
     TrackingViewActivity trackingViewActivity;
-    private int startStepCounter = 0;
-    private int endStepCounter = 0;
+    private float startStepCounter = 0;
+    private float endStepCounter = 0;
     private boolean active;
     private int actualCount;
 
@@ -31,37 +32,39 @@ public class StepCounterService implements SensorEventListener {
     {
         active = true;
 
-        /*
-        * TODO: check first, if there is the sensor on the phone
-        * PackageManager pm = getPackageManager();
-        * if (pm.hasSystemFeature(PackageManager.FEATURE_SENSOR_STEP_COUNTER)) {
-        * // the awesome stuff here
-        * }
-        * */
+          PackageManager pm = trackingViewActivity.getPackageManager();
+          if (pm.hasSystemFeature(PackageManager.FEATURE_SENSOR_STEP_COUNTER)) {
+              //If it's available we can retrieve the value using following code
+              sensorManager = (SensorManager) trackingViewActivity.getSystemService(Context.SENSOR_SERVICE);
 
-        //If it's available we can retrieve the value using following code
-        sensorManager = (SensorManager) trackingViewActivity.getSystemService(Context.SENSOR_SERVICE);
+              sensorCount = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
 
-        sensorCount = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+              if (sensorCount != null) {
+                  sensorManager.registerListener(this, sensorCount, SensorManager.SENSOR_DELAY_UI);
+              } else {
+                  //Log.e(TAG, "No step counter present: ", );
+              }
 
-        if (sensorCount != null) {
-            sensorManager.registerListener(this, sensorCount, SensorManager.SENSOR_DELAY_UI);
-        } else {
-            //Log.e(TAG, "No step counter present: ", );
-        }
+              //Check if the stepCounter is available first.
+              List<Sensor> gravSensors = sensorManager.getSensorList(Sensor.TYPE_ALL);
 
-        //Check if the stepCounter is available first.
-        List<Sensor> gravSensors = sensorManager.getSensorList(Sensor.TYPE_ALL);
+              for (Sensor each : gravSensors) {
+                  //check for sensor named step counter in the list.
+              }
 
-        for (Sensor each : gravSensors) {
-            //check for sensor named step counter in the list.
-            Log.d("Sesnor_list", each.getName());
-        }
+
+          } else {
+              Log.e("StepCounterService", "does not have step_counter_sensor");
+              // TODO: inform the user (?)
+          }
+
+
 
         //return START_STICKY;
     }
 
     public void onStop() {
+        sensorManager.unregisterListener(this, sensorCount);
         active = false;
     }
 
@@ -79,14 +82,14 @@ public class StepCounterService implements SensorEventListener {
 
         if (event.sensor.getType() == sensorCount.TYPE_STEP_COUNTER) {
             //tolerance can be put here after testing walking
-            Log.d("step_count = ", String.valueOf(sensorCount.getFifoMaxEventCount()));
             if (active) {
                 if (startStepCounter == 0) {
-                    startStepCounter = sensorCount.getFifoMaxEventCount();
+                    startStepCounter = event.values[0];
                 }
-                endStepCounter = sensorCount.getFifoMaxEventCount();
 
-                actualCount = endStepCounter - startStepCounter;
+                endStepCounter = event.values[0];
+
+                actualCount = (int) (endStepCounter - startStepCounter);
             }
 
         }

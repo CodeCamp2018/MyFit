@@ -2,18 +2,21 @@ package com.uniks.myfit;
 
 import android.arch.persistence.room.Room;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.TypedValue;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.MapFragment;
 import com.uniks.myfit.controller.MapsController;
-
+import com.uniks.myfit.controller.PushupCtrl;
 import com.uniks.myfit.controller.SitUpsCtrl;
 import com.uniks.myfit.database.AppDatabase;
 import com.uniks.myfit.model.AccTripleVec;
@@ -27,7 +30,8 @@ import java.util.Date;
 public class TrackingViewActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final int REQUEST_FINE_LOCATION = 351;
-    private static final int MIN_NUMBER_OF_ELEMENTS = 10;
+    private static final int MIN_NUMBER_OF_ELEMENTS = 5;
+    private static final String TRACKING_LOG = "TrackingViewActivity: ";
     private SitUpsCtrl sitUpsCtrl;
     private StepCounterService stepCounterService;
     private MapsController mapsController;
@@ -50,7 +54,6 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
 
         sitUpsCtrl = new SitUpsCtrl(this);
         stepCounterService = new StepCounterService(this);
-        mapsController = new MapsController(this);
 
         activeStateMachine = true;
         actualState = 0;
@@ -262,15 +265,38 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
             fragmentTransaction.commit();
         }
     }
+
     /**
      * onClickListener for CloseBtn
      */
     @Override
     public void onClick(View v) {
+
+        stopBtnClicked();
+    }
+
+    private void stopBtnClicked() {
         //end tracking
         activeStateMachine = false;
         sitUpsCtrl.stop();
         //pushupCtrl.pstop();
+
+        switch (exerciseMode) {
+            case 0: // running
+                stepCounterService.onStop();
+                mapsController.stopTracking();
+                break;
+            case 1: // cycling
+                mapsController.stopTracking();
+                break;
+            case 2: // pushups
+                pushupCtrl.pstop();
+                break;
+            case 3: // situps
+                sitUpsCtrl.stop();
+                break;
+        }
+
         // TODO save data to database
         Date now = Calendar.getInstance().getTime();
         long exerciseDuration = now.getTime() - startExercisingTime.getTime(); // TODO: save to db

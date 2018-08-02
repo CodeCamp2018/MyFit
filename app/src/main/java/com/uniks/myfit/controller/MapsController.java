@@ -14,6 +14,7 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -40,6 +41,7 @@ public class MapsController implements OnMapReadyCallback, LocationListener {
     public Location location;
 
     private GoogleMap mMap;
+    private int padding;
     //class type-which manages the location
     private LocationManager locationManager;
     private TrackingViewActivity trackingViewActivity;
@@ -49,11 +51,12 @@ public class MapsController implements OnMapReadyCallback, LocationListener {
 
     private ArrayList<LatLng> linePoints = new ArrayList<>();
 
-    public MapsController(TrackingViewActivity trackingViewActivity) {
+    public MapsController(TrackingViewActivity trackingViewActivity, int padding) {
         this.trackingViewActivity = trackingViewActivity;
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        this.padding = padding;
 
-        mapFragment = (SupportMapFragment) SupportMapFragment.newInstance(); // TODO
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        mapFragment = (SupportMapFragment) SupportMapFragment.newInstance();
         mapFragment.getMapAsync(this);
     }
 
@@ -64,6 +67,8 @@ public class MapsController implements OnMapReadyCallback, LocationListener {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
+        mMap.setPadding(0,padding,0,0);
 
         //intialize the location manager
         locationManager = (LocationManager) trackingViewActivity.getSystemService(LOCATION_SERVICE);
@@ -180,6 +185,7 @@ public class MapsController implements OnMapReadyCallback, LocationListener {
 
             prevElement = currElement;
         }
+        Log.e("MapsController: ", "called getTotalDistance! Which is: " + totalDistance);
 
         return totalDistance;
     }
