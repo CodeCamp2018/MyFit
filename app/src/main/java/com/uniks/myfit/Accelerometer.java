@@ -8,7 +8,7 @@ import android.hardware.SensorManager;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.uniks.myfit.model.AccTriple;
+import com.uniks.myfit.model.AccTripleVec;
 
 public class Accelerometer implements SensorEventListener {
     private static final String TAG = "MainActivity";
@@ -64,7 +64,7 @@ public class Accelerometer implements SensorEventListener {
                         accelerationY = sensorEvent.values[1] - gravity[1];
                         accelerationZ = sensorEvent.values[2] - gravity[2];
                         // store it into a list to send it to controller
-                        trackingViewActivity.getAccelerometerQueue().add(new AccTriple(accelerationX, accelerationY,accelerationZ));
+                        trackingViewActivity.getAccelerometerQueue().add(new AccTripleVec(accelerationX, accelerationY,accelerationZ));
                         displayAccValues();
                         TotACC = (float) Math.sqrt(accelerationX * accelerationX + accelerationY * accelerationY + accelerationZ * accelerationZ);
                         Log.d("onSensorChanged", System.currentTimeMillis() + "," + TotACC);
