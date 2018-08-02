@@ -2,11 +2,13 @@ package com.uniks.myfit;
 
 import android.arch.persistence.room.Room;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.TypedValue;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -55,7 +57,6 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
 
         sitUpsCtrl = new SitUpsCtrl(this);
         stepCounterService = new StepCounterService(this);
-        mapsController = new MapsController(this);
 
         activeStateMachine = true;
         actualState = 0;
@@ -301,7 +302,9 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
     private void includeMap() {
         //Insert map in our view
         if (exerciseMode <= 1) {
-            mapsController = new MapsController(this);
+            int padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 96, getResources().getDisplayMetrics());
+            mapsController = new MapsController(this, padding);
+
             FragmentTransaction fragmentTransaction =
                     getSupportFragmentManager().beginTransaction();
             fragmentTransaction.add(R.id.map_container, mapsController.mapFragment);
@@ -394,6 +397,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     mapsController.startLocation();
+
                 } else {
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
@@ -403,6 +407,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
 
         }
     }
+
 
     @Override
     protected void onDestroy() {
