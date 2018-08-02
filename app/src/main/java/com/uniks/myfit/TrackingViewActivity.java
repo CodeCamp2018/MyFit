@@ -15,7 +15,7 @@ import com.google.android.gms.maps.MapFragment;
 import com.uniks.myfit.controller.MapsController;
 import com.uniks.myfit.controller.SitUpsCtrl;
 import com.uniks.myfit.database.AppDatabase;
-import com.uniks.myfit.model.AccTriple;
+import com.uniks.myfit.model.AccTripleVec;
 import com.uniks.myfit.model.StepCounterService;
 
 import java.text.MessageFormat;
@@ -38,7 +38,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
     private String customTitle = "Exercise";
 
     private ArrayList<Location> locationQueue;
-    private ArrayList<AccTriple> accelerometerQueue;
+    private ArrayList<AccTripleVec> accelerometerQueue;
 
     public AppDatabase db;
 
@@ -104,6 +104,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 stepCounterService.onStart();
 
                 // set headlines
+                includeMap();
                 // distance
                 TextView runningDistanceTitleUI = findViewById(R.id.title_1);
                 runningDistanceTitleUI.setText(getResources().getString(R.string.distanceHeadline));
@@ -115,6 +116,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
             case 1: // cycling
 
                 // set headlines
+                includeMap();
                 // distance
                 TextView cyclingDistanceTitleUI = findViewById(R.id.title_1);
                 cyclingDistanceTitleUI.setText(getResources().getString(R.string.distanceHeadline));
@@ -151,36 +153,49 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void startStateMachine() {
-        // TODO: start processing-Thread who also updates UI-elements
-        int waitStateCounter = 0;
-        Date waitStartTime = Calendar.getInstance().getTime();
-        while (activeStateMachine) {
-            switch (actualState) {
-                case 0: // wait-state
-                    // set the time the machine entered wait-state the first time
-                    if (waitStateCounter == 0) {
-                        waitStartTime = Calendar.getInstance().getTime();
+        // start processing-Thread who also updates UI-elements
+        new Thread(new Runnable() {
+            public void run() {
+
+                while (activeStateMachine) {
+                    switch (actualState) {
+                        case 0: // wait-state
+                            if (isThereEnoughData()) {
+                                actualState = 1;
+                            }
+                            break;
+                        case 1: // processing-state
+
+                            processSensorData();
+
+                            actualState = 0;
+                            break;
                     }
-                    Date now = Calendar.getInstance().getTime();
-                    long timePassed = now.getTime() - waitStartTime.getTime();
-                    // did 3 sec or more pass, change to processing-state
-                    if (timePassed > 3000) {
-                        actualState = 1;
-                    } else {
-                        waitStateCounter++;
-                    }
-
-                    break;
-                case 1: // processing-state
-                    waitStateCounter = 0;
-
-                    processSensorData();
-
-                    actualState = 0;
-                    break;
+                }
             }
+        }).start();
+
+    }
+
+    private boolean isThereEnoughData() {
+        boolean enough = false;
+        switch (exerciseMode) {
+            case 0: case 1:// running and cycling
+                if (mapsController.getLinePoints().size() >= MIN_NUMBER_OF_ELEMENTS) {
+                    enough = true;
+                }
+                break;
+            case 2: // pushups
+
+                break;
+            case 3: // situps
+                if (getAccelerometerQueue().size() >= MIN_NUMBER_OF_ELEMENTS) {
+                    enough = true;
+                }
+                break;
         }
 
+        return enough;
     }
 
     private void processSensorData() {
@@ -191,6 +206,16 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 // TODO: do the measuring of distance from mapsController
 
                 // set view - show distance, steps
+
+                /* ------ example for calling ui-thread
+                final Bitmap bitmap =
+                        processBitMap("image.png");
+                mImageView.post(new Runnable() {
+                    public void run() {
+                        mImageView.setImageBitmap(bitmap);
+                    }
+                });*/
+
                 // distance
                 TextView runningDistanceValueUI = findViewById(R.id.value_1);
 
@@ -239,8 +264,19 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
         return locationQueue;
     }
 
-    public ArrayList<AccTriple> getAccelerometerQueue() {
+    public ArrayList<AccTripleVec> getAccelerometerQueue() {
         return accelerometerQueue;
+    }
+
+    private void includeMap() {
+        //Insert map in our view
+        if (exerciseMode <= 1) {
+            mapsController = new MapsController(this);
+            FragmentTransaction fragmentTransaction =
+                    getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.add(R.id.map_container, mapsController.mapFragment);
+            fragmentTransaction.commit();
+        }
     }
 
     /**
@@ -250,6 +286,9 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
     public void onClick(View v) {
         //end tracking
         activeStateMachine = false;
+
+        sitUpsCtrl.stop();
+
 
         // TODO save data to database
         Date now = Calendar.getInstance().getTime();
@@ -270,19 +309,6 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
         long minutes = duration / minutesInMilli;
         long seconds = duration / secondsInMilli;
 
-        /*
-        * long elapsedHours = different / hoursInMilli;
-    different = different % hoursInMilli;
-
-    long elapsedMinutes = different / minutesInMilli;
-    different = different % minutesInMilli;
-
-    long elapsedSeconds = different / secondsInMilli;
-
-    System.out.printf(
-        "%d days, %d hours, %d minutes, %d seconds%n",
-        elapsedDays, elapsedHours, elapsedMinutes, elapsedSeconds)
-    */
         return MessageFormat.format("{0}:{1}:{2}", hours, minutes, seconds);
     }
 
@@ -302,5 +328,14 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
             }
 
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        // TODO: handle pressing "back"-Btn the same way as the user presses "stop"-Btn
+
+        super.onDestroy();
+
     }
 }

@@ -1,18 +1,18 @@
 package com.uniks.myfit.model;
 
-public class AccTriple {
+public class AccTripleVec {
 
     private float x;
     private float y;
     private float z;
 
-    public AccTriple() {
+    public AccTripleVec() {
         x = Float.MAX_VALUE;
         y = Float.MAX_VALUE;
         z = Float.MAX_VALUE;
     }
 
-    public AccTriple(float x, float y, float z) {
+    public AccTripleVec(float x, float y, float z) {
         this.x = x;
         this.y = y;
         this.z = z;

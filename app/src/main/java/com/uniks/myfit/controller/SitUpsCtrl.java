@@ -1,17 +1,7 @@
 package com.uniks.myfit.controller;
 import com.uniks.myfit.Accelerometer;
-import com.uniks.myfit.Gyroscope;
 import com.uniks.myfit.TrackingViewActivity;
-import com.uniks.myfit.model.AccTriple;
-
-import android.app.Activity;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
-
-import java.util.Iterator;
-import java.util.List;
+import com.uniks.myfit.model.AccTripleVec;
 
 public class SitUpsCtrl {
 
@@ -21,7 +11,7 @@ public class SitUpsCtrl {
     Accelerometer accelerometerSensor;
     private TrackingViewActivity trackingViewActivity;
     Accelerometer accSensor;
-    AccTriple accTriple;
+    AccTripleVec accTripleVec;
     private Boolean Flag;
     private boolean active;
     private int actualState;
@@ -40,21 +30,20 @@ public class SitUpsCtrl {
 
         accSensor.init();
     }
-
     public int calculateSitups() {
         active = true;
-        AccTriple prevTriple = new AccTriple();
-        accTriple = trackingViewActivity.getAccelerometerQueue().get(countIndex);
+        AccTripleVec prevTriple = new AccTripleVec();
+        accTripleVec = trackingViewActivity.getAccelerometerQueue().get(countIndex);
         while (active) {
             switch (actualState) {
                 case 0:
-                    prevTriple = accTriple;
-                    accTriple = trackingViewActivity.getAccelerometerQueue().get(countIndex++);
+                    prevTriple = accTripleVec;
+                    accTripleVec = trackingViewActivity.getAccelerometerQueue().get(countIndex++);
 
-                    if (accTriple != null) {
+                    if (accTripleVec != null) {
 
                         // check for rising
-                        if (accTriple.getX() > prevTriple.getX() && accTriple.getY() > prevTriple.getY()) {
+                        if (accTripleVec.getX() > prevTriple.getX() && accTripleVec.getY() > prevTriple.getY()) {
                             actualState = 1;
 
                         }
@@ -65,11 +54,11 @@ public class SitUpsCtrl {
 
                     break;
                 case 1: // if the current value in Array is < the previous change state to 2
-                    prevTriple = accTriple;
-                    accTriple = trackingViewActivity.getAccelerometerQueue().get(countIndex++);
+                    prevTriple = accTripleVec;
+                    accTripleVec = trackingViewActivity.getAccelerometerQueue().get(countIndex++);
 
-                    if(accTriple != null) {
-                        if (accTriple.getX() < prevTriple.getX() && (accTriple.getY() < prevTriple.getY() && accTriple.getZ() < prevTriple.getZ())) {
+                    if(accTripleVec != null) {
+                        if (accTripleVec.getX() < prevTriple.getX() && (accTripleVec.getY() < prevTriple.getY() && accTripleVec.getZ() < prevTriple.getZ())) {
                             // found Falling
                             actualState = 2;
                         }
@@ -89,4 +78,8 @@ public class SitUpsCtrl {
         return situpCount;
     }
 
+    public void stop()
+    {
+        accelerometerSensor.stopListening();
+    }
 }
