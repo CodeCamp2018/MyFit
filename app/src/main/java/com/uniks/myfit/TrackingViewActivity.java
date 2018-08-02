@@ -28,7 +28,7 @@ import java.util.Date;
 public class TrackingViewActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final int REQUEST_FINE_LOCATION = 351;
-    private static final int MIN_NUMBER_OF_ELEMENTS = 3;
+    private static final int MIN_NUMBER_OF_ELEMENTS = 5;
     private static final String TRACKING_LOG = "TrackingViewActivity: ";
     private SitUpsCtrl sitUpsCtrl;
     private PushupCtrl pushupCtrl;
@@ -212,7 +212,6 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
         switch (exerciseMode) {
             case 0: // running
                 final int stepsCounted = stepCounterService.getActualCount();
-                Log.i(TRACKING_LOG, "stepsCounted: " + stepsCounted);
                 // TODO: do the measuring of distance from mapsController
 
                 // set view - show distance and steps
@@ -222,7 +221,6 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 runningDistanceValueUI.post(new Runnable() {
                     @Override
                     public void run() {
-                        Log.e(TrackingViewActivity.TRACKING_LOG, "set runningDistance in UI");
                         runningDistanceValueUI.setText(String.valueOf(mapsController.getTotalDistance()));
                     }
                 });
@@ -233,7 +231,6 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 stepCounterValueUI.post(new Runnable() {
                     @Override
                     public void run() {
-                        Log.e(TrackingViewActivity.TRACKING_LOG, "set stepCounter in UI");
                         stepCounterValueUI.setText(String.valueOf(stepsCounted));
                     }
                 });
@@ -320,12 +317,29 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
      */
     @Override
     public void onClick(View v) {
+
+        stopBtnClicked();
+    }
+
+    private void stopBtnClicked() {
         //end tracking
         activeStateMachine = false;
 
-        sitUpsCtrl.stop();
-
-
+        switch (exerciseMode) {
+            case 0: // running
+                stepCounterService.onStop();
+                mapsController.stopTracking();
+                break;
+            case 1: // cycling
+                mapsController.stopTracking();
+                break;
+            case 2: // pushups
+                break;
+            case 3: // situps
+                sitUpsCtrl.stop();
+                break;
+        }
+        
         // TODO save data to database
         Date now = Calendar.getInstance().getTime();
         long exerciseDuration = now.getTime() - startExercisingTime.getTime(); // TODO: save to db
@@ -369,7 +383,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
     @Override
     protected void onDestroy() {
 
-        // TODO: handle pressing "back"-Btn the same way as the user presses "stop"-Btn
+        stopBtnClicked();
 
         super.onDestroy();
 

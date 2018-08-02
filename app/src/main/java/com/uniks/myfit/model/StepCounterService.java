@@ -19,8 +19,8 @@ public class StepCounterService implements SensorEventListener {
     private SensorManager sensorManager;
     private Sensor sensorCount;
     TrackingViewActivity trackingViewActivity;
-    private int startStepCounter = 0;
-    private int endStepCounter = 0;
+    private float startStepCounter = 0;
+    private float endStepCounter = 0;
     private boolean active;
     private int actualCount;
 
@@ -34,8 +34,6 @@ public class StepCounterService implements SensorEventListener {
 
           PackageManager pm = trackingViewActivity.getPackageManager();
           if (pm.hasSystemFeature(PackageManager.FEATURE_SENSOR_STEP_COUNTER)) {
-
-              Log.i("StepCounterService", "I have the sensor");
               //If it's available we can retrieve the value using following code
               sensorManager = (SensorManager) trackingViewActivity.getSystemService(Context.SENSOR_SERVICE);
 
@@ -52,7 +50,6 @@ public class StepCounterService implements SensorEventListener {
 
               for (Sensor each : gravSensors) {
                   //check for sensor named step counter in the list.
-                  Log.d("Sesnor_list", each.getName());
               }
 
 
@@ -87,12 +84,12 @@ public class StepCounterService implements SensorEventListener {
             //tolerance can be put here after testing walking
             if (active) {
                 if (startStepCounter == 0) {
-                    startStepCounter = sensorCount.getFifoMaxEventCount();
+                    startStepCounter = event.values[0];
                 }
-                endStepCounter = sensorCount.getFifoMaxEventCount();
 
-                actualCount = endStepCounter - startStepCounter;
-                Log.d("step_count = ", String.valueOf(actualCount));
+                endStepCounter = event.values[0];
+
+                actualCount = (int) (endStepCounter - startStepCounter);
             }
 
         }
