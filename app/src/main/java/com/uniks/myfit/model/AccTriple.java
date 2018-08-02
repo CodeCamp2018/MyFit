@@ -6,6 +6,12 @@ public class AccTriple {
     private float y;
     private float z;
 
+    public AccTriple() {
+        x = Float.MAX_VALUE;
+        y = Float.MAX_VALUE;
+        z = Float.MAX_VALUE;
+    }
+
     public AccTriple(float x, float y, float z) {
         this.x = x;
         this.y = y;

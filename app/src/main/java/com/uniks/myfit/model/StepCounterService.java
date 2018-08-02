@@ -21,6 +21,7 @@ public class StepCounterService implements SensorEventListener {
     private int startStepCounter = 0;
     private int endStepCounter = 0;
     private boolean active;
+    private int actualCount;
 
     public StepCounterService(TrackingViewActivity trackingViewActivity) {
         this.trackingViewActivity = trackingViewActivity;
@@ -29,8 +30,14 @@ public class StepCounterService implements SensorEventListener {
     public void onStart()//Command(Intent intent, int flags, int startId)
     {
         active = true;
-        TextView stepCounterTitleUI = trackingViewActivity.findViewById(R.id.title_2);
-        stepCounterTitleUI.setText("Steps");
+
+        /*
+        * TODO: check first, if there is the sensor on the phone
+        * PackageManager pm = getPackageManager();
+        * if (pm.hasSystemFeature(PackageManager.FEATURE_SENSOR_STEP_COUNTER)) {
+        * // the awesome stuff here
+        * }
+        * */
 
         //If it's available we can retrieve the value using following code
         sensorManager = (SensorManager) trackingViewActivity.getSystemService(Context.SENSOR_SERVICE);
@@ -56,7 +63,6 @@ public class StepCounterService implements SensorEventListener {
 
     public void onStop() {
         active = false;
-        // TODO: save to db
     }
 
 
@@ -80,11 +86,7 @@ public class StepCounterService implements SensorEventListener {
                 }
                 endStepCounter = sensorCount.getFifoMaxEventCount();
 
-                int actualCount = endStepCounter - startStepCounter;
-
-                TextView stepCounterValueUI = trackingViewActivity.findViewById(R.id.value_2);
-
-                stepCounterValueUI.setText(Integer.toString(actualCount));
+                actualCount = endStepCounter - startStepCounter;
             }
 
         }
@@ -96,5 +98,7 @@ public class StepCounterService implements SensorEventListener {
 
     }
 
-
+    public int getActualCount() {
+        return actualCount;
+    }
 }

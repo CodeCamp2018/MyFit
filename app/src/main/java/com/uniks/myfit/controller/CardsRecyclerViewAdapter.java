@@ -10,8 +10,10 @@ import android.widget.TextView;
 import com.uniks.myfit.R;
 import com.uniks.myfit.database.SportExercise;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 public class CardsRecyclerViewAdapter extends RecyclerView.Adapter<CardsRecyclerViewAdapter.DataObjectHolder> {
 
@@ -85,13 +87,17 @@ public class CardsRecyclerViewAdapter extends RecyclerView.Adapter<CardsRecycler
 
     private String getDateString(Date date) {
 
-        return "";
+        SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMANY);
+
+        return df.format(date);
 
     }
 
     private String getTimeString(Date date) {
 
-        return "";
+        SimpleDateFormat df = new SimpleDateFormat("HH:mm", Locale.GERMANY);
+
+        return df.format(date);
 
     }
 }

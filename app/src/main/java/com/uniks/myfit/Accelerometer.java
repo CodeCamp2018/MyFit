@@ -21,12 +21,15 @@ public class Accelerometer implements SensorEventListener {
     TrackingViewActivity trackingViewActivity;
     float accelerationX, accelerationY, accelerationZ;
     public float TotACC;
+    private final float[] accelerometerReading = new float[3];
+
     //TextView xValue, yValue, zValue;
 
     public Accelerometer(TrackingViewActivity trackingViewActivity) {
         this.trackingViewActivity = trackingViewActivity;
         gravity = new float[4];
     }
+
     public void init() {
         running = true;
         // Get an instance of the SensorManager
