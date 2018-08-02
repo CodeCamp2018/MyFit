@@ -316,6 +316,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
     public void onClick(View v) {
 
         stopBtnClicked();
+        this.finish();
     }
 
     private void stopBtnClicked() {
@@ -406,7 +407,10 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
     @Override
     protected void onDestroy() {
 
-        stopBtnClicked();
+        // if stopBtn is not hit before
+        if (activeStateMachine) {
+            stopBtnClicked();
+        }
 
         super.onDestroy();
 

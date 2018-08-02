@@ -8,7 +8,7 @@ import android.arch.persistence.room.PrimaryKey;
 
 import java.util.Date;
 
-@Entity(foreignKeys = @ForeignKey(entity = SportExercise.class, parentColumns = "id", childColumns = "user_id", onUpdate = ForeignKey.CASCADE, onDelete = ForeignKey.CASCADE), indices = {@Index(value = {"user_id"}, unique = true)})
+@Entity(foreignKeys = @ForeignKey(entity = SportExercise.class, parentColumns = "id", childColumns = "user_id", onUpdate = ForeignKey.CASCADE, onDelete = ForeignKey.CASCADE), indices = {@Index(value = {"user_id"})})
 public class SportExercise {
 
     @PrimaryKey(autoGenerate = true)
