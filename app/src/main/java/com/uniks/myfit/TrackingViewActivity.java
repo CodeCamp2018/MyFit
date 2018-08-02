@@ -1,6 +1,7 @@
 package com.uniks.myfit;
 
-import android.app.FragmentTransaction;
+import android.content.pm.PackageManager;
+import android.support.v4.app.FragmentTransaction;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -17,8 +18,10 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public class TrackingViewActivity extends AppCompatActivity {
+    public static final int REQUEST_FINE_LOCATION = 351;
     private int exerciseMode;
     private String customTitle = "Exercise";
+    private MapsController mapsController;
 
     private ArrayList<Location> locationQueue;
 
@@ -57,7 +60,12 @@ public class TrackingViewActivity extends AppCompatActivity {
         //Insert map in our view
 
         if (exerciseMode <= 1) {
-            MapsController mapsController = new MapsController(this);
+            mapsController = new MapsController(this);
+            FragmentTransaction fragmentTransaction =
+                    getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.add(R.id.map_container, mapsController.mapFragment);
+            fragmentTransaction.commit();
+
         }
     }
 
@@ -75,5 +83,23 @@ public class TrackingViewActivity extends AppCompatActivity {
 
     public void setLocationQueue(ArrayList<Location> locationQueue) {
         this.locationQueue = locationQueue;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_FINE_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    mapsController.startLocation();
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+        }
     }
 }
