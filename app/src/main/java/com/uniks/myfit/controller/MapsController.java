@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
+import android.util.TypedValue;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -51,9 +52,9 @@ public class MapsController implements OnMapReadyCallback, LocationListener {
 
     private ArrayList<LatLng> linePoints = new ArrayList<>();
 
-    public MapsController(TrackingViewActivity trackingViewActivity, int padding) {
+    public MapsController(TrackingViewActivity trackingViewActivity) {
         this.trackingViewActivity = trackingViewActivity;
-        this.padding = padding;
+        this.padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 96, trackingViewActivity.getResources().getDisplayMetrics());
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         mapFragment = (SupportMapFragment) SupportMapFragment.newInstance();
@@ -138,12 +139,12 @@ public class MapsController implements OnMapReadyCallback, LocationListener {
 
     }
 
-    public float getSpeed() {
+    public int getSpeed() {
         if (location == null) {
             return 0;
         }
 
-        return location.getSpeed();
+        return (int) (3.6 * location.getSpeed()); // speed in km/h
     }
 
     public List getPath() {
@@ -155,7 +156,7 @@ public class MapsController implements OnMapReadyCallback, LocationListener {
     }
 
     private double twoPointDistance(LatLng pointOne, LatLng pointTwo) {
-        double R = 6371000f; // Radius of the earth in m
+        double R = 6371f; // Radius of the earth in km
         double dLat = (pointOne.latitude - pointTwo.latitude) * Math.PI / 180f;
         double dLon = (pointOne.longitude - pointTwo.longitude) * Math.PI / 180f;
         double a = Math.sin(dLat/2) * Math.sin(dLat/2) +

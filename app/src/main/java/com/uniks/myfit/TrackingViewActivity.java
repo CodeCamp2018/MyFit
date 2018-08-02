@@ -221,7 +221,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 runningDistanceValueUI.post(new Runnable() {
                     @Override
                     public void run() {
-                        runningDistanceValueUI.setText(String.valueOf(mapsController.getTotalDistance()));
+                        runningDistanceValueUI.setText(String.format("%.2f", mapsController.getTotalDistance()));
                     }
                 });
 
@@ -246,7 +246,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 cyclingDistanceValueUI.post(new Runnable() {
                     @Override
                     public void run() {
-                        cyclingDistanceValueUI.setText(String.valueOf(mapsController.getTotalDistance()));
+                        cyclingDistanceValueUI.setText(String.format("%.2f",mapsController.getTotalDistance()));
                     }
                 });
 
@@ -256,7 +256,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                     @Override
                     public void run() {
                         // TODO: fill UI-Element
-                        cyclingSpeedValueUI.setText("");
+                        cyclingSpeedValueUI.setText(String.valueOf(mapsController.getSpeed()));
                     }
                 });
 
@@ -304,8 +304,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
     private void includeMap() {
         //Insert map in our view
         if (exerciseMode <= 1) {
-            int padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 96, getResources().getDisplayMetrics());
-            mapsController = new MapsController(this, padding);
+            mapsController = new MapsController(this);
 
             FragmentTransaction fragmentTransaction =
                     getSupportFragmentManager().beginTransaction();
@@ -359,8 +358,8 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
         long hoursInMilli = minutesInMilli * 60;
 
         long hours = duration / hoursInMilli;
-        long minutes = duration / minutesInMilli;
-        long seconds = duration / secondsInMilli;
+        long minutes = duration / minutesInMilli - hours * 60;
+        long seconds = duration / secondsInMilli - hours * 3600 - minutes * 60;
 
         return MessageFormat.format("{0}:{1}:{2}", hours, minutes, seconds);
     }
