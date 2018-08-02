@@ -24,6 +24,7 @@ import com.uniks.myfit.controller.SitUpsCtrl;
 import com.uniks.myfit.database.AppDatabase;
 import com.uniks.myfit.database.SportExercise;
 import com.uniks.myfit.database.User;
+import com.uniks.myfit.helper.StartButtonHelper;
 import com.uniks.myfit.model.ProximitySensorService;
 import com.uniks.myfit.model.StepCounterService;
 import com.uniks.myfit.helper.WeightTxtListener;
@@ -99,16 +100,16 @@ public class MainActivity extends AppCompatActivity {
          * Listen to buttons to start tracking
          */
         FloatingActionButton startRunning = (FloatingActionButton) findViewById(R.id.add_exercise_running);
-        startRunning.setOnClickListener(startRunningListener);
+        setStartListener(0, startRunning);
 
         FloatingActionButton startCycling = (FloatingActionButton) findViewById(R.id.add_exercise_cycling);
-        startCycling.setOnClickListener(startCyclingListener);
+        setStartListener(1, startCycling);
 
         FloatingActionButton startPushups = (FloatingActionButton) findViewById(R.id.add_exercise_pushups);
-        startPushups.setOnClickListener(startPushupsListener);
+        setStartListener(2, startPushups);
 
         FloatingActionButton startSitups = (FloatingActionButton) findViewById(R.id.add_exercise_situps);
-        startSitups.setOnClickListener(startSitupsListener);
+        setStartListener(3, startSitups);
 
         cardRecyclerView = findViewById(R.id.cards_recycler_view);
         cardRecyclerView.setHasFixedSize(true);
@@ -158,42 +159,11 @@ public class MainActivity extends AppCompatActivity {
         }
         db.close();
         // TODO: close the sensors!
+        accelerometerSensor.stopListening();
         super.onDestroy();
     }
 
-    private View.OnClickListener startRunningListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Intent startRunning = new Intent( view.getContext() , TrackingViewActivity.class);
-            startRunning.putExtra("EXERCISE", 0);
-            startActivity(startRunning);
-        }
-    };
-
-    private View.OnClickListener startCyclingListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Intent startCycling = new Intent( view.getContext() , TrackingViewActivity.class);
-            startCycling.putExtra("EXERCISE", 1);
-            startActivity(startCycling);
-        }
-    };
-
-    private View.OnClickListener startPushupsListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Intent startPushups = new Intent( view.getContext() , TrackingViewActivity.class);
-            startPushups.putExtra("EXERCISE", 2);
-            startActivity(startPushups);
-        }
-    };
-
-    private View.OnClickListener startSitupsListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Intent startSitups = new Intent( view.getContext() , TrackingViewActivity.class);
-            startSitups.putExtra("EXERCISE", 3);
-            startActivity(startSitups);
-        }
-    };
+    private void setStartListener(int modeCode, FloatingActionButton startButton) {
+        startButton.setOnClickListener(new StartButtonHelper(modeCode, this));
+    }
 }

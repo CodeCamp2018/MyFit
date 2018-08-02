@@ -54,7 +54,7 @@ public class StepCounterService implements SensorEventListener {
         List<Sensor> gravSensors = sensorManager.getSensorList(Sensor.TYPE_ALL);
 
         for (Sensor each : gravSensors) {
-            //check for sensor named step counter in the accelerometerQueue.
+            //check for sensor named step counter in the list.
             Log.d("Sesnor_list", each.getName());
         }
 

@@ -1,6 +1,7 @@
 package com.uniks.myfit;
 
-import android.app.FragmentTransaction;
+import android.content.pm.PackageManager;
+import android.support.v4.app.FragmentTransaction;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +14,7 @@ import com.google.android.gms.maps.MapFragment;
 import com.uniks.myfit.controller.MapsController;
 import com.uniks.myfit.controller.SitUpsCtrl;
 import com.uniks.myfit.model.StepCounterService;
+import com.uniks.myfit.model.AccTriple;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -20,8 +22,8 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class TrackingViewActivity extends AppCompatActivity implements View.OnClickListener {
-    private Accelerometer accelerometerSensor;
 
+    public static final int REQUEST_FINE_LOCATION = 351;
     private SitUpsCtrl sitUpsCtrl;
     private StepCounterService stepCounterService;
     private MapsController mapsController;
@@ -33,13 +35,12 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
     private String customTitle = "Exercise";
 
     private ArrayList<Location> locationQueue;
-    public ArrayList<Float> accelerometerQueue;
+    private ArrayList<AccTriple> accelerometerQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        accelerometerSensor = new Accelerometer(this);
-        sitUpsCtrl = new SitUpsCtrl(accelerometerSensor);
+        sitUpsCtrl = new SitUpsCtrl(this);
         stepCounterService = new StepCounterService(this);
         mapsController = new MapsController(this);
 
@@ -66,6 +67,11 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 customTitle = getString(R.string.situps);
                 break;
         }
+
+        locationQueue = new ArrayList<>();
+        accelerometerQueue = new ArrayList<>();
+
+        // TODO: set title based on the exercise type (and set it from @string resource)
 
         // set title based on the exercise type
         this.setTitle(customTitle);
@@ -132,7 +138,6 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 break;
             case 3: // situps
 
-                accelerometerSensor.init();
                 // TODO: put calling of accelerometer sensor to situp controller and init the controller here
 
                 // set headlines
@@ -231,20 +236,20 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
 
     private void includeMap() {
         //Insert map in our view
-        MapFragment mapFragment = MapFragment.newInstance();
-        FragmentTransaction fragmentTransaction =
-                getFragmentManager().beginTransaction();
-        fragmentTransaction.add(R.id.map_container, mapFragment);
-        fragmentTransaction.commit();
+
+        if (exerciseMode <= 1) {
+            mapsController = new MapsController(this);
+            FragmentTransaction fragmentTransaction =
+                    getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.add(R.id.map_container, mapsController.mapFragment);
+            fragmentTransaction.commit();
+
+        }
     }
 
 
     public ArrayList<Location> getLocationQueue() {
         return locationQueue;
-    }
-
-    public ArrayList<Float> getAccelerometerQueue() {
-        return accelerometerQueue;
     }
 
     /**
@@ -288,5 +293,27 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
         elapsedDays, elapsedHours, elapsedMinutes, elapsedSeconds)
     */
         return MessageFormat.format("{0}:{1}:{2}", hours, minutes, seconds);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_FINE_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    mapsController.startLocation();
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+        }
+    }
+
+    public ArrayList<AccTriple> getAccelerometerQueue() {
+        return accelerometerQueue;
     }
 }
