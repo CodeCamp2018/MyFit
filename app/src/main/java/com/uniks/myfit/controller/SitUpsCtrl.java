@@ -38,7 +38,9 @@ public class SitUpsCtrl {
             switch (actualState) {
                 case 0:
                     prevTriple = accTripleVec;
-                    accTripleVec = trackingViewActivity.getAccelerometerQueue().get(countIndex++);
+                    if(countIndex!=trackingViewActivity.getAccelerometerQueue().size()) {
+                        accTripleVec = trackingViewActivity.getAccelerometerQueue().get(countIndex++);
+                    }
 
                     if (accTripleVec != null) {
 
@@ -55,7 +57,8 @@ public class SitUpsCtrl {
                     break;
                 case 1: // if the current value in Array is < the previous change state to 2
                     prevTriple = accTripleVec;
-                    accTripleVec = trackingViewActivity.getAccelerometerQueue().get(countIndex++);
+                    if(countIndex!=trackingViewActivity.getAccelerometerQueue().size()) {
+                    accTripleVec = trackingViewActivity.getAccelerometerQueue().get(countIndex++);}
 
                     if(accTripleVec != null) {
                         if (accTripleVec.getX() < prevTriple.getX() && (accTripleVec.getY() < prevTriple.getY() && accTripleVec.getZ() < prevTriple.getZ())) {
