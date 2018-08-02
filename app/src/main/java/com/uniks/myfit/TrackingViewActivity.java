@@ -96,6 +96,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 stepCounterService.onStart();
 
                 // set headlines
+                includeMap();
                 // distance
                 TextView runningDistanceTitleUI = findViewById(R.id.title_1);
                 runningDistanceTitleUI.setText(getResources().getString(R.string.distanceHeadline));
@@ -107,6 +108,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
             case 1: // cycling
 
                 // set headlines
+                includeMap();
                 // distance
                 TextView cyclingDistanceTitleUI = findViewById(R.id.title_1);
                 cyclingDistanceTitleUI.setText(getResources().getString(R.string.distanceHeadline));
@@ -254,6 +256,17 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
 
     public ArrayList<AccTripleVec> getAccelerometerQueue() {
         return accelerometerQueue;
+    }
+
+    private void includeMap() {
+        //Insert map in our view
+        if (exerciseMode <= 1) {
+            mapsController = new MapsController(this);
+            FragmentTransaction fragmentTransaction =
+                    getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.add(R.id.map_container, mapsController.mapFragment);
+            fragmentTransaction.commit();
+        }
     }
 
     /**
