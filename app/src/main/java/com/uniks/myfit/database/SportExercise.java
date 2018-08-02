@@ -27,13 +27,13 @@ public class SportExercise {
     private double speed; // the measured speed of the track
 
     @ColumnInfo(name = "trip_time")
-    private double tripTime; // the time spend on the track
+    private String tripTime; // the time spend on the track
 
     @ColumnInfo(name = "date_of_track")
     private Date date; // the day & time of the track
 
     @ColumnInfo(name = "amount_of_repeats")
-    private double amountOfRepeats; // for steps, push-ups and sit-ups
+    private int amountOfRepeats; // for steps, push-ups and sit-ups
 
 //    private List<Location> coordinates; // list of coordinates to draw track on a map
 
@@ -72,11 +72,11 @@ public class SportExercise {
         this.speed = speed;
     }
 
-    public double getTripTime() {
+    public String getTripTime() {
         return tripTime;
     }
 
-    public void setTripTime(double tripTime) {
+    public void setTripTime(String tripTime) {
         this.tripTime = tripTime;
     }
 
@@ -88,11 +88,11 @@ public class SportExercise {
         this.date = date;
     }
 
-    public double getAmountOfRepeats() {
+    public int getAmountOfRepeats() {
         return amountOfRepeats;
     }
 
-    public void setAmountOfRepeats(double amountOfRepeats) {
+    public void setAmountOfRepeats(int amountOfRepeats) {
         this.amountOfRepeats = amountOfRepeats;
     }
 

@@ -17,6 +17,7 @@ import com.uniks.myfit.controller.MapsController;
 import com.uniks.myfit.controller.PushupCtrl;
 import com.uniks.myfit.controller.SitUpsCtrl;
 import com.uniks.myfit.database.AppDatabase;
+import com.uniks.myfit.database.SportExercise;
 import com.uniks.myfit.model.AccTripleVec;
 import com.uniks.myfit.model.StepCounterService;
 
@@ -211,7 +212,6 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
         switch (exerciseMode) {
             case 0: // running
                 final int stepsCounted = stepCounterService.getActualCount();
-                // TODO: do the measuring of distance from mapsController
 
                 // set view - show distance and steps
                 // distance
@@ -237,7 +237,6 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
 
                 break;
             case 1: // cycling
-                // TODO: get the measured current speed from mapsController
 
                 // set view - show distance, speed
                 // distance
@@ -254,8 +253,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 cyclingSpeedValueUI.post(new Runnable() {
                     @Override
                     public void run() {
-                        // TODO: fill UI-Element
-                        cyclingSpeedValueUI.setText("");
+                        cyclingSpeedValueUI.setText(String.valueOf(mapsController.getSpeed()));
                     }
                 });
 
@@ -322,27 +320,50 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
 
     private void stopBtnClicked() {
         //end tracking
+        Date now = Calendar.getInstance().getTime();
         activeStateMachine = false;
+        SportExercise newSportExercise = new SportExercise();
+        newSportExercise.setTripTime(getFormattedCurrentDuration());
+        newSportExercise.setDate(now);
+        newSportExercise.setUserId(db.userDao().getAll().get(0).getUid());
 
         switch (exerciseMode) {
             case 0: // running
+
+                // db
+                newSportExercise.setMode("running");
+                newSportExercise.setDistance(mapsController.getTotalDistance());
+                newSportExercise.setAmountOfRepeats(stepCounterService.getActualCount());
+
+                // stop tracking
                 stepCounterService.onStop();
                 mapsController.stopTracking();
                 break;
             case 1: // cycling
                 mapsController.stopTracking();
+
+                // db
+                newSportExercise.setMode("cycling");
+                newSportExercise.setDistance(mapsController.getTotalDistance());
+                newSportExercise.setSpeed(mapsController.getSpeed());
                 break;
             case 2: // pushups
                 pushupCtrl.pstop();
+
+                // db
+                newSportExercise.setMode("pushups");
                 break;
             case 3: // situps
                 sitUpsCtrl.stop();
+
+                // db
+                newSportExercise.setMode("situps");
+                newSportExercise.setAmountOfRepeats(sitUpsCtrl.calculateSitups());
                 break;
         }
 
-        // TODO save data to database
-        Date now = Calendar.getInstance().getTime();
-        long exerciseDuration = now.getTime() - startExercisingTime.getTime(); // TODO: save to db
+        // save data to database
+        db.sportExerciseDao().insertAll(newSportExercise);
 
         // TODO switch back to main screen
     }
@@ -359,6 +380,8 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
         long minutes = duration / minutesInMilli;
         long seconds = duration / secondsInMilli;
 
+        // FIXME: Output = 0:15:931 (31 is the seconds, but what the heck is 9 doing there?)
+        // FIXME II: seconds are counting over 60!!!
         return MessageFormat.format("{0}:{1}:{2}", hours, minutes, seconds);
     }
 
