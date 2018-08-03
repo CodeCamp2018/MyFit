@@ -109,6 +109,8 @@ public class MainActivity extends AppCompatActivity {
         super.onRestart();
 
         // reload to show done exercises
+        cardsAdapter = new CardsRecyclerViewAdapter(getDataSet(), this);
+        cardRecyclerView.setAdapter(cardsAdapter);
         finish();
         startActivity(getIntent());
     }

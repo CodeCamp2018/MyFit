@@ -17,10 +17,12 @@ import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.widget.ImageView;
+
 import com.uniks.myfit.controller.MapsController;
 import com.uniks.myfit.database.AppDatabase;
 import com.uniks.myfit.database.SportExercise;
 import com.uniks.myfit.database.User;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -48,30 +50,41 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         exercise = db.sportExerciseDao().getAllFromUser(user.getUid()).get(index); // get the clicked exercise of all user exercises
 
 
-
         // View
-        this.setTitle(exercise.getMode());
+        switch (exercise.getMode()) {
+            case 0:
+                this.setTitle("Running");
+                break;
+            case 1:
+                this.setTitle("Cycling");
+                break;
+            case 2:
+                this.setTitle("Push Ups");
+                break;
+            case 3:
+                this.setTitle("Sit Ups");
+                break;
+        }
 
         // also choose layout based on exercise type from stored data
-        if (exercise != null) {
-            if (exercise.getMode().equals("running") || exercise.getMode().equals("cycling")) {
-                setContentView(R.layout.activity_detail_tracked);
-            } else {
-                setContentView(R.layout.activity_detail_repetitions);
-            }
 
-            Toolbar toolbar = findViewById(R.id.toolbar);
-            setSupportActionBar(toolbar);
-
-            FloatingActionButton fab = findViewById(R.id.share_button);
-            fab.setOnClickListener(this);
+        if (exercise.getMode() == 0 || exercise.getMode() == 1) {
+            setContentView(R.layout.activity_detail_tracked);
+        } else {
+            setContentView(R.layout.activity_detail_repetitions);
         }
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        FloatingActionButton fab = findViewById(R.id.share_button);
+        fab.setOnClickListener(this);
         // Controller
 
     }
-       /* This method will take screenshot from mobile screen*/
-    private void takeScreenShot(View view)
-    {
+
+    /* This method will take screenshot from mobile screen*/
+    private void takeScreenShot(View view) {
         // Get root View of your application
         View rootView = findViewById(android.R.id.content).getRootView();
 
@@ -81,9 +94,10 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         // Create image
         Bitmap bitmap = rootView.getDrawingCache();
         // Save image in external storage
-           saveScreenShot(bitmap);
+        saveScreenShot(bitmap);
 
     }
+
     /* This method will save screenshot taken by takeScreenShot method */
     private void saveScreenShot(Bitmap bitmap) {
         try {
@@ -102,16 +116,17 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
             Log.e("Main", e.getMessage(), e);
         }
     }
+
     @Override
     public void onClick(View v) {
         /* Share Button*/
-        Intent shareIntent =new Intent(Intent.ACTION_SEND);
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("text/plain");
-        String shareBody ="Write your Body here";
+        String shareBody = "Write your Body here";
         String shareSub = "Write your Subject here";
-        shareIntent.putExtra(Intent.EXTRA_SUBJECT,shareSub);
-        shareIntent.putExtra(Intent.EXTRA_TEXT,shareBody);
-        startActivity(Intent.createChooser(shareIntent,"Share Using"));
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, shareSub);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
+        startActivity(Intent.createChooser(shareIntent, "Share Using"));
     }
 
 

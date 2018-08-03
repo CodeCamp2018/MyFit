@@ -23,7 +23,7 @@ public class SportExercise {
     private long userId;
 
     @ColumnInfo(name = "mode")
-    private String mode; // Exercising Mode e.g. hiking, cycling, ...
+    private int mode; // Exercising Mode e.g. hiking, cycling, ...
 
     @ColumnInfo(name = "distance")
     private double distance; // the distance of the track
@@ -50,11 +50,11 @@ public class SportExercise {
         this.id = id;
     }
 
-    public String getMode() {
+    public int getMode() {
         return mode;
     }
 
-    public void setMode(String mode) {
+    public void setMode(int mode) {
         this.mode = mode;
     }
 
