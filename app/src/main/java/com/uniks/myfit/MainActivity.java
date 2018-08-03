@@ -38,10 +38,8 @@ public class MainActivity extends AppCompatActivity {
     private static final float NS2S = 1.0f / 1000000000.0f;
     private final float[] deltaRotationVector = new float[4];
 
-    Accelerometer accelerometerSensor;
-    SitUpsCtrl accelerometerCtrl;
     Gyroscope gyroscopeSensor;
-    ProximitySensorService proximity;
+
     public AppDatabase db;
     User user;
     List<SportExercise> sportExercises;
@@ -49,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView cardRecyclerView;
     private RecyclerView.Adapter cardsAdapter;
     private RecyclerView.LayoutManager cardsLayoutManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,15 +98,17 @@ public class MainActivity extends AppCompatActivity {
 
         FloatingActionButton startSitups = (FloatingActionButton) findViewById(R.id.add_exercise_situps);
         setStartListener(3, startSitups);
+
+        // set cards of completed tours
         cardRecyclerView = findViewById(R.id.cards_recycler_view);
         cardRecyclerView.setHasFixedSize(true);
         cardsLayoutManager = new LinearLayoutManager(this);
         cardRecyclerView.setLayoutManager(cardsLayoutManager);
         cardsAdapter = new CardsRecyclerViewAdapter(getDataSet());
         cardRecyclerView.setAdapter(cardsAdapter);
-        Log.d(TAG, "onCreate: registered Accelerometer Listener");
 
     }
+
     private ArrayList<SportExercise> getDataSet() {
 
         List<SportExercise> allUsers = db.sportExerciseDao().getAllFromUser(user.getUid());
@@ -120,25 +121,20 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         ((CardsRecyclerViewAdapter) cardsAdapter).setOnItemClickListener(
                 new CardsRecyclerViewAdapter.MyClickListener() {
-            @Override
-            public void onItemClick(int position, View v) {
-                Log.i("ClickEvent on Card:", " Clicked on Item " + position);
-            }
-        });
+                    @Override
+                    public void onItemClick(int position, View v) {
+                        Log.i("ClickEvent on Card:", " Clicked on Item " + position);
+                    }
+                });
     }
 
     @Override
     protected void onDestroy() {
-        db.userDao().updateUser(user);
-        for (SportExercise exercise : sportExercises) {
-            db.sportExerciseDao().updateSportExercises(exercise);
-        }
         db.close();
-        accelerometerSensor=null;
         super.onDestroy();
     }
 
     private void setStartListener(int modeCode, FloatingActionButton startButton) {
-        startButton.setOnClickListener(new StartButtonHelper(modeCode , this));
+        startButton.setOnClickListener(new StartButtonHelper(modeCode, this));
     }
 }

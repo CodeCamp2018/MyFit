@@ -19,6 +19,7 @@ import com.uniks.myfit.controller.MapsController;
 import com.uniks.myfit.controller.PushupCtrl;
 import com.uniks.myfit.controller.SitUpsCtrl;
 import com.uniks.myfit.database.AppDatabase;
+import com.uniks.myfit.database.SportExercise;
 import com.uniks.myfit.model.AccTripleVec;
 import com.uniks.myfit.model.StepCounterService;
 
@@ -35,6 +36,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
     private SitUpsCtrl sitUpsCtrl;
     private StepCounterService stepCounterService;
     private MapsController mapsController;
+
     private int exerciseMode;
     private boolean activeStateMachine;
     private int actualState;
@@ -134,11 +136,17 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 // count
                 TextView pushupCountTitleUI = findViewById(R.id.title_1);
                 pushupCountTitleUI.setText(getResources().getString(R.string.countHeadline));
+
                 break;
-            case 3: // situps init
+            case 3: // situps
+
                 sitUpsCtrl.init();
+
+                // set headlines
+                // count
                 TextView situpCountTitleUI = findViewById(R.id.title_1);
                 situpCountTitleUI.setText(getResources().getString(R.string.countHeadline));
+
                 break;
         }
 
@@ -175,7 +183,11 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
     private boolean isThereEnoughData() {
         boolean enough = false;
         switch (exerciseMode) {
-            case 0: case 1:// running and cycling
+            case 0: // running
+                if (mapsController.getLinePoints().size() >= MIN_NUMBER_OF_ELEMENTS || stepCounterService.getActualCount() >= 1) {
+                    enough = true;
+                }
+            case 1: // cycling
                 if (mapsController.getLinePoints().size() >= MIN_NUMBER_OF_ELEMENTS) {
                     enough = true;
                 }
@@ -189,62 +201,91 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 }
                 break;
         }
+
         return enough;
     }
 
     private void processSensorData() {
-        String duration = getFormattedCurrentDuration();
+        final String duration = getFormattedCurrentDuration();
         switch (exerciseMode) {
             case 0: // running
-                int stepsCounted = stepCounterService.getActualCount();
-                // TODO: do the measuring of distance from mapsController
-                // set view - show distance, steps
-                /* ------ example for calling ui-thread
-                final Bitmap bitmap =
-                        processBitMap("image.png");
-                mImageView.post(new Runnable() {
-                    public void run() {
-                        mImageView.setImageBitmap(bitmap);
-                    }
-                });*/
-                // distance
-                TextView runningDistanceValueUI = findViewById(R.id.value_1);
+                final int stepsCounted = stepCounterService.getActualCount();
 
-                runningDistanceValueUI.setText(String.valueOf(mapsController.getTotalDistance()));
-                // TODO: fill UI-Element here
+                // set view - show distance and steps
+                // distance
+                final TextView runningDistanceValueUI = findViewById(R.id.value_1);
+                // call this because of thread
+                runningDistanceValueUI.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        runningDistanceValueUI.setText(String.format("%.2f", mapsController.getTotalDistance()));
+                    }
+                });
+
                 //steps
-                TextView stepCounterValueUI = findViewById(R.id.value_2);
-                stepCounterValueUI.setText(String.valueOf(stepsCounted));
+                final TextView stepCounterValueUI = findViewById(R.id.value_2);
+                // call this because of thread
+                stepCounterValueUI.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        stepCounterValueUI.setText(String.valueOf(stepsCounted));
+                    }
+                });
+
 
                 break;
             case 1: // cycling
-                // TODO: get the measured traveling distance from mapsController
-                // TODO: get the measured current speed from mapsController
 
                 // set view - show distance, speed
                 // distance
-                TextView cyclingDistanceValueUI = findViewById(R.id.value_1);
-                // TODO: fill UI-Element
+                final TextView cyclingDistanceValueUI = findViewById(R.id.value_1);
+                cyclingDistanceValueUI.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        cyclingDistanceValueUI.setText(String.format("%.2f",mapsController.getTotalDistance()));
+                    }
+                });
+
                 // speed
-                TextView cyclingSpeedValueUI = findViewById(R.id.value_2);
-                // TODO: fill UI-Element
+                final TextView cyclingSpeedValueUI = findViewById(R.id.value_2);
+                cyclingSpeedValueUI.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        cyclingSpeedValueUI.setText(String.valueOf(mapsController.getSpeed()));
+                    }
+                });
+
                 break;
             case 2: // pushups
                 // TODO: get the count of pushups from pushupController
+
                 // set view - show count
                 TextView pushupCountValueUI = findViewById(R.id.value_1);
                 // TODO: fill UI-Element
                 break;
             case 3: // situps
-                int situpCount = sitUpsCtrl.calculateSitups();
+
+                final int situpCount = sitUpsCtrl.calculateSitups();
+
                 // set view - show count
-                TextView situpCountValueUI = findViewById(R.id.value_1);
-                situpCountValueUI.setText(String.valueOf(situpCount));
+                final TextView situpCountValueUI = findViewById(R.id.value_1);
+                situpCountValueUI.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        situpCountValueUI.setText(String.valueOf(situpCount));
+                    }
+                });
                 break;
         }
+
         // set time in UI
-        TextView runningTimeValueUI = findViewById(R.id.value_3);
-        runningTimeValueUI.setText(duration);
+        final TextView timeValueUI = findViewById(R.id.value_3);
+        timeValueUI.post(new Runnable() {
+            @Override
+            public void run() {
+                timeValueUI.setText(duration);
+            }
+        });
     }
 
     public ArrayList<Location> getLocationQueue() {
@@ -259,6 +300,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
         //Insert map in our view
         if (exerciseMode <= 1) {
             mapsController = new MapsController(this);
+
             FragmentTransaction fragmentTransaction =
                     getSupportFragmentManager().beginTransaction();
             fragmentTransaction.add(R.id.map_container, mapsController.mapFragment);
@@ -273,33 +315,55 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
     public void onClick(View v) {
 
         stopBtnClicked();
+        this.finish();
     }
 
     private void stopBtnClicked() {
         //end tracking
+        Date now = Calendar.getInstance().getTime();
         activeStateMachine = false;
-        sitUpsCtrl.stop();
-        //pushupCtrl.pstop();
+        SportExercise newSportExercise = new SportExercise();
+        newSportExercise.setTripTime(getFormattedCurrentDuration());
+        newSportExercise.setDate(now);
+        newSportExercise.setUserId(db.userDao().getAll().get(0).getUid());
 
         switch (exerciseMode) {
             case 0: // running
+
+                // db
+                newSportExercise.setMode("running");
+                newSportExercise.setDistance(mapsController.getTotalDistance());
+                newSportExercise.setAmountOfRepeats(stepCounterService.getActualCount());
+
+                // stop tracking
                 stepCounterService.onStop();
                 mapsController.stopTracking();
                 break;
             case 1: // cycling
                 mapsController.stopTracking();
+
+                // db
+                newSportExercise.setMode("cycling");
+                newSportExercise.setDistance(mapsController.getTotalDistance());
+                newSportExercise.setSpeed(mapsController.getSpeed());
                 break;
             case 2: // pushups
-                pushupCtrl.pstop();
+
+
+                // db
+                newSportExercise.setMode("pushups");
                 break;
             case 3: // situps
                 sitUpsCtrl.stop();
+
+                // db
+                newSportExercise.setMode("situps");
+                newSportExercise.setAmountOfRepeats(sitUpsCtrl.calculateSitups());
                 break;
         }
 
-        // TODO save data to database
-        Date now = Calendar.getInstance().getTime();
-        long exerciseDuration = now.getTime() - startExercisingTime.getTime(); // TODO: save to db
+        // save data to database
+        db.sportExerciseDao().insertAll(newSportExercise);
 
         // TODO switch back to main screen
     }
@@ -313,8 +377,8 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
         long hoursInMilli = minutesInMilli * 60;
 
         long hours = duration / hoursInMilli;
-        long minutes = duration / minutesInMilli;
-        long seconds = duration / secondsInMilli;
+        long minutes = duration / minutesInMilli - hours * 60;
+        long seconds = duration / secondsInMilli - hours * 3600 - minutes * 60;
 
         return MessageFormat.format("{0}:{1}:{2}", hours, minutes, seconds);
     }
@@ -327,6 +391,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     mapsController.startLocation();
+
                 } else {
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
@@ -337,10 +402,14 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
         }
     }
 
+
     @Override
     protected void onDestroy() {
 
-        // TODO: handle pressing "back"-Btn the same way as the user presses "stop"-Btn
+        // if stopBtn is not hit before
+        if (activeStateMachine) {
+            stopBtnClicked();
+        }
 
         super.onDestroy();
 
