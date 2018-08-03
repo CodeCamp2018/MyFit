@@ -17,11 +17,8 @@ import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.widget.ImageView;
-
-
 import com.uniks.myfit.controller.MapsController;
 import com.uniks.myfit.database.AppDatabase;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -108,10 +105,6 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         shareIntent.putExtra(Intent.EXTRA_SUBJECT,shareSub);
         shareIntent.putExtra(Intent.EXTRA_TEXT,shareBody);
         startActivity(Intent.createChooser(shareIntent,"Share Using"));
-
-        /* Call takeAndSaveScreenShot */
-
-
     }
 
 

@@ -6,8 +6,6 @@ import com.uniks.myfit.model.AccTripleVec;
 public class SitUpsCtrl {
 
     private int situpCount; // situp counter
-    public static final String  rising = "found";
-    public static final String falling = "found";
     Accelerometer accelerometerSensor;
     private TrackingViewActivity trackingViewActivity;
     Accelerometer accSensor;
