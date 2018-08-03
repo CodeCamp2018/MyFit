@@ -1,5 +1,5 @@
 package com.uniks.myfit.controller;
-import com.uniks.myfit.Accelerometer;
+import com.uniks.myfit.sensors.Accelerometer;
 import com.uniks.myfit.TrackingViewActivity;
 import com.uniks.myfit.model.AccTripleVec;
 

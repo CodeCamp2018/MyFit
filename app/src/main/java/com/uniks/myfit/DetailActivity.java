@@ -1,5 +1,6 @@
 package com.uniks.myfit;
 
+import android.arch.persistence.room.Room;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -8,12 +9,17 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.uniks.myfit.controller.MapsController;
+import com.uniks.myfit.database.AppDatabase;
 
 public class DetailActivity extends AppCompatActivity implements View.OnClickListener {
+
+    AppDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, MainActivity.databaseName).allowMainThreadQueries().fallbackToDestructiveMigration().build();
 
         // View
         // TODO: set title based on the exercise type from stored data

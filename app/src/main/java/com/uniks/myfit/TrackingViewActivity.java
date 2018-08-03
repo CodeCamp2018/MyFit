@@ -2,25 +2,22 @@ package com.uniks.myfit;
 
 import android.arch.persistence.room.Room;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.TypedValue;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.MapFragment;
 import com.uniks.myfit.controller.MapsController;
 import com.uniks.myfit.controller.SitUpsCtrl;
 import com.uniks.myfit.database.AppDatabase;
 import com.uniks.myfit.database.SportExercise;
 import com.uniks.myfit.model.AccTripleVec;
-import com.uniks.myfit.model.StepCounterService;
+import com.uniks.myfit.sensors.StepCounterService;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
