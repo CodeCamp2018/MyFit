@@ -11,7 +11,9 @@ import android.widget.TextView;
 
 import com.uniks.myfit.MainActivity;
 import com.uniks.myfit.R;
+import com.uniks.myfit.database.AppDatabase;
 import com.uniks.myfit.database.SportExercise;
+import com.uniks.myfit.database.User;
 import com.uniks.myfit.helper.DeleteButtonHelper;
 
 import java.text.SimpleDateFormat;
@@ -86,7 +88,8 @@ public class CardsRecyclerViewAdapter extends RecyclerView.Adapter<CardsRecycler
         holder.date.setText(getDateString(sportExercises.get(position).getDate()));
         holder.time.setText(getTimeString(sportExercises.get(position).getDate()));
         holder.duration.setText(String.valueOf(sportExercises.get(position).getTripTime()));
-        holder.deleteButton.setOnClickListener(new DeleteButtonHelper(mainActivity));
+
+        holder.deleteButton.setOnClickListener(new DeleteButtonHelper(mainActivity, sportExercises.get(position).getId()));
     }
 
     public void addItem(SportExercise sportExercise, int index) {

@@ -1,7 +1,9 @@
 package com.uniks.myfit;
 
 import android.arch.persistence.room.Room;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -128,4 +130,5 @@ public class MainActivity extends AppCompatActivity {
     private void setStartListener(int modeCode, FloatingActionButton startButton) {
         startButton.setOnClickListener(new StartButtonHelper(modeCode, this));
     }
+
 }
