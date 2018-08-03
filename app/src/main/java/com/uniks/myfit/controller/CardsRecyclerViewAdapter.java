@@ -1,14 +1,18 @@
 package com.uniks.myfit.controller;
 
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.uniks.myfit.MainActivity;
 import com.uniks.myfit.R;
 import com.uniks.myfit.database.SportExercise;
+import com.uniks.myfit.helper.DeleteButtonHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,9 +23,11 @@ public class CardsRecyclerViewAdapter extends RecyclerView.Adapter<CardsRecycler
 
     private ArrayList<SportExercise> sportExercises;
     private static MyClickListener myClickListener;
+    private MainActivity mainActivity;
 
-    public CardsRecyclerViewAdapter(ArrayList<SportExercise> sportExercises) {
+    public CardsRecyclerViewAdapter(ArrayList<SportExercise> sportExercises, MainActivity mainActivity) {
         this.sportExercises = sportExercises;
+        this.mainActivity = mainActivity;
     }
 
     public static class DataObjectHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -29,13 +35,16 @@ public class CardsRecyclerViewAdapter extends RecyclerView.Adapter<CardsRecycler
         TextView date;
         TextView time;
         TextView duration;
+        ImageButton deleteButton;
 
         public DataObjectHolder(View itemView) {
             super(itemView);
+
             exerciseIcon = itemView.findViewById(R.id.fragment_exercise_icon);
             date = itemView.findViewById(R.id.sport_exercise_fragment_date);
             time = itemView.findViewById(R.id.sport_exercise_fragment_time);
             duration = itemView.findViewById(R.id.sport_exercise_fragment_duration);
+            deleteButton = itemView.findViewById(R.id.delete_button);
 
             itemView.setOnClickListener(this);
         }
@@ -52,7 +61,7 @@ public class CardsRecyclerViewAdapter extends RecyclerView.Adapter<CardsRecycler
 
     @Override
     public DataObjectHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_sport_exercise, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.content_sport_exercise, parent, false);
 
         DataObjectHolder dataObjectHolder = new DataObjectHolder(view);
         return dataObjectHolder;
@@ -60,10 +69,24 @@ public class CardsRecyclerViewAdapter extends RecyclerView.Adapter<CardsRecycler
 
     @Override
     public void onBindViewHolder(DataObjectHolder holder, int position) {
-//        holder.exerciseIcon.setImageIcon(); TODO: load icon here
+        switch (sportExercises.get(position).getMode()) {
+            case "running":
+                holder.exerciseIcon.setImageDrawable(ResourcesCompat.getDrawable(mainActivity.getResources(), R.drawable.ic_run_black, null));
+                break;
+            case "cycling":
+                holder.exerciseIcon.setImageDrawable(ResourcesCompat.getDrawable(mainActivity.getResources(), R.drawable.ic_bike_black, null));
+                break;
+            case "pushups":
+                holder.exerciseIcon.setImageDrawable(ResourcesCompat.getDrawable(mainActivity.getResources(), R.drawable.ic_pushups_black, null));
+                break;
+            case "situps":
+                holder.exerciseIcon.setImageDrawable(ResourcesCompat.getDrawable(mainActivity.getResources(), R.drawable.ic_situps_black, null));
+                break;
+        }
         holder.date.setText(getDateString(sportExercises.get(position).getDate()));
         holder.time.setText(getTimeString(sportExercises.get(position).getDate()));
         holder.duration.setText(String.valueOf(sportExercises.get(position).getTripTime()));
+        holder.deleteButton.setOnClickListener(new DeleteButtonHelper(mainActivity));
     }
 
     public void addItem(SportExercise sportExercise, int index) {
