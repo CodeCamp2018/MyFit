@@ -51,7 +51,6 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         exercise = db.sportExerciseDao().getAllFromUser(user.getUid()).get(index); // get the clicked exercise of all user exercises
 
 
-
         // View
         this.setTitle(exercise.getMode());
 
@@ -72,9 +71,9 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         // Controller
 
     }
-       /* This method will take screenshot from mobile screen*/
-    private Uri takeScreenShot()
-    {
+
+    /* This method will take screenshot from mobile screen*/
+    private Uri takeScreenShot() {
         // Get root View of your application
         View rootView = findViewById(R.id.map);
 
@@ -84,12 +83,13 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         // Create image
         Bitmap bitmap = rootView.getDrawingCache();
         // Save image in external storage
-        Uri bmpUri=saveScreenShot(bitmap);
+        Uri bmpUri = saveScreenShot(bitmap);
         return bmpUri;
 
     }
+
     /* This method will save screenshot taken by takeScreenShot method */
-    public Uri  saveScreenShot(Bitmap bitmap) {
+    public Uri saveScreenShot(Bitmap bitmap) {
         Uri bmpUri = null;
         try {
             // Create ByteArrayOutputStream object to store bytes of compressed image
@@ -97,7 +97,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
             // Compress the image in jpeg format
             bitmap.compress(Bitmap.CompressFormat.JPEG, 60, bytes);
             // Create FileOutputStream object to write image to external storage
-            File file =  new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "share_image_" + System.currentTimeMillis() + ".jpg");
+            File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "share_image_" + System.currentTimeMillis() + ".jpg");
             FileOutputStream out = new FileOutputStream(file);
             // Close output file
             out.close();
@@ -112,20 +112,37 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
         return bmpUri;
     }
+
     @Override
     public void onClick(View v) {
-        Uri bmpUri=takeScreenShot();
+
+
+        onSharedIntent();
         /* Share Button*/
-         Intent shareIntent =new Intent(Intent.ACTION_SEND);
-        shareIntent.setType("text/plain");
-        String shareBody ="Write your Body here";
-        String shareSub = "Write your Subject here";
-        shareIntent.putExtra(Intent.EXTRA_SUBJECT,shareSub);
-        shareIntent.putExtra(Intent.EXTRA_TEXT,shareBody);
-        shareIntent.putExtra(Intent.EXTRA_STREAM, bmpUri);
-        shareIntent.setType("image/*");
-       
+
     }
 
+    private void onSharedIntent() {
+        Intent shareIntent = getIntent();// Receive intent
+        String receivedAction = shareIntent.getAction();
+        // Get type from receive intent
+        String receivedType = shareIntent.getType();
 
+        if (receivedAction.equals(Intent.ACTION_SEND))
+        {
+            if (receivedType.startsWith("text/"))
+            {
+                shareIntent.setType("text/plain");
+                startActivity(Intent.createChooser(shareIntent, "Share Text"));
+            }else if (receivedType.startsWith("image/"))
+            {
+                shareIntent.setType("image/*");
+                /* Share Button*/
+                Uri bmpUri = takeScreenShot();
+                startActivity(Intent.createChooser(shareIntent, "Share Image"));
+                shareIntent.putExtra(Intent.EXTRA_STREAM, bmpUri);
+            }
+        }
+
+    }
 }
