@@ -17,6 +17,7 @@ import com.uniks.myfit.controller.SitUpsCtrl;
 import com.uniks.myfit.database.AppDatabase;
 import com.uniks.myfit.database.SportExercise;
 import com.uniks.myfit.model.AccTripleVec;
+import com.uniks.myfit.sensors.ProximitySensorService;
 import com.uniks.myfit.sensors.StepCounterService;
 
 import java.text.MessageFormat;
@@ -32,6 +33,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
     private SitUpsCtrl sitUpsCtrl;
     private StepCounterService stepCounterService;
     private MapsController mapsController;
+    private ProximitySensorService proximitySensorService;
 
     private int exerciseMode;
     private boolean activeStateMachine;
@@ -52,6 +54,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
 
         sitUpsCtrl = new SitUpsCtrl(this);
         stepCounterService = new StepCounterService(this);
+        proximitySensorService = new ProximitySensorService(this);
 
         activeStateMachine = true;
         actualState = 0;
@@ -126,8 +129,10 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 cyclingSpeedTitleUI.setText(getResources().getString(R.string.currentSpeedHeadline));
 
                 break;
-            case 2: // pushups Init
-                //pushupCtrl.proximityInit();
+            case 2: // pushups
+
+                proximitySensorService.initialize();
+
                 // set headlines
                 // count
                 TextView pushupCountTitleUI = findViewById(R.id.title_1);
@@ -190,6 +195,8 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
 
                 break;
             case 2: // pushups
+
+                enough = true;
 
                 break;
             case 3: // situps
@@ -254,11 +261,16 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
 
                 break;
             case 2: // pushups
-                // TODO: get the count of pushups from pushupController
+                final int calculatedPushUps = proximitySensorService.getCalculatedPushUps();
 
                 // set view - show count
-                TextView pushupCountValueUI = findViewById(R.id.value_1);
-                // TODO: fill UI-Element
+                final TextView pushupCountValueUI = findViewById(R.id.value_1);
+                pushupCountValueUI.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        pushupCountValueUI.setText(String.valueOf(calculatedPushUps));
+                    }
+                });
                 break;
             case 3: // situps
 
@@ -348,11 +360,12 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 break;
             case 2: // pushups
 
-
                 // db
                 newSportExercise.setMode("pushups");
+                newSportExercise.setAmountOfRepeats(proximitySensorService.getCalculatedPushUps());
 
                 // stop tracking
+                proximitySensorService.stopListening();
                 break;
             case 3: // situps
 
