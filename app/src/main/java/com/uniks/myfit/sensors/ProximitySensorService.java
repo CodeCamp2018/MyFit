@@ -5,7 +5,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.widget.Toast;
 
 import com.uniks.myfit.TrackingViewActivity;
 
@@ -66,7 +65,6 @@ public class ProximitySensorService implements SensorEventListener {
 
     public void stopListening() {
         sensorManager.unregisterListener(this, proximity);
-        Toast.makeText(context, "Sensor Stopped..", Toast.LENGTH_SHORT).show();
     }
 
 }

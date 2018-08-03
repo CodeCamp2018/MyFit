@@ -69,19 +69,21 @@ public class CardsRecyclerViewAdapter extends RecyclerView.Adapter<CardsRecycler
 
     @Override
     public void onBindViewHolder(DataObjectHolder holder, int position) {
-        switch (sportExercises.get(position).getMode()) {
-            case "running":
-                holder.exerciseIcon.setImageDrawable(ResourcesCompat.getDrawable(mainActivity.getResources(), R.drawable.ic_run_black, null));
-                break;
-            case "cycling":
-                holder.exerciseIcon.setImageDrawable(ResourcesCompat.getDrawable(mainActivity.getResources(), R.drawable.ic_bike_black, null));
-                break;
-            case "pushups":
-                holder.exerciseIcon.setImageDrawable(ResourcesCompat.getDrawable(mainActivity.getResources(), R.drawable.ic_pushups_black, null));
-                break;
-            case "situps":
-                holder.exerciseIcon.setImageDrawable(ResourcesCompat.getDrawable(mainActivity.getResources(), R.drawable.ic_situps_black, null));
-                break;
+        if (sportExercises.get(position).getMode() != null) {
+            switch (sportExercises.get(position).getMode()) {
+                case "running":
+                    holder.exerciseIcon.setImageDrawable(ResourcesCompat.getDrawable(mainActivity.getResources(), R.drawable.ic_run_black, null));
+                    break;
+                case "cycling":
+                    holder.exerciseIcon.setImageDrawable(ResourcesCompat.getDrawable(mainActivity.getResources(), R.drawable.ic_bike_black, null));
+                    break;
+                case "pushups":
+                    holder.exerciseIcon.setImageDrawable(ResourcesCompat.getDrawable(mainActivity.getResources(), R.drawable.ic_pushups_black, null));
+                    break;
+                case "situps":
+                    holder.exerciseIcon.setImageDrawable(ResourcesCompat.getDrawable(mainActivity.getResources(), R.drawable.ic_situps_black, null));
+                    break;
+            }
         }
         holder.date.setText(getDateString(sportExercises.get(position).getDate()));
         holder.time.setText(getTimeString(sportExercises.get(position).getDate()));

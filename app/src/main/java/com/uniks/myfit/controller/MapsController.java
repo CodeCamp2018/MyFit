@@ -29,6 +29,7 @@ import com.uniks.myfit.DetailActivity;
 import com.uniks.myfit.MainActivity;
 import com.uniks.myfit.R;
 import com.uniks.myfit.TrackingViewActivity;
+import com.uniks.myfit.database.LocationData;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -50,7 +51,7 @@ public class MapsController implements OnMapReadyCallback, LocationListener {
     private boolean firstLocation = true;
     private Polyline polyline;
 
-    private ArrayList<LatLng> linePoints = new ArrayList<>();
+    private ArrayList<LocationData> linePoints = new ArrayList<>();
 
     public MapsController(TrackingViewActivity trackingViewActivity) {
         this.trackingViewActivity = trackingViewActivity;
@@ -110,15 +111,21 @@ public class MapsController implements OnMapReadyCallback, LocationListener {
 
             polyline = mMap.addPolyline(new PolylineOptions().add(userLocation).color(0xff0564ff));
 
-            linePoints.add(0, userLocation);
+            linePoints.add(new LocationData(userLocation.latitude, userLocation.longitude));
 
             firstLocation = false;
         } else {
             // track path
 
-            linePoints.add(userLocation);
+            linePoints.add(new LocationData(userLocation.latitude, userLocation.longitude));
+            List<LatLng> tmp = new ArrayList<>();
 
-            polyline.setPoints(linePoints);
+            for (LocationData curr :
+                    linePoints) {
+                tmp.add(curr.getLatLng());
+            }
+
+            polyline.setPoints(tmp);
 
             mMap.moveCamera(CameraUpdateFactory.newLatLng(userLocation));
         }
@@ -155,12 +162,12 @@ public class MapsController implements OnMapReadyCallback, LocationListener {
         locationManager.removeUpdates(this);
     }
 
-    private double twoPointDistance(LatLng pointOne, LatLng pointTwo) {
+    private double twoPointDistance(LocationData pointOne, LocationData pointTwo) {
         double R = 6371f; // Radius of the earth in km
-        double dLat = (pointOne.latitude - pointTwo.latitude) * Math.PI / 180f;
-        double dLon = (pointOne.longitude - pointTwo.longitude) * Math.PI / 180f;
+        double dLat = (pointOne.getLatitude() - pointTwo.getLatitude()) * Math.PI / 180f;
+        double dLon = (pointOne.getLongitude() - pointTwo.getLongitude()) * Math.PI / 180f;
         double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                Math.cos(pointOne.latitude * Math.PI / 180f) * Math.cos(pointTwo.latitude * Math.PI / 180f) *
+                Math.cos(pointOne.getLatitude() * Math.PI / 180f) * Math.cos(pointTwo.getLatitude() * Math.PI / 180f) *
                         Math.sin(dLon/2) * Math.sin(dLon/2);
         double c = 2f * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
         double d = R * c;
@@ -174,10 +181,10 @@ public class MapsController implements OnMapReadyCallback, LocationListener {
         }
 
         double totalDistance = 0;
-        LatLng prevElement = new LatLng(0, 0);
+        LocationData prevElement = new LocationData(0, 0);
 
-        for (LatLng currElement: linePoints) {
-            if (prevElement.longitude == 0 && prevElement.latitude == 0) { // NOT for Santa
+        for (LocationData currElement: linePoints) {
+            if (prevElement.getLongitude() == 0 && prevElement.getLatitude() == 0) { // NOT for Santa
                 prevElement = currElement;
                 continue;
             }
@@ -190,7 +197,7 @@ public class MapsController implements OnMapReadyCallback, LocationListener {
         return totalDistance;
     }
 
-    public ArrayList<LatLng> getLinePoints() {
+    public ArrayList<LocationData> getLinePoints() {
         return linePoints;
     }
 }
