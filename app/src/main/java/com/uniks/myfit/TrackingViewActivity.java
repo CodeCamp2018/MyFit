@@ -16,7 +16,6 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.MapFragment;
 import com.uniks.myfit.controller.MapsController;
-import com.uniks.myfit.controller.PushupCtrl;
 import com.uniks.myfit.controller.SitUpsCtrl;
 import com.uniks.myfit.database.AppDatabase;
 import com.uniks.myfit.database.SportExercise;
