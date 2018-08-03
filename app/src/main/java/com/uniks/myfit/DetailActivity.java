@@ -1,5 +1,6 @@
 package com.uniks.myfit;
 
+import android.content.Intent;
 import android.arch.persistence.room.Room;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -50,6 +51,14 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onClick(View v) {
+        /* Share It with Google plus*/
+        Intent mIntent =new Intent(Intent.ACTION_SEND);
+        mIntent.setType("text/plain");
+        String shareBody ="Google+ Share";
+        String shareSub = "Google+";
+        mIntent.putExtra(Intent.EXTRA_SUBJECT,shareBody);
+        mIntent.putExtra(Intent.EXTRA_TEXT,shareSub);
+        startActivity(Intent.createChooser(mIntent,"Share Using"));
 
     }
 }
