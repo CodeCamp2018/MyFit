@@ -19,10 +19,12 @@ import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.widget.ImageView;
+
 import com.uniks.myfit.controller.MapsController;
 import com.uniks.myfit.database.AppDatabase;
 import com.uniks.myfit.database.SportExercise;
 import com.uniks.myfit.database.User;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -52,22 +54,34 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
 
         // View
-        this.setTitle(exercise.getMode());
+        switch (exercise.getMode()) {
+            case 0:
+                this.setTitle("Running");
+                break;
+            case 1:
+                this.setTitle("Cycling");
+                break;
+            case 2:
+                this.setTitle("Push Ups");
+                break;
+            case 3:
+                this.setTitle("Sit Ups");
+                break;
+        }
 
         // also choose layout based on exercise type from stored data
-        if (exercise != null) {
-            if (exercise.getMode().equals("running") || exercise.getMode().equals("cycling")) {
-                setContentView(R.layout.activity_detail_tracked);
-            } else {
-                setContentView(R.layout.activity_detail_repetitions);
-            }
 
-            Toolbar toolbar = findViewById(R.id.toolbar);
-            setSupportActionBar(toolbar);
-
-            FloatingActionButton fab = findViewById(R.id.share_button);
-            fab.setOnClickListener(this);
+        if (exercise.getMode() == 0 || exercise.getMode() == 1) {
+            setContentView(R.layout.activity_detail_tracked);
+        } else {
+            setContentView(R.layout.activity_detail_repetitions);
         }
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        FloatingActionButton fab = findViewById(R.id.share_button);
+        fab.setOnClickListener(this);
         // Controller
 
     }

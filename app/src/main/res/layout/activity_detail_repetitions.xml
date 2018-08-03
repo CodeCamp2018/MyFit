@@ -135,8 +135,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:textSize="24sp"
-            android:layout_margin="16dp"
-            android:text="57 kcal"/>
+            android:layout_margin="16dp"/>
 
         <TextView
             android:id="@+id/exercise_calories"
@@ -145,8 +144,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:textSize="24sp"
-            android:layout_margin="16dp"
-            android:text="30 repetitions"/>
+            android:layout_margin="16dp"/>
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

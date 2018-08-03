@@ -336,6 +336,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
         newSportExercise.setTripTime(getFormattedCurrentDuration());
         newSportExercise.setDate(now);
         newSportExercise.setUserId(db.userDao().getAll().get(0).getUid());
+        newSportExercise.setMode(exerciseMode);
         long exerciseId = db.sportExerciseDao().insert(newSportExercise);
         Log.e("stopBtnClicked", "exerciseId: " + exerciseId);
 
@@ -346,7 +347,6 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 ArrayList<LocationData> runningLinePoints = mapsController.getLinePoints();
 
                 // db
-                newSportExercise.setMode("running");
                 newSportExercise.setDistance(mapsController.getTotalDistance());
                 newSportExercise.setAmountOfRepeats(stepCounterService.getActualCount());
                 setExerciseIdToLocationData(runningLinePoints, exerciseId);
@@ -361,7 +361,6 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 ArrayList<LocationData> cyclingLinePoints = mapsController.getLinePoints();
 
                 // db
-                newSportExercise.setMode("cycling");
                 newSportExercise.setDistance(mapsController.getTotalDistance());
                 newSportExercise.setSpeed(mapsController.getSpeed());
                 setExerciseIdToLocationData(cyclingLinePoints, exerciseId);
@@ -373,7 +372,6 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
             case 2: // pushups
 
                 // db
-                newSportExercise.setMode("pushups");
                 newSportExercise.setAmountOfRepeats(proximitySensorService.getCalculatedPushUps());
 
                 // stop tracking
@@ -382,7 +380,6 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
             case 3: // situps
 
                 // db
-                newSportExercise.setMode("situps");
                 newSportExercise.setAmountOfRepeats(sitUpsCtrl.calculateSitups());
 
                 // stop tracking
