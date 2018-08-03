@@ -9,13 +9,15 @@ import android.util.Log;
 
 import com.uniks.myfit.database.SportExercise;
 
+import java.util.List;
+
 
 public class DeleteExerciseDialogFragment extends DialogFragment {
     public interface DeleteDialogListener {
         public void onDialogPositiveClick(DialogFragment dialog);
     }
 
-    private long position;
+    private int position;
     DeleteDialogListener listener;
 
     @Override
@@ -24,7 +26,7 @@ public class DeleteExerciseDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         super.onCreateDialog(savedInstanceState);
-        this.position = getArguments().getLong("index");
+        this.position = getArguments().getInt("index");
 
         builder.setMessage(R.string.dialog_delete)
                 .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
@@ -33,10 +35,12 @@ public class DeleteExerciseDialogFragment extends DialogFragment {
 
                         MainActivity mainActivity = (MainActivity) getActivity();
 
-                        SportExercise sportExercise = mainActivity.db.sportExerciseDao().loadAllByIds(new long[]{position}).get(0);
-                        Log.e("Database", "POSITION: " + position + "; ID: " + sportExercise.getId());
+                        //List<SportExercise> sportExercise = mainActivity.db.sportExerciseDao().loadAllByIds(new long[]{position});
+                        //Log.e("Database", "POSITION: " + position + "; ID: " + sportExercise.get(0).getId());
 
-                        mainActivity.db.sportExerciseDao().deleteExercise(sportExercise);
+                        SportExercise exercise = mainActivity.db.sportExerciseDao().getAllFromUser(mainActivity.user.getUid()).get(position);
+
+                        mainActivity.db.sportExerciseDao().deleteExercise(exercise.getId());
 
                         mainActivity.finish();
                         startActivity(mainActivity.getIntent());

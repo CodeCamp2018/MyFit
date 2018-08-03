@@ -48,7 +48,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
         user = db.userDao().getAll().get(0); // same call as in MainActivity -> for this project ok, because just one user
 
-        int index = getIntent().getIntExtra("EXERCISE", 0);
+        int index = getIntent().getIntExtra("POSITION", 0);
 
         exercise = db.sportExerciseDao().getAllFromUser(user.getUid()).get(index); // get the clicked exercise of all user exercises
 

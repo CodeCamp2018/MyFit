@@ -338,7 +338,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
         newSportExercise.setUserId(db.userDao().getAll().get(0).getUid());
         newSportExercise.setMode(exerciseMode);
         long exerciseId = db.sportExerciseDao().insert(newSportExercise);
-        Log.e("stopBtnClicked", "exerciseId: " + exerciseId);
+        Log.e("stopBtnClicked", "exerciseId: " + exerciseId + "; mode: " + exerciseMode);
 
         switch (exerciseMode) {
             case 0: // running
