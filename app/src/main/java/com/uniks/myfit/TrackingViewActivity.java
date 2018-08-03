@@ -16,7 +16,6 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.MapFragment;
 import com.uniks.myfit.controller.MapsController;
-import com.uniks.myfit.controller.PushupCtrl;
 import com.uniks.myfit.controller.SitUpsCtrl;
 import com.uniks.myfit.database.AppDatabase;
 import com.uniks.myfit.database.SportExercise;
@@ -34,7 +33,6 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
     private static final int MIN_NUMBER_OF_ELEMENTS = 5;
     private static final String TRACKING_LOG = "TrackingViewActivity: ";
     private SitUpsCtrl sitUpsCtrl;
-    private PushupCtrl pushupCtrl;
     private StepCounterService stepCounterService;
     private MapsController mapsController;
 
@@ -131,10 +129,8 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 cyclingSpeedTitleUI.setText(getResources().getString(R.string.currentSpeedHeadline));
 
                 break;
-            case 2: // pushups
-
-                pushupCtrl.proximityInit();
-
+            case 2: // pushups Init
+                //pushupCtrl.proximityInit();
                 // set headlines
                 // count
                 TextView pushupCountTitleUI = findViewById(R.id.title_1);
@@ -222,7 +218,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 runningDistanceValueUI.post(new Runnable() {
                     @Override
                     public void run() {
-                        runningDistanceValueUI.setText(String.valueOf(mapsController.getTotalDistance()));
+                        runningDistanceValueUI.setText(String.format("%.2f", mapsController.getTotalDistance()));
                     }
                 });
 
@@ -246,7 +242,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 cyclingDistanceValueUI.post(new Runnable() {
                     @Override
                     public void run() {
-                        cyclingDistanceValueUI.setText(String.valueOf(mapsController.getTotalDistance()));
+                        cyclingDistanceValueUI.setText(String.format("%.2f",mapsController.getTotalDistance()));
                     }
                 });
 
@@ -303,8 +299,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
     private void includeMap() {
         //Insert map in our view
         if (exerciseMode <= 1) {
-            int padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 96, getResources().getDisplayMetrics());
-            mapsController = new MapsController(this, padding);
+            mapsController = new MapsController(this);
 
             FragmentTransaction fragmentTransaction =
                     getSupportFragmentManager().beginTransaction();
@@ -356,11 +351,11 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 break;
             case 2: // pushups
 
+
                 // db
                 newSportExercise.setMode("pushups");
 
                 // stop tracking
-                pushupCtrl.pstop();
                 break;
             case 3: // situps
 
@@ -388,11 +383,9 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
         long hoursInMilli = minutesInMilli * 60;
 
         long hours = duration / hoursInMilli;
-        long minutes = duration / minutesInMilli;
-        long seconds = duration / secondsInMilli;
+        long minutes = duration / minutesInMilli - hours * 60;
+        long seconds = duration / secondsInMilli - hours * 3600 - minutes * 60;
 
-        // FIXME: Output = 0:15:931 (31 is the seconds, but what the heck is 9 doing there?)
-        // FIXME II: seconds are counting over 60!!!
         return MessageFormat.format("{0}:{1}:{2}", hours, minutes, seconds);
     }
 

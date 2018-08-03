@@ -23,7 +23,7 @@ public class ProximitySensorService  implements SensorEventListener {
     public static Context context;
     TrackingViewActivity trackingViewActivity;
     private float distanceFromPhone;
-
+int pushupcount;
     public ProximitySensorService(TrackingViewActivity trackingViewActivity)
     {
         this.trackingViewActivity=trackingViewActivity;
@@ -59,15 +59,25 @@ public class ProximitySensorService  implements SensorEventListener {
         }
     }
 
-    @Override
-    public void onSensorChanged(SensorEvent event) {
+
+    public int calculatePushUps(SensorEvent event) {
         if (isSensorPresent) {
             distanceFromPhone = event.values[0];
-            if (distanceFromPhone < proximity.getMaximumRange()) {
+            if (distanceFromPhone <=proximity.getMaximumRange()) {
                 Inrange=true;
-            }
+                if(distanceFromPhone==0)
+                {
+                  pushupcount++;
+
+            }}
+
         }
+        return pushupcount;
     }
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+    }
+
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
