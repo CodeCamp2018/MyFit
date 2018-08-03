@@ -1,12 +1,6 @@
 package com.uniks.myfit;
 
 import android.arch.persistence.room.Room;
-import android.content.Context;
-import android.content.Intent;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,15 +13,12 @@ import android.widget.TextView;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.uniks.myfit.controller.CardsRecyclerViewAdapter;
-import com.uniks.myfit.controller.SitUpsCtrl;
-import com.uniks.myfit.controller.SitUpsCtrl;
 import com.uniks.myfit.database.AppDatabase;
 import com.uniks.myfit.database.SportExercise;
 import com.uniks.myfit.database.User;
 import com.uniks.myfit.helper.StartButtonHelper;
-import com.uniks.myfit.model.ProximitySensorService;
-import com.uniks.myfit.model.StepCounterService;
 import com.uniks.myfit.helper.WeightTxtListener;
+import com.uniks.myfit.sensors.Gyroscope;
 
 import java.util.ArrayList;
 import java.util.List;

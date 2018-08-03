@@ -1,4 +1,4 @@
-package com.uniks.myfit.model;
+package com.uniks.myfit.sensors;
 
 import android.content.Context;
 import android.content.pm.PackageManager;

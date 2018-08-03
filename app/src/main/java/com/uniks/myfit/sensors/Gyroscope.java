@@ -1,4 +1,4 @@
-package com.uniks.myfit;
+package com.uniks.myfit.sensors;
 
 import android.content.Context;
 import android.hardware.Sensor;
@@ -10,6 +10,8 @@ import static java.lang.Math.sqrt;
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.Toast;
+
+import com.uniks.myfit.MainActivity;
 
 public class Gyroscope implements SensorEventListener {
     private SensorManager sensorManager;

@@ -1,4 +1,4 @@
-package com.uniks.myfit;
+package com.uniks.myfit.sensors;
 
 import android.content.Context;
 import android.hardware.Sensor;
@@ -8,6 +8,7 @@ import android.hardware.SensorManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.uniks.myfit.TrackingViewActivity;
 import com.uniks.myfit.model.AccTripleVec;
 
 public class Accelerometer implements SensorEventListener {
