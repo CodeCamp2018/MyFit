@@ -5,11 +5,13 @@ import android.arch.persistence.room.Room;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
@@ -25,6 +27,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URI;
 
 public class DetailActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -63,10 +66,10 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
     }
        /* This method will take screenshot from mobile screen*/
-    private void takeScreenShot(View view)
+    private Uri takeScreenShot()
     {
         // Get root View of your application
-        View rootView = findViewById(android.R.id.content).getRootView();
+        View rootView = findViewById(R.id.map);
 
         // Enable drawing cache
         rootView.setDrawingCacheEnabled(true);
@@ -74,37 +77,47 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         // Create image
         Bitmap bitmap = rootView.getDrawingCache();
         // Save image in external storage
-           saveScreenShot(bitmap);
+        Uri bmpUri=saveScreenShot(bitmap);
+        return bmpUri;
 
     }
     /* This method will save screenshot taken by takeScreenShot method */
-    private void saveScreenShot(Bitmap bitmap) {
+    public Uri  saveScreenShot(Bitmap bitmap) {
+        Uri bmpUri = null;
         try {
             // Create ByteArrayOutputStream object to store bytes of compressed image
             ByteArrayOutputStream bytes = new ByteArrayOutputStream();
             // Compress the image in jpeg format
             bitmap.compress(Bitmap.CompressFormat.JPEG, 60, bytes);
             // Create FileOutputStream object to write image to external storage
-            FileOutputStream fo = new FileOutputStream(Environment.getExternalStorageDirectory() + File.separator + "screenimg.jpg");
-            fo.write(bytes.toByteArray());
+            File file =  new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "share_image_" + System.currentTimeMillis() + ".jpg");
+            FileOutputStream out = new FileOutputStream(file);
             // Close output file
-            fo.close();
+            out.close();
+            /* Store it in a file*/
+            bmpUri = bmpUri.fromFile(file); // use this version for API >= 24
+
         } catch (FileNotFoundException e) {
             Log.e("Main", e.getMessage());
         } catch (IOException e) {
             Log.e("Main", e.getMessage(), e);
         }
+
+        return bmpUri;
     }
     @Override
     public void onClick(View v) {
+        Uri bmpUri=takeScreenShot();
         /* Share Button*/
-        Intent shareIntent =new Intent(Intent.ACTION_SEND);
+         Intent shareIntent =new Intent(Intent.ACTION_SEND);
         shareIntent.setType("text/plain");
         String shareBody ="Write your Body here";
         String shareSub = "Write your Subject here";
         shareIntent.putExtra(Intent.EXTRA_SUBJECT,shareSub);
         shareIntent.putExtra(Intent.EXTRA_TEXT,shareBody);
-        startActivity(Intent.createChooser(shareIntent,"Share Using"));
+        shareIntent.putExtra(Intent.EXTRA_STREAM, bmpUri);
+        shareIntent.setType("image/*");
+       
     }
 
 
