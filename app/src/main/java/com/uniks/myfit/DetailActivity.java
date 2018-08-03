@@ -2,15 +2,29 @@ package com.uniks.myfit;
 
 import android.content.Intent;
 import android.arch.persistence.room.Room;
+import android.graphics.Bitmap;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.View;
+
 
 import com.uniks.myfit.controller.MapsController;
 import com.uniks.myfit.database.AppDatabase;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 public class DetailActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -49,16 +63,30 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
     }
 
+
+
+
+       /* This method will take screenshot from mobile screen*/
+    public void takeAndSaveScreenShot()
+    {
+
+    }
+
+
+
     @Override
     public void onClick(View v) {
         /* Share Button*/
-        Intent mIntent =new Intent(Intent.ACTION_SEND);
-        mIntent.setType("text/plain");
+        Intent shareIntent =new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
         String shareBody ="Write your Body here";
         String shareSub = "Write your Subject here";
-        mIntent.putExtra(Intent.EXTRA_SUBJECT,shareSub);
-        mIntent.putExtra(Intent.EXTRA_TEXT,shareBody);
-        startActivity(Intent.createChooser(mIntent,"Share Using"));
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT,shareSub);
+        shareIntent.putExtra(Intent.EXTRA_TEXT,shareBody);
+        startActivity(Intent.createChooser(shareIntent,"Share Using"));
 
+        /* Call takeAndSaveScreenShot */
+
+        takeAndSaveScreenShot();
     }
 }
