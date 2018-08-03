@@ -186,7 +186,6 @@ public class MapsController implements OnMapReadyCallback, LocationListener {
 
             prevElement = currElement;
         }
-        Log.e("MapsController: ", "called getTotalDistance! Which is: " + totalDistance);
 
         return totalDistance;
     }

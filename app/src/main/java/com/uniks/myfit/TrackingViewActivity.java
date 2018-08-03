@@ -183,13 +183,14 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
         boolean enough = false;
         switch (exerciseMode) {
             case 0: // running
-                if (mapsController.getLinePoints().size() >= MIN_NUMBER_OF_ELEMENTS || stepCounterService.getActualCount() >= 1) {
-                    enough = true;
-                }
+
+                enough = true;
+
+                break;
             case 1: // cycling
-                if (mapsController.getLinePoints().size() >= MIN_NUMBER_OF_ELEMENTS) {
-                    enough = true;
-                }
+
+                enough = true;
+
                 break;
             case 2: // pushups
 
@@ -339,32 +340,38 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 mapsController.stopTracking();
                 break;
             case 1: // cycling
-                mapsController.stopTracking();
 
                 // db
                 newSportExercise.setMode("cycling");
                 newSportExercise.setDistance(mapsController.getTotalDistance());
                 newSportExercise.setSpeed(mapsController.getSpeed());
+
+                // stop tracking
+                mapsController.stopTracking();
                 break;
             case 2: // pushups
 
 
                 // db
                 newSportExercise.setMode("pushups");
+
+                // stop tracking
                 break;
             case 3: // situps
-                sitUpsCtrl.stop();
 
                 // db
                 newSportExercise.setMode("situps");
                 newSportExercise.setAmountOfRepeats(sitUpsCtrl.calculateSitups());
+
+                // stop tracking
+                sitUpsCtrl.stop();
                 break;
         }
 
         // save data to database
         db.sportExerciseDao().insertAll(newSportExercise);
+        Log.e("DB checking", "db.getExercises Count: " + db.sportExerciseDao().getAll().size() + "\n first element is: " + db.sportExerciseDao().getAll().get(0).getMode());
 
-        // TODO switch back to main screen
     }
 
     public String getFormattedCurrentDuration() {
