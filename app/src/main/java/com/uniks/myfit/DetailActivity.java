@@ -130,13 +130,31 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onClick(View v) {
 
+        Uri bmpUri = takeScreenShot();
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND);
+        String shareBody = "Write your Body here";
+        String shareSub = "Write your Subject here";
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, shareSub);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
+        shareIntent.putExtra(Intent.EXTRA_STREAM, bmpUri);
+        shareIntent.setType("image/jpeg");
+        startActivity(Intent.createChooser(shareIntent, "send"));
 
-        onSharedIntent();
-        /* Share Button*/
+        /*Uri imageUri = Uri.parse("android.resource://" + getPackageName()
+        + "/drawable/" + "ic_launcher");
+ Intent shareIntent = new Intent();
+ shareIntent.setAction(Intent.ACTION_SEND);
+ shareIntent.putExtra(Intent.EXTRA_TEXT, "Hello");
+ shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
+ shareIntent.setType("image/jpeg");
+ shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+ startActivity(Intent.createChooser(shareIntent, "send"));*/
+
 
     }
 
-    private void onSharedIntent() {
+   /* private void onSharedIntent() {
         Intent shareIntent = getIntent();// Receive intent
         String receivedAction = shareIntent.getAction();
         // Get type from receive intent
@@ -151,12 +169,12 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
             }else if (receivedType.startsWith("image/"))
             {
                 shareIntent.setType("image/*");
-                /* Share Button*/
+                /* Share Button
                 Uri bmpUri = takeScreenShot();
                 startActivity(Intent.createChooser(shareIntent, "Share Image"));
                 shareIntent.putExtra(Intent.EXTRA_STREAM, bmpUri);
-            }
-        }
+            }    }
 
-    }
+        }*/
+
 }
