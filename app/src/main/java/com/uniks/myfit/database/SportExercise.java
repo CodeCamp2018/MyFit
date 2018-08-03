@@ -40,9 +40,6 @@ public class SportExercise {
     @ColumnInfo(name = "amount_of_repeats")
     private int amountOfRepeats; // for steps, push-ups and sit-ups
 
-    @Relation(parentColumn = "id", entityColumn = "exercise_id")
-    private List<LocationData> locationData;
-
     // TODO: the burnt calories??
 
     public long getId() {
@@ -109,11 +106,4 @@ public class SportExercise {
         this.userId = userId;
     }
 
-    public List<LocationData> getLocationData() {
-        return locationData;
-    }
-
-    public void setLocationData(List<LocationData> locationData) {
-        this.locationData = locationData;
-    }
 }
