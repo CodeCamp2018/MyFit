@@ -19,6 +19,8 @@ import android.view.View;
 import android.widget.ImageView;
 import com.uniks.myfit.controller.MapsController;
 import com.uniks.myfit.database.AppDatabase;
+import com.uniks.myfit.database.SportExercise;
+import com.uniks.myfit.database.User;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -29,37 +31,42 @@ import java.io.OutputStream;
 public class DetailActivity extends AppCompatActivity implements View.OnClickListener {
 
     AppDatabase db;
+    User user;
+    SportExercise exercise;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Model
         db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, MainActivity.databaseName).allowMainThreadQueries().fallbackToDestructiveMigration().build();
 
+        user = db.userDao().getAll().get(0); // same call as in MainActivity -> for this project ok, because just one user
+
+        int index = getIntent().getIntExtra("EXERCISE", 0);
+
+        exercise = db.sportExerciseDao().getAllFromUser(user.getUid()).get(index); // get the clicked exercise of all user exercises
+
+
+
         // View
-        // TODO: set title based on the exercise type from stored data
-        this.setTitle("Exercise");
+        this.setTitle(exercise.getMode());
 
-        // TODO: also choose layout based on exercise type from stored data
-        if (true) {
-            setContentView(R.layout.activity_detail_tracked);
-        } else {
-            setContentView(R.layout.activity_detail_repetitions);
+        // also choose layout based on exercise type from stored data
+        if (exercise != null) {
+            if (exercise.getMode().equals("running") || exercise.getMode().equals("cycling")) {
+                setContentView(R.layout.activity_detail_tracked);
+            } else {
+                setContentView(R.layout.activity_detail_repetitions);
+            }
+
+            Toolbar toolbar = findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
+
+            FloatingActionButton fab = findViewById(R.id.share_button);
+            fab.setOnClickListener(this);
         }
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.share_button);
-        fab.setOnClickListener(this);
-
-        // Controllers
-        /*MapsController mapsController = new MapsController(this);
-        mapsController.init();*/
-
-
-
-        // Model
+        // Controller
 
     }
        /* This method will take screenshot from mobile screen*/

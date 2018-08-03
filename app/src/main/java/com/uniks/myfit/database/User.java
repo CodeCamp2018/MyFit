@@ -8,7 +8,7 @@ import android.arch.persistence.room.PrimaryKey;
 public class User {
 
     @PrimaryKey(autoGenerate = true)
-    private int uid;
+    private long uid;
 
     @ColumnInfo(name = "weight")
     private int weight; // user weight in kg
@@ -16,11 +16,11 @@ public class User {
     // TODO: maybe the total distance, total time exercising, ... ?
 
 
-    public int getUid() {
+    public long getUid() {
         return uid;
     }
 
-    public void setUid(int uid) {
+    public void setUid(long uid) {
         this.uid = uid;
     }
 

@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.uniks.myfit.controller.MapsController;
 import com.uniks.myfit.controller.SitUpsCtrl;
 import com.uniks.myfit.database.AppDatabase;
+import com.uniks.myfit.database.LocationData;
 import com.uniks.myfit.database.SportExercise;
 import com.uniks.myfit.model.AccTripleVec;
 import com.uniks.myfit.sensors.ProximitySensorService;
@@ -246,7 +247,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 cyclingDistanceValueUI.post(new Runnable() {
                     @Override
                     public void run() {
-                        cyclingDistanceValueUI.setText(String.format("%.2f",mapsController.getTotalDistance()));
+                        cyclingDistanceValueUI.setText(String.format("%.2f", mapsController.getTotalDistance()));
                     }
                 });
 
@@ -335,14 +336,20 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
         newSportExercise.setTripTime(getFormattedCurrentDuration());
         newSportExercise.setDate(now);
         newSportExercise.setUserId(db.userDao().getAll().get(0).getUid());
+        long exerciseId = db.sportExerciseDao().insert(newSportExercise);
+        Log.e("stopBtnClicked", "exerciseId: " + exerciseId);
 
         switch (exerciseMode) {
             case 0: // running
+
+                // set exerciseId to each locationData
+                ArrayList<LocationData> runningLinePoints = mapsController.getLinePoints();
 
                 // db
                 newSportExercise.setMode("running");
                 newSportExercise.setDistance(mapsController.getTotalDistance());
                 newSportExercise.setAmountOfRepeats(stepCounterService.getActualCount());
+                setExerciseIdToLocationData(runningLinePoints, exerciseId);
 
                 // stop tracking
                 stepCounterService.onStop();
@@ -350,10 +357,15 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 break;
             case 1: // cycling
 
+                // set exerciseId to each locationData
+                ArrayList<LocationData> cyclingLinePoints = mapsController.getLinePoints();
+
                 // db
                 newSportExercise.setMode("cycling");
                 newSportExercise.setDistance(mapsController.getTotalDistance());
                 newSportExercise.setSpeed(mapsController.getSpeed());
+                setExerciseIdToLocationData(cyclingLinePoints, exerciseId);
+
 
                 // stop tracking
                 mapsController.stopTracking();
@@ -377,11 +389,19 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 sitUpsCtrl.stop();
                 break;
         }
+        db.sportExerciseDao().updateSportExercise(newSportExercise);
 
         // save data to database
-        db.sportExerciseDao().insertAll(newSportExercise);
-        Log.e("DB checking", "db.getExercises Count: " + db.sportExerciseDao().getAll().size() + "\n first element is: " + db.sportExerciseDao().getAll().get(0).getMode());
+        Log.e("DB checking", "db.getExercises Count: " + db.sportExerciseDao().getAll().size() + "\n first element is: " + db.sportExerciseDao().getAllFromUser(db.userDao().getAll().get(0).getUid()).get(0).getMode());
 
+    }
+
+    private void setExerciseIdToLocationData(ArrayList<LocationData> linePoints, long exerciseId) {
+        for (LocationData data :
+                linePoints) {
+            data.setExerciseId(exerciseId);
+            db.locationDataDao().insert(data);
+        }
     }
 
     public String getFormattedCurrentDuration() {

@@ -9,7 +9,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -18,6 +17,7 @@ import com.uniks.myfit.controller.CardsRecyclerViewAdapter;
 import com.uniks.myfit.database.AppDatabase;
 import com.uniks.myfit.database.SportExercise;
 import com.uniks.myfit.database.User;
+import com.uniks.myfit.helper.DoneExerciseCardClickListener;
 import com.uniks.myfit.helper.StartButtonHelper;
 import com.uniks.myfit.helper.WeightTxtListener;
 import com.uniks.myfit.sensors.Gyroscope;
@@ -62,15 +62,12 @@ public class MainActivity extends AppCompatActivity {
         user = users.get(0); // for this small project there is only one user
         // controllers
         Log.d(TAG, "onCreate: initializing sensor services");
-        /* Gyroscope Sensor Class*/
-        gyroscopeSensor = new Gyroscope(this);
-        /* Gyroscope Init*/
-        gyroscopeSensor.init();
+
         // view
         setContentView(R.layout.activity_main);
 
         // set toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         EditText weightTxt = findViewById(R.id.input_weight);
@@ -104,21 +101,24 @@ public class MainActivity extends AppCompatActivity {
 
     private ArrayList<SportExercise> getDataSet() {
 
-        List<SportExercise> allUsers = db.sportExerciseDao().getAllFromUser(user.getUid());
+        List<SportExercise> allExercises = db.sportExerciseDao().getAllFromUser(user.getUid());
 
-        return new ArrayList<SportExercise>(allUsers);
+        return new ArrayList<>(allExercises);
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
+        // reload to show done exercises
+        finish();
+        startActivity(getIntent());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        ((CardsRecyclerViewAdapter) cardsAdapter).setOnItemClickListener(
-                new CardsRecyclerViewAdapter.MyClickListener() {
-                    @Override
-                    public void onItemClick(int position, View v) {
-                        Log.i("ClickEvent on Card:", " Clicked on Item " + position);
-                    }
-                });
+        ((CardsRecyclerViewAdapter) cardsAdapter).setOnItemClickListener(new DoneExerciseCardClickListener(this));
     }
 
     @Override
