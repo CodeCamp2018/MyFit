@@ -1,5 +1,6 @@
 package com.uniks.myfit;
 
+import android.content.Intent;
 import android.arch.persistence.room.Room;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -50,6 +51,14 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onClick(View v) {
+        /* Share Button*/
+        Intent mIntent =new Intent(Intent.ACTION_SEND);
+        mIntent.setType("text/plain");
+        String shareBody ="Write your Body here";
+        String shareSub = "Write your Subject here";
+        mIntent.putExtra(Intent.EXTRA_SUBJECT,shareSub);
+        mIntent.putExtra(Intent.EXTRA_TEXT,shareBody);
+        startActivity(Intent.createChooser(mIntent,"Share Using"));
 
     }
 }
