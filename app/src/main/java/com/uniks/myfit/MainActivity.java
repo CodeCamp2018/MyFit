@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         cardRecyclerView.setHasFixedSize(true);
         cardsLayoutManager = new LinearLayoutManager(this);
         cardRecyclerView.setLayoutManager(cardsLayoutManager);
-        cardsAdapter = new CardsRecyclerViewAdapter(getDataSet());
+        cardsAdapter = new CardsRecyclerViewAdapter(getDataSet(), this);
         cardRecyclerView.setAdapter(cardsAdapter);
 
     }
