@@ -9,7 +9,7 @@ import android.view.View;
 
 import com.uniks.myfit.controller.MapsController;
 
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity implements View.OnClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,13 +30,7 @@ public class DetailActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.share_button);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                //TODO: Implement sharing
-            }
-        });
+        fab.setOnClickListener(this);
 
         // Controllers
         /*MapsController mapsController = new MapsController(this);
@@ -48,4 +42,8 @@ public class DetailActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onClick(View v) {
+
+    }
 }
