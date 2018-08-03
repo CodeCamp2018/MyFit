@@ -16,10 +16,10 @@
     <string name="running">Running</string>
     <string name="cycling">Cycling</string>
 
-    <string name="stepsHeadline">steps</string>
-    <string name="currentSpeedHeadline">current speed</string>
-    <string name="averageSpeedHeadline">average speed</string>
-    <string name="distanceHeadline">distance</string>
-    <string name="timeHeadline">spend time</string>
-    <string name="countHeadline">count</string>
+    <string name="stepsHeadline">Steps</string>
+    <string name="currentSpeedHeadline">Current speed</string>
+    <string name="averageSpeedHeadline">Average speed</string>
+    <string name="distanceHeadline">Distance</string>
+    <string name="timeHeadline">Duration</string>
+    <string name="countHeadline">Count</string>
 </resources>
