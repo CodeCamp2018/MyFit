@@ -26,7 +26,7 @@ public class DeleteExerciseDialogFragment extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         MainActivity mainActivity = (MainActivity) getActivity();
-                        int uid = mainActivity.db.userDao().getAll().get(0).getUid();
+                        long uid = mainActivity.db.userDao().getAll().get(0).getUid();
                         SportExercise sportExercise = mainActivity.db.sportExerciseDao().getAllFromUser(uid).get(position);
                         mainActivity.db.sportExerciseDao().delete(sportExercise);
                     }

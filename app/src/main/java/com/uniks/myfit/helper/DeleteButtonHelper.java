@@ -11,9 +11,9 @@ import com.uniks.myfit.database.SportExercise;
 
 public class DeleteButtonHelper implements View.OnClickListener {
     MainActivity mainActivity;
-    int position;
+    long position;
 
-    public DeleteButtonHelper(MainActivity mainActivity, int position) {
+    public DeleteButtonHelper(MainActivity mainActivity,  long position) {
         this.mainActivity = mainActivity;
         this.position = position;
     }
@@ -22,7 +22,7 @@ public class DeleteButtonHelper implements View.OnClickListener {
     public void onClick(View view) {
         DeleteExerciseDialogFragment deleteDialog = new DeleteExerciseDialogFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt("index", position);
+        bundle.putLong("index", position);
         deleteDialog.setArguments(bundle);
         deleteDialog.show(mainActivity.getSupportFragmentManager(), "deletion");
     }
