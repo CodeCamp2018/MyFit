@@ -86,7 +86,7 @@ public class CardsRecyclerViewAdapter extends RecyclerView.Adapter<CardsRecycler
         holder.date.setText(getDateString(sportExercises.get(position).getDate()));
         holder.time.setText(getTimeString(sportExercises.get(position).getDate()));
         holder.duration.setText(String.valueOf(sportExercises.get(position).getTripTime()));
-        holder.deleteButton.setOnClickListener(new DeleteButtonHelper());
+        holder.deleteButton.setOnClickListener(new DeleteButtonHelper(mainActivity));
     }
 
     public void addItem(SportExercise sportExercise, int index) {
