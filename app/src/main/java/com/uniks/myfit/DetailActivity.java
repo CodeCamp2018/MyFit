@@ -13,13 +13,16 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
+import android.widget.ImageView;
 
 
 import com.uniks.myfit.controller.MapsController;
 import com.uniks.myfit.database.AppDatabase;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -62,18 +65,39 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         // Model
 
     }
-
-
-
-
        /* This method will take screenshot from mobile screen*/
-    public void takeAndSaveScreenShot()
+    private void takeScreenShot(View view)
     {
+        // Get root View of your application
+        View rootView = findViewById(android.R.id.content).getRootView();
+
+        // Enable drawing cache
+        rootView.setDrawingCacheEnabled(true);
+
+        // Create image
+        Bitmap bitmap = rootView.getDrawingCache();
+        // Save image in external storage
+           saveScreenShot(bitmap);
 
     }
-
-
-
+    /* This method will save screenshot taken by takeScreenShot method */
+    private void saveScreenShot(Bitmap bitmap) {
+        try {
+            // Create ByteArrayOutputStream object to store bytes of compressed image
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            // Compress the image in jpeg format
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 60, bytes);
+            // Create FileOutputStream object to write image to external storage
+            FileOutputStream fo = new FileOutputStream(Environment.getExternalStorageDirectory() + File.separator + "screenimg.jpg");
+            fo.write(bytes.toByteArray());
+            // Close output file
+            fo.close();
+        } catch (FileNotFoundException e) {
+            Log.e("Main", e.getMessage());
+        } catch (IOException e) {
+            Log.e("Main", e.getMessage(), e);
+        }
+    }
     @Override
     public void onClick(View v) {
         /* Share Button*/
@@ -87,6 +111,8 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
         /* Call takeAndSaveScreenShot */
 
-        takeAndSaveScreenShot();
+
     }
+
+
 }
