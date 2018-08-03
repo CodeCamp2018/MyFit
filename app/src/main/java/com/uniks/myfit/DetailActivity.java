@@ -51,13 +51,13 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onClick(View v) {
-        /* Share It with Google plus*/
+        /* Share Button*/
         Intent mIntent =new Intent(Intent.ACTION_SEND);
         mIntent.setType("text/plain");
-        String shareBody ="Google+ Share";
-        String shareSub = "Google+";
-        mIntent.putExtra(Intent.EXTRA_SUBJECT,shareBody);
-        mIntent.putExtra(Intent.EXTRA_TEXT,shareSub);
+        String shareBody ="Write your Body here";
+        String shareSub = "Write your Subject here";
+        mIntent.putExtra(Intent.EXTRA_SUBJECT,shareSub);
+        mIntent.putExtra(Intent.EXTRA_TEXT,shareBody);
         startActivity(Intent.createChooser(mIntent,"Share Using"));
 
     }
