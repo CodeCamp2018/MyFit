@@ -33,7 +33,7 @@ public interface SportExerciseDao {
     long insert(SportExercise sportExercise);
 
     @Delete
-    void delete(SportExercise sportExercise);
+    void deleteExercise(SportExercise sportExercise);
 
 
 }
