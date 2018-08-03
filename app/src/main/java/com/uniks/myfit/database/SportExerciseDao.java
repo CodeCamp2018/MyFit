@@ -15,10 +15,10 @@ public interface SportExerciseDao {
     List<SportExercise> getAll();
 
     @Query("SELECT * FROM sportexercise WHERE user_id = :userId")
-    List<SportExercise> getAllFromUser(int userId);
+    List<SportExercise> getAllFromUser(long userId);
 
     @Query("SELECT * FROM sportexercise WHERE id IN (:ids)")
-    List<SportExercise> loadAllByIds(int[] ids);
+    List<SportExercise> loadAllByIds(long[] ids);
 
     @Update
     void updateSportExercise(SportExercise sportExercise);
@@ -27,7 +27,10 @@ public interface SportExerciseDao {
     void updateSportExercises(SportExercise... sportExercises);
 
     @Insert
-    void insertAll(SportExercise... sportExercises);
+    long[] insertAll(SportExercise... sportExercises);
+
+    @Insert
+    long insert(SportExercise sportExercise);
 
     @Delete
     void delete(SportExercise sportExercise);

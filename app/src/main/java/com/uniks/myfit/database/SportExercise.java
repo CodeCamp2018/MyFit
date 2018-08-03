@@ -5,17 +5,22 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.Relation;
 
+import com.google.android.gms.maps.model.LatLng;
+
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity(foreignKeys = @ForeignKey(entity = SportExercise.class, parentColumns = "id", childColumns = "user_id", onUpdate = ForeignKey.CASCADE, onDelete = ForeignKey.CASCADE), indices = {@Index(value = {"user_id"})})
 public class SportExercise {
 
     @PrimaryKey(autoGenerate = true)
-    private int id;
+    private long id;
 
     @ColumnInfo(name = "user_id")
-    private int userId;
+    private long userId;
 
     @ColumnInfo(name = "mode")
     private String mode; // Exercising Mode e.g. hiking, cycling, ...
@@ -35,16 +40,16 @@ public class SportExercise {
     @ColumnInfo(name = "amount_of_repeats")
     private int amountOfRepeats; // for steps, push-ups and sit-ups
 
-//    private List<Location> coordinates; // list of coordinates to draw track on a map
-
+    @Relation(parentColumn = "id", entityColumn = "exercise_id")
+    private List<LocationData> locationData;
 
     // TODO: the burnt calories??
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -96,19 +101,19 @@ public class SportExercise {
         this.amountOfRepeats = amountOfRepeats;
     }
 
-    public int getUserId() {
+    public long getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
     }
 
-//    public List<Location> getCoordinates() {
-//        return coordinates;
-//    }
-//
-//    public void setCoordinates(List<Location> coordinates) {
-//        this.coordinates = coordinates;
-//    }
+    public List<LocationData> getLocationData() {
+        return locationData;
+    }
+
+    public void setLocationData(List<LocationData> locationData) {
+        this.locationData = locationData;
+    }
 }
