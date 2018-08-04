@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.uniks.myfit.controller.MapsController;
 import com.uniks.myfit.database.AppDatabase;
@@ -32,6 +33,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 public class DetailActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -77,6 +80,8 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
             setContentView(R.layout.activity_detail_repetitions);
         }
 
+        setExerciseData();
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -84,6 +89,81 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         fab.setOnClickListener(this);
         // Controller
 
+    }
+
+    private void setExerciseData() {
+        TextView startTime = findViewById(R.id.exercise_started_time);
+        TextView duration = findViewById(R.id.exercise_duration);
+        // TODO: no endtime
+
+        startTime.setText(formattedDate());
+        duration.setText(exercise.getTripTime());
+
+        switch (exercise.getMode()) {
+            case 0:
+                // Running
+
+                TextView runningDistance = findViewById(R.id.exercise_distance);
+                TextView steps = findViewById(R.id.exercise_steps_count);
+
+                runningDistance.setText(String.format("The distance you run was %.2f km.", exercise.getDistance()));
+                steps.setText(String.format("Congratulations you stepped %s steps during your exercise.", String.valueOf(exercise.getAmountOfRepeats())));
+
+                //exercise_started_time
+                // exercise_duration
+                //exercise_ended_time
+
+                //exercise_distance
+                // exercise_steps_count
+                break;
+            case 1:
+                // Cycling
+
+                TextView cyclingDistance = findViewById(R.id.exercise_distance);
+
+                cyclingDistance.setText(String.format("The distance you cycled was %.2f km.", exercise.getDistance()));
+
+                //exercise_started_time
+                // exercise_duration
+                //exercise_ended_time
+
+                //exercise_distance
+                break;
+            case 2:
+                // Push Ups
+
+                TextView pushupsRepetitions = findViewById(R.id.exercise_repetitions);
+
+                pushupsRepetitions.setText(String.format("Congratulations, you did %d push ups.", exercise.getAmountOfRepeats()));
+
+                //exercise_started_time
+                // exercise_duration
+                //exercise_ended_time
+
+                // exercise_repetitions
+                break;
+            case 3:
+                // Sit Ups
+
+                TextView situpsRepetitions = findViewById(R.id.exercise_repetitions);
+
+                situpsRepetitions.setText(String.format("Congratulations, you did %d sit ups.", exercise.getAmountOfRepeats()));
+
+                //exercise_started_time
+                // exercise_duration
+                //exercise_ended_time
+
+                // exercise_repetitions
+                break;
+        }
+    }
+
+    private String formattedDate() {
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm", Locale.GERMANY);
+
+
+        return sdf.format(exercise.getDate());
     }
 
     /* This method will take screenshot from mobile screen*/

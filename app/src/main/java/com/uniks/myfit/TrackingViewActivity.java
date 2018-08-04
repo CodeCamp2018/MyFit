@@ -18,6 +18,7 @@ import com.uniks.myfit.database.AppDatabase;
 import com.uniks.myfit.database.LocationData;
 import com.uniks.myfit.database.SportExercise;
 import com.uniks.myfit.model.AccTripleVec;
+import com.uniks.myfit.sensors.Gyroscope;
 import com.uniks.myfit.sensors.ProximitySensorService;
 import com.uniks.myfit.sensors.StepCounterService;
 
@@ -32,9 +33,10 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
     private static final int MIN_NUMBER_OF_ELEMENTS = 5;
     private static final String TRACKING_LOG = "TrackingViewActivity: ";
     private SitUpsCtrl sitUpsCtrl;
+    private Gyroscope gyro;
     private StepCounterService stepCounterService;
     private MapsController mapsController;
-    private ProximitySensorService proximitySensorService;
+    private ProximitySensorService pushupService;
 
     private int exerciseMode;
     private boolean activeStateMachine;
@@ -54,8 +56,9 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
         db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, MainActivity.databaseName).allowMainThreadQueries().fallbackToDestructiveMigration().build();
 
         sitUpsCtrl = new SitUpsCtrl(this);
+        gyro = new Gyroscope(this);
         stepCounterService = new StepCounterService(this);
-        proximitySensorService = new ProximitySensorService(this);
+        pushupService = new ProximitySensorService(this);
 
         activeStateMachine = true;
         actualState = 0;
@@ -89,10 +92,10 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
 
         setContentView(R.layout.activity_tracking_view);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        ImageButton stopButton = (ImageButton) findViewById(R.id.stop_button);
+        ImageButton stopButton = findViewById(R.id.stop_button);
         stopButton.setOnClickListener(this);
 
         // start sensors
@@ -132,7 +135,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 break;
             case 2: // pushups
 
-                proximitySensorService.initialize();
+                pushupService.initialize();
 
                 // set headlines
                 // count
@@ -143,6 +146,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
             case 3: // situps
 
                 sitUpsCtrl.init();
+                gyro.init();
 
                 // set headlines
                 // count
@@ -201,9 +205,9 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
 
                 break;
             case 3: // situps
-                if (getAccelerometerQueue().size() >= MIN_NUMBER_OF_ELEMENTS) {
+//                if (getAccelerometerQueue().size() >= MIN_NUMBER_OF_ELEMENTS) {
                     enough = true;
-                }
+//                }
                 break;
         }
 
@@ -262,7 +266,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
 
                 break;
             case 2: // pushups
-                final int calculatedPushUps = proximitySensorService.getCalculatedPushUps();
+                final int calculatedPushUps = pushupService.getCalculatedPushUps();
 
                 // set view - show count
                 final TextView pushupCountValueUI = findViewById(R.id.value_1);
@@ -372,22 +376,35 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 break;
             case 2: // pushups
 
+                int calculatedPushUps = pushupService.getCalculatedPushUps();
+                Log.e("PushupsCounted", "from model: " + calculatedPushUps);
+
                 // db
-                newSportExercise.setAmountOfRepeats(proximitySensorService.getCalculatedPushUps());
+                newSportExercise.setAmountOfRepeats(calculatedPushUps);
+
+                Log.e("PushupsCounted", "from dbModel: " + newSportExercise.getAmountOfRepeats());
 
                 // stop tracking
-                proximitySensorService.stopListening();
+                pushupService.stopListening();
                 break;
             case 3: // situps
 
+                int calculatedSitups = sitUpsCtrl.calculateSitups();
+
                 // db
-                newSportExercise.setAmountOfRepeats(sitUpsCtrl.calculateSitups());
+                newSportExercise.setAmountOfRepeats(calculatedSitups);
 
                 // stop tracking
                 sitUpsCtrl.stop();
+                gyro.stopListening();
                 break;
         }
-        db.sportExerciseDao().updateSportExercise(newSportExercise);
+
+
+        newSportExercise.setId(exerciseId);
+        db.sportExerciseDao().updateSportExercises(newSportExercise);
+
+        Log.e("PushupsCounted", "from db: " + db.sportExerciseDao().getExerciseById(exerciseId).get(0).getAmountOfRepeats());
 
     }
 

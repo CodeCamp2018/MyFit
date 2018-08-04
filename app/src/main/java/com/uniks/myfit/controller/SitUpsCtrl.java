@@ -1,7 +1,8 @@
 package com.uniks.myfit.controller;
-import com.uniks.myfit.sensors.Accelerometer;
+
 import com.uniks.myfit.TrackingViewActivity;
 import com.uniks.myfit.model.AccTripleVec;
+import com.uniks.myfit.sensors.Accelerometer;
 
 public class SitUpsCtrl {
 
@@ -28,15 +29,21 @@ public class SitUpsCtrl {
 
         accSensor.init();
     }
+
     public int calculateSitups() {
         active = true;
         AccTripleVec prevTriple = new AccTripleVec();
-        accTripleVec = trackingViewActivity.getAccelerometerQueue().get(countIndex);
+        if (trackingViewActivity.getAccelerometerQueue().size() <= countIndex) {
+            // not enough data for index
+            active = false;
+        } else {
+            accTripleVec = trackingViewActivity.getAccelerometerQueue().get(countIndex);
+        }
         while (active) {
             switch (actualState) {
                 case 0:
                     prevTriple = accTripleVec;
-                    if(countIndex!=trackingViewActivity.getAccelerometerQueue().size()) {
+                    if (countIndex != trackingViewActivity.getAccelerometerQueue().size()) {
                         accTripleVec = trackingViewActivity.getAccelerometerQueue().get(countIndex++);
                     }
 
@@ -55,10 +62,11 @@ public class SitUpsCtrl {
                     break;
                 case 1: // if the current value in Array is < the previous change state to 2
                     prevTriple = accTripleVec;
-                    if(countIndex!=trackingViewActivity.getAccelerometerQueue().size()) {
-                    accTripleVec = trackingViewActivity.getAccelerometerQueue().get(countIndex++);}
+                    if (countIndex != trackingViewActivity.getAccelerometerQueue().size()) {
+                        accTripleVec = trackingViewActivity.getAccelerometerQueue().get(countIndex++);
+                    }
 
-                    if(accTripleVec != null) {
+                    if (accTripleVec != null) {
                         if (accTripleVec.getX() < prevTriple.getX() && (accTripleVec.getY() < prevTriple.getY() && accTripleVec.getZ() < prevTriple.getZ())) {
                             // found Falling
                             actualState = 2;
@@ -79,8 +87,7 @@ public class SitUpsCtrl {
         return situpCount;
     }
 
-    public void stop()
-    {
-        accelerometerSensor.stopListening();
+    public void stop() {
+        accSensor.stopListening();
     }
 }

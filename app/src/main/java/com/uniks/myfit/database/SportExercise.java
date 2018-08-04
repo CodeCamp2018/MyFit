@@ -12,7 +12,7 @@ import java.util.Date;
 public class SportExercise {
 
     @PrimaryKey(autoGenerate = true)
-    private int id;
+    private long id;
 
     @ColumnInfo(name = "user_id")
     private long userId;
@@ -37,11 +37,11 @@ public class SportExercise {
 
     // TODO: the burnt calories??
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

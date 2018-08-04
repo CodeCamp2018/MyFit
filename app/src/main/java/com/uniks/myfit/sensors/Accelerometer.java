@@ -34,7 +34,7 @@ public class Accelerometer implements SensorEventListener {
     public void init() {
         running = true;
         // Get an instance of the SensorManager
-        sensorManager = (SensorManager) trackingViewActivity.getSystemService(context.SENSOR_SERVICE);
+        sensorManager = (SensorManager) trackingViewActivity.getSystemService(Context.SENSOR_SERVICE);
         Log.d(TAG, "onCreate: Initializing Accelerometer Services");
 
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
@@ -56,6 +56,7 @@ public class Accelerometer implements SensorEventListener {
                         accelerationX = sensorEvent.values[0];
                         accelerationY = sensorEvent.values[1];
                         accelerationZ = sensorEvent.values[2];
+                        Log.e("AccelerlormeterData", "\nX: " + accelerationX + "\nY: " + accelerationY + "\nZ: " + accelerationZ);
                         // Isolate the force of gravity with the low-pass filter.
                         gravity[0] = alpha * gravity[0] + (1 - alpha) * sensorEvent.values[0];
                         gravity[1] = alpha * gravity[1] + (1 - alpha) * sensorEvent.values[1];
@@ -70,7 +71,7 @@ public class Accelerometer implements SensorEventListener {
 
                         TotACC = (float) Math.sqrt(accelerationX * accelerationX + accelerationY * accelerationY + accelerationZ * accelerationZ);
                         if(TotACC>0.5) {
-                            Log.d("Device motion detected!", System.currentTimeMillis() + "," + TotACC);
+                            Log.d("Device motion detected!", "TotalAcc: " + TotACC);
                         }
                     }
                 }
@@ -87,7 +88,6 @@ public class Accelerometer implements SensorEventListener {
     public void stopListening() {
         running = false;
         sensorManager.unregisterListener(sensorEventListener, accelerometer);
-        Toast.makeText (context, "Sensor Stopped..", Toast.LENGTH_SHORT).show();
     }
 }
 
