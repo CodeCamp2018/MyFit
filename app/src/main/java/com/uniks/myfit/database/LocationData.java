@@ -8,7 +8,7 @@ import android.arch.persistence.room.PrimaryKey;
 
 import com.google.android.gms.maps.model.LatLng;
 
-@Entity(foreignKeys = @ForeignKey(entity = LocationData.class, parentColumns = "id", childColumns = "exercise_id", onUpdate = ForeignKey.CASCADE, onDelete = ForeignKey.CASCADE), indices = {@Index(value = {"exercise_id"})}) //
+@Entity(foreignKeys = @ForeignKey(entity = SportExercise.class, parentColumns = "id", childColumns = "exercise_id", onUpdate = ForeignKey.CASCADE, onDelete = ForeignKey.CASCADE), indices = {@Index(value = {"exercise_id"})}) //
 public class LocationData {
 
     @PrimaryKey(autoGenerate = true)

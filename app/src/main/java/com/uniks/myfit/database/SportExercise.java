@@ -5,19 +5,14 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
-import android.arch.persistence.room.Relation;
 
-import com.google.android.gms.maps.model.LatLng;
-
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-@Entity(foreignKeys = @ForeignKey(entity = SportExercise.class, parentColumns = "id", childColumns = "user_id", onUpdate = ForeignKey.CASCADE, onDelete = ForeignKey.CASCADE), indices = {@Index(value = {"user_id"})})
+@Entity(indices = {@Index(value = {"user_id"})})
 public class SportExercise {
 
     @PrimaryKey(autoGenerate = true)
-    private long id;
+    private int id;
 
     @ColumnInfo(name = "user_id")
     private long userId;
@@ -42,11 +37,11 @@ public class SportExercise {
 
     // TODO: the burnt calories??
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

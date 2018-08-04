@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     Gyroscope gyroscopeSensor;
 
     public AppDatabase db;
-    User user;
+    public User user;
     List<SportExercise> sportExercises;
 
     private RecyclerView cardRecyclerView;

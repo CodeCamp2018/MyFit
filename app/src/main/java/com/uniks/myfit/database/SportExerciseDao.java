@@ -33,7 +33,8 @@ public interface SportExerciseDao {
     long insert(SportExercise sportExercise);
 
     @Delete
-    void delete(SportExercise sportExercise);
+    void deleteExercise(SportExercise sportExercise);
 
-
+    @Query("DELETE FROM sportexercise WHERE id IS NOT NULL AND id = :id")
+    void deleteExercise(int id);
 }
