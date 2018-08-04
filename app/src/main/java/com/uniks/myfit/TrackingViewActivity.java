@@ -332,6 +332,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
         //end tracking
         Date now = Calendar.getInstance().getTime();
         activeStateMachine = false;
+        // save data to database
         SportExercise newSportExercise = new SportExercise();
         newSportExercise.setTripTime(getFormattedCurrentDuration());
         newSportExercise.setDate(now);
@@ -387,9 +388,6 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 break;
         }
         db.sportExerciseDao().updateSportExercise(newSportExercise);
-
-        // save data to database
-        Log.e("DB checking", "db.getExercises Count: " + db.sportExerciseDao().getAll().size() + "\n first element is: " + db.sportExerciseDao().getAllFromUser(db.userDao().getAll().get(0).getUid()).get(0).getMode());
 
     }
 

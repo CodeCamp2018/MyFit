@@ -129,16 +129,33 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onClick(View v) {
-
-        Uri bmpUri = takeScreenShot();
-        Intent shareIntent = new Intent();
-        shareIntent.setAction(Intent.ACTION_SEND);
+        Uri bmpUri;
         String shareBody = "Write your Body here";
         String shareSub = "Write your Subject here";
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.setType("*/*");
+
+        switch (exercise.getMode()) {
+            case 0: // running
+                bmpUri = takeScreenShot();
+                shareIntent.putExtra(Intent.EXTRA_STREAM, bmpUri);
+
+                break;
+            case 1: // cycling
+                bmpUri = takeScreenShot();
+                shareIntent.putExtra(Intent.EXTRA_STREAM, bmpUri);
+                break;
+            case 2: // pushups
+                break;
+            case 3: // situps
+
+                break;
+        }
+
         shareIntent.putExtra(Intent.EXTRA_SUBJECT, shareSub);
         shareIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
-        shareIntent.putExtra(Intent.EXTRA_STREAM, bmpUri);
-        shareIntent.setType("image/jpeg");
+
         startActivity(Intent.createChooser(shareIntent, "send"));
 
         /*Uri imageUri = Uri.parse("android.resource://" + getPackageName()
