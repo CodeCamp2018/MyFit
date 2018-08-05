@@ -2,34 +2,23 @@ package com.uniks.myfit;
 
 import android.arch.persistence.room.Room;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.MapFragment;
+import com.uniks.myfit.controller.DetailViewMapsController;
 import com.uniks.myfit.database.AppDatabase;
-import com.uniks.myfit.database.LocationData;
 import com.uniks.myfit.database.SportExercise;
 import com.uniks.myfit.database.User;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.List;
 import java.util.Locale;
 
 public class DetailActivity extends AppCompatActivity implements View.OnClickListener {
@@ -37,6 +26,8 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     AppDatabase db;
     User user;
     SportExercise exercise;
+
+    DetailViewMapsController detailViewMapsController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +74,14 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
         FloatingActionButton fab = findViewById(R.id.share_button);
         fab.setOnClickListener(this);
+
         // Controller
+        detailViewMapsController = new DetailViewMapsController(this, exercise, db);
+
+        if (exercise.getMode() == 0 || exercise.getMode() == 1) {
+            MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
+            mapFragment.getMapAsync(detailViewMapsController);
+        }
 
     }
 
@@ -141,113 +139,29 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         return sdf.format(exercise.getDate());
     }
 
-    /* This method will take screenshot from mobile screen*/
-    private Uri takeScreenShot() {
-
-        // get bitmap
-        View screenView = findViewById(R.id.map);
-        screenView.setDrawingCacheEnabled(true);
-        Bitmap bitmap = Bitmap.createBitmap(screenView.getDrawingCache());
-        screenView.setDrawingCacheEnabled(false);
-
-        // store bitmap
-        File mainDir = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "MyFit");
-        if (!mainDir.exists()) {
-            if(mainDir.mkdir()) {
-                Log.e("Create Directory", "Main Directory Created: " + mainDir);
-            }
-        }
-
-        File dir = new File(mainDir.getAbsolutePath());
-        if (!dir.exists()) {
-            dir.mkdirs();
-        }
-        File file = new File(mainDir.getAbsolutePath(), "screenshot" + Calendar.getInstance().getTime().getTime() + ".jpg");
-        try {
-            FileOutputStream fOut = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 85, fOut);
-            fOut.flush();
-            fOut.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return Uri.fromFile(file);
-
-    }
-
-    /* This method will save screenshot taken by takeScreenShot method */
-    public Uri saveScreenShot(Bitmap bitmap) {
-        Uri bmpUri = null;
-        try {
-            // Create ByteArrayOutputStream object to store bytes of compressed image
-            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-            // Compress the image in jpeg format
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 60, bytes);
-            // Create FileOutputStream object to write image to external storage
-            File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "share_image_" + System.currentTimeMillis() + ".jpg");
-            FileOutputStream out = new FileOutputStream(file);
-            // Close output file
-            out.close();
-            /* Store it in a file*/
-            bmpUri = bmpUri.fromFile(file); // use this version for API >= 24
-
-        } catch (FileNotFoundException e) {
-            Log.e("Main", e.getMessage());
-        } catch (IOException e) {
-            Log.e("Main", e.getMessage(), e);
-        }
-
-        return bmpUri;
-    }
-
     @Override
     public void onClick(View v) {
-        Uri bmpUri;
-        String shareBody = null; // "Write your Body here";
-        try {
-            shareBody = getJsonFromExerciseData();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        String shareSub = "Exercise data from MyFit";
-        Intent shareIntent = new Intent();
-        shareIntent.setAction(Intent.ACTION_SEND);
-        shareIntent.setType("*/*");
 
         if (exercise.getMode() == 0 || exercise.getMode() == 1) {
-            bmpUri = takeScreenShot();
-            shareIntent.putExtra(Intent.EXTRA_STREAM, bmpUri);
+            detailViewMapsController.doMapScreenshot();
+        } else {
+
+            String shareBody = null; // "Write your Body here";
+            try {
+                shareBody = getJsonFromExerciseData();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            String shareSub = "Exercise data from MyFit";
+            Intent shareIntent = new Intent();
+            shareIntent.setAction(Intent.ACTION_SEND);
+            shareIntent.setType("text/plain");
+            shareIntent.putExtra(Intent.EXTRA_SUBJECT, shareSub);
+            shareIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
+
+            startActivity(Intent.createChooser(shareIntent, "Share Exercise Data"));
+
         }
-
-        shareIntent.putExtra(Intent.EXTRA_SUBJECT, shareSub);
-        shareIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
-
-        startActivity(Intent.createChooser(shareIntent, "Share Exercise Data"));
-
-        /*
-        // share
-        Uri uri = Uri.fromFile(file);//Convert file path into Uri for sharing
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_SEND);
-        intent.setType("image/*");
-        intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "");
-        intent.putExtra(android.content.Intent.EXTRA_TEXT, getString(R.string.sharing_text));
-        intent.putExtra(Intent.EXTRA_STREAM, uri);//pass uri here
-        startActivity(Intent.createChooser(intent, getString(R.string.share_title)));
-
-        * */
-
-        /*Uri imageUri = Uri.parse("android.resource://" + getPackageName()
-        + "/drawable/" + "ic_launcher");
- Intent shareIntent = new Intent();
- shareIntent.setAction(Intent.ACTION_SEND);
- shareIntent.putExtra(Intent.EXTRA_TEXT, "Hello");
- shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
- shareIntent.setType("image/jpeg");
- shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
- startActivity(Intent.createChooser(shareIntent, "send"));*/
-
 
     }
 
@@ -259,26 +173,6 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
         switch (exercise.getMode()) {
 
-            case 0: // running
-                List<LocationData> runningLocationData = db.locationDataDao().getAllFromExercise(exercise.getId());
-
-                JSONArray runningLocationArray = new JSONArray(runningLocationData);
-
-                obj.put("distance", exercise.getDistance());
-                obj.put("steps", exercise.getAmountOfRepeats());
-                obj.put("locationData", runningLocationArray);
-                break;
-            case 1: // cycling
-
-                List<LocationData> cyclingLocationData = db.locationDataDao().getAllFromExercise(exercise.getId());
-
-                JSONArray cyclingLocationArray = new JSONArray(cyclingLocationData);
-
-                obj.put("distance", exercise.getDistance());
-                obj.put("speed", exercise.getSpeed());
-                obj.put("locationData", cyclingLocationArray);
-
-                break;
             case 2: // pushups
 
                 obj.put("pushUps", exercise.getAmountOfRepeats());
@@ -294,29 +188,5 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
         return obj.toString();
     }
-
-
-   /* private void onSharedIntent() {
-        Intent shareIntent = getIntent();// Receive intent
-        String receivedAction = shareIntent.getAction();
-        // Get type from receive intent
-        String receivedType = shareIntent.getType();
-
-        if (receivedAction.equals(Intent.ACTION_SEND))
-        {
-            if (receivedType.startsWith("text/"))
-            {
-                shareIntent.setType("text/plain");
-                startActivity(Intent.createChooser(shareIntent, "Share Text"));
-            }else if (receivedType.startsWith("image/"))
-            {
-                shareIntent.setType("image/*");
-                /* Share Button
-                Uri bmpUri = takeScreenShot();
-                startActivity(Intent.createChooser(shareIntent, "Share Image"));
-                shareIntent.putExtra(Intent.EXTRA_STREAM, bmpUri);
-            }    }
-
-        }*/
 
 }
