@@ -15,7 +15,7 @@ public interface LocationDataDao {
     List<LocationData> getAll();
 
     @Query("SELECT * FROM locationdata WHERE exercise_id = :exerciseId")
-    List<LocationData> getAllFromExercise(int exerciseId);
+    List<LocationData> getAllFromExercise(long exerciseId);
 
     @Update
     void updateLocationDatas(LocationData... locationData);

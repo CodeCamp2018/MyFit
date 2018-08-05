@@ -1,39 +1,35 @@
 package com.uniks.myfit;
 
-import android.content.Intent;
 import android.arch.persistence.room.Room;
+import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Point;
-import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.uniks.myfit.controller.MapsController;
 import com.uniks.myfit.database.AppDatabase;
+import com.uniks.myfit.database.LocationData;
 import com.uniks.myfit.database.SportExercise;
 import com.uniks.myfit.database.User;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.URI;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 public class DetailActivity extends AppCompatActivity implements View.OnClickListener {
@@ -109,12 +105,6 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 runningDistance.setText(String.format("The distance you run was %.2f km.", exercise.getDistance()));
                 steps.setText(String.format("Congratulations you stepped %s steps during your exercise.", String.valueOf(exercise.getAmountOfRepeats())));
 
-                //exercise_started_time
-                // exercise_duration
-                //exercise_ended_time
-
-                //exercise_distance
-                // exercise_steps_count
                 break;
             case 1:
                 // Cycling
@@ -123,11 +113,6 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
                 cyclingDistance.setText(String.format("The distance you cycled was %.2f km.", exercise.getDistance()));
 
-                //exercise_started_time
-                // exercise_duration
-                //exercise_ended_time
-
-                //exercise_distance
                 break;
             case 2:
                 // Push Ups
@@ -136,11 +121,6 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
                 pushupsRepetitions.setText(String.format("Congratulations, you did %d push ups.", exercise.getAmountOfRepeats()));
 
-                //exercise_started_time
-                // exercise_duration
-                //exercise_ended_time
-
-                // exercise_repetitions
                 break;
             case 3:
                 // Sit Ups
@@ -149,11 +129,6 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
                 situpsRepetitions.setText(String.format("Congratulations, you did %d sit ups.", exercise.getAmountOfRepeats()));
 
-                //exercise_started_time
-                // exercise_duration
-                //exercise_ended_time
-
-                // exercise_repetitions
                 break;
         }
     }
@@ -168,17 +143,36 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
     /* This method will take screenshot from mobile screen*/
     private Uri takeScreenShot() {
-        // Get root View of your application
-        View rootView = findViewById(R.id.map);
 
-        // Enable drawing cache
-        rootView.setDrawingCacheEnabled(true);
+        // get bitmap
+        View screenView = findViewById(R.id.map);
+        screenView.setDrawingCacheEnabled(true);
+        Bitmap bitmap = Bitmap.createBitmap(screenView.getDrawingCache());
+        screenView.setDrawingCacheEnabled(false);
 
-        // Create image
-        Bitmap bitmap = rootView.getDrawingCache();
-        // Save image in external storage
-        Uri bmpUri = saveScreenShot(bitmap);
-        return bmpUri;
+        // store bitmap
+        File mainDir = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "MyFit");
+        if (!mainDir.exists()) {
+            if(mainDir.mkdir()) {
+                Log.e("Create Directory", "Main Directory Created: " + mainDir);
+            }
+        }
+
+        File dir = new File(mainDir.getAbsolutePath());
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        File file = new File(mainDir.getAbsolutePath(), "screenshot" + Calendar.getInstance().getTime().getTime() + ".jpg");
+        try {
+            FileOutputStream fOut = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 85, fOut);
+            fOut.flush();
+            fOut.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return Uri.fromFile(file);
 
     }
 
@@ -210,33 +204,39 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onClick(View v) {
         Uri bmpUri;
-        String shareBody = "Write your Body here";
-        String shareSub = "Write your Subject here";
+        String shareBody = null; // "Write your Body here";
+        try {
+            shareBody = getJsonFromExerciseData();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String shareSub = "Exercise data from MyFit";
         Intent shareIntent = new Intent();
         shareIntent.setAction(Intent.ACTION_SEND);
         shareIntent.setType("*/*");
 
-        switch (exercise.getMode()) {
-            case 0: // running
-                bmpUri = takeScreenShot();
-                shareIntent.putExtra(Intent.EXTRA_STREAM, bmpUri);
-
-                break;
-            case 1: // cycling
-                bmpUri = takeScreenShot();
-                shareIntent.putExtra(Intent.EXTRA_STREAM, bmpUri);
-                break;
-            case 2: // pushups
-                break;
-            case 3: // situps
-
-                break;
+        if (exercise.getMode() == 0 || exercise.getMode() == 1) {
+            bmpUri = takeScreenShot();
+            shareIntent.putExtra(Intent.EXTRA_STREAM, bmpUri);
         }
 
         shareIntent.putExtra(Intent.EXTRA_SUBJECT, shareSub);
         shareIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
 
-        startActivity(Intent.createChooser(shareIntent, "send"));
+        startActivity(Intent.createChooser(shareIntent, "Share Exercise Data"));
+
+        /*
+        // share
+        Uri uri = Uri.fromFile(file);//Convert file path into Uri for sharing
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_SEND);
+        intent.setType("image/*");
+        intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "");
+        intent.putExtra(android.content.Intent.EXTRA_TEXT, getString(R.string.sharing_text));
+        intent.putExtra(Intent.EXTRA_STREAM, uri);//pass uri here
+        startActivity(Intent.createChooser(intent, getString(R.string.share_title)));
+
+        * */
 
         /*Uri imageUri = Uri.parse("android.resource://" + getPackageName()
         + "/drawable/" + "ic_launcher");
@@ -250,6 +250,51 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
 
     }
+
+    private String getJsonFromExerciseData() throws JSONException {
+
+        JSONObject obj = new JSONObject();
+        obj.put("start", exercise.getDate());
+        obj.put("duration", exercise.getTripTime());
+
+        switch (exercise.getMode()) {
+
+            case 0: // running
+                List<LocationData> runningLocationData = db.locationDataDao().getAllFromExercise(exercise.getId());
+
+                JSONArray runningLocationArray = new JSONArray(runningLocationData);
+
+                obj.put("distance", exercise.getDistance());
+                obj.put("steps", exercise.getAmountOfRepeats());
+                obj.put("locationData", runningLocationArray);
+                break;
+            case 1: // cycling
+
+                List<LocationData> cyclingLocationData = db.locationDataDao().getAllFromExercise(exercise.getId());
+
+                JSONArray cyclingLocationArray = new JSONArray(cyclingLocationData);
+
+                obj.put("distance", exercise.getDistance());
+                obj.put("speed", exercise.getSpeed());
+                obj.put("locationData", cyclingLocationArray);
+
+                break;
+            case 2: // pushups
+
+                obj.put("pushUps", exercise.getAmountOfRepeats());
+
+                break;
+            case 3: // situps
+
+                obj.put("sitUps", exercise.getAmountOfRepeats());
+
+                break;
+
+        }
+
+        return obj.toString();
+    }
+
 
    /* private void onSharedIntent() {
         Intent shareIntent = getIntent();// Receive intent

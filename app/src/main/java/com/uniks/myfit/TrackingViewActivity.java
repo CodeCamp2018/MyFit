@@ -377,12 +377,9 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
             case 2: // pushups
 
                 int calculatedPushUps = pushupService.getCalculatedPushUps();
-                Log.e("PushupsCounted", "from model: " + calculatedPushUps);
 
                 // db
                 newSportExercise.setAmountOfRepeats(calculatedPushUps);
-
-                Log.e("PushupsCounted", "from dbModel: " + newSportExercise.getAmountOfRepeats());
 
                 // stop tracking
                 pushupService.stopListening();
@@ -403,8 +400,6 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
 
         newSportExercise.setId(exerciseId);
         db.sportExerciseDao().updateSportExercises(newSportExercise);
-
-        Log.e("PushupsCounted", "from db: " + db.sportExerciseDao().getExerciseById(exerciseId).get(0).getAmountOfRepeats());
 
     }
 

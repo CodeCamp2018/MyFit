@@ -37,9 +37,6 @@ public class DeleteExerciseDialogFragment extends DialogFragment {
                         //Log.e("Database", "POSITION: " + exerciseId + "; ID: " + sportExercise.get(0).getId());
 
                         SportExercise exercise = mainActivity.db.sportExerciseDao().getExerciseById(exerciseId).get(0);
-                        //getAllFromUser(mainActivity.user.getUid()).get(exerciseId);
-
-                        Log.e("Deleting Exercise", "Id: " + exercise.getId() + "\nMode: " + exercise.getMode() + "\nduration: " + exercise.getTripTime());
 
                         mainActivity.db.sportExerciseDao().deleteExercise(exercise); //exercise.getId()
 
