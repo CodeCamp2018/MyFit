@@ -9,15 +9,13 @@ import android.util.Log;
 
 import com.uniks.myfit.database.SportExercise;
 
-import java.util.List;
-
 
 public class DeleteExerciseDialogFragment extends DialogFragment {
     public interface DeleteDialogListener {
         public void onDialogPositiveClick(DialogFragment dialog);
     }
 
-    private int position;
+    private long exerciseId;
     DeleteDialogListener listener;
 
     @Override
@@ -26,7 +24,7 @@ public class DeleteExerciseDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         super.onCreateDialog(savedInstanceState);
-        this.position = getArguments().getInt("index");
+        this.exerciseId = getArguments().getLong("index");
 
         builder.setMessage(R.string.dialog_delete)
                 .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
@@ -35,15 +33,20 @@ public class DeleteExerciseDialogFragment extends DialogFragment {
 
                         MainActivity mainActivity = (MainActivity) getActivity();
 
-                        //List<SportExercise> sportExercise = mainActivity.db.sportExerciseDao().loadAllByIds(new long[]{position});
-                        //Log.e("Database", "POSITION: " + position + "; ID: " + sportExercise.get(0).getId());
+                        //List<SportExercise> sportExercise = mainActivity.db.sportExerciseDao().loadAllByIds(new long[]{exerciseId});
+                        //Log.e("Database", "POSITION: " + exerciseId + "; ID: " + sportExercise.get(0).getId());
 
-                        SportExercise exercise = mainActivity.db.sportExerciseDao().getAllFromUser(mainActivity.user.getUid()).get(position);
+                        SportExercise exercise = mainActivity.db.sportExerciseDao().getExerciseById(exerciseId).get(0);
+                        //getAllFromUser(mainActivity.user.getUid()).get(exerciseId);
 
-                        mainActivity.db.sportExerciseDao().deleteExercise(exercise.getId());
+                        Log.e("Deleting Exercise", "Id: " + exercise.getId() + "\nMode: " + exercise.getMode() + "\nduration: " + exercise.getTripTime());
 
-                        mainActivity.finish();
-                        startActivity(mainActivity.getIntent());
+                        mainActivity.db.sportExerciseDao().deleteExercise(exercise); //exercise.getId()
+
+                        // refresh mainActivity
+                        mainActivity.cardsAdapter.setSportExercises(mainActivity.getDataSet());
+                        mainActivity.cardsAdapter.notifyDataSetChanged();
+
                     }
                 })
                 .setNegativeButton(R.string.keep, new DialogInterface.OnClickListener() {

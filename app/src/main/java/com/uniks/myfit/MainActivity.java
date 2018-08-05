@@ -1,9 +1,7 @@
 package com.uniks.myfit;
 
 import android.arch.persistence.room.Room;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -38,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     List<SportExercise> sportExercises;
 
     private RecyclerView cardRecyclerView;
-    private RecyclerView.Adapter cardsAdapter;
+    public CardsRecyclerViewAdapter cardsAdapter;
     private RecyclerView.LayoutManager cardsLayoutManager;
 
     @Override
@@ -77,16 +75,16 @@ public class MainActivity extends AppCompatActivity {
         /*
          * Listen to buttons to start tracking
          */
-        FloatingActionButton startRunning = (FloatingActionButton) findViewById(R.id.add_exercise_running);
+        FloatingActionButton startRunning = findViewById(R.id.add_exercise_running);
         setStartListener(0, startRunning);
 
-        FloatingActionButton startCycling = (FloatingActionButton) findViewById(R.id.add_exercise_cycling);
+        FloatingActionButton startCycling = findViewById(R.id.add_exercise_cycling);
         setStartListener(1, startCycling);
 
-        FloatingActionButton startPushups = (FloatingActionButton) findViewById(R.id.add_exercise_pushups);
+        FloatingActionButton startPushups = findViewById(R.id.add_exercise_pushups);
         setStartListener(2, startPushups);
 
-        FloatingActionButton startSitups = (FloatingActionButton) findViewById(R.id.add_exercise_situps);
+        FloatingActionButton startSitups = findViewById(R.id.add_exercise_situps);
         setStartListener(3, startSitups);
 
         // set cards of completed tours
@@ -99,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private ArrayList<SportExercise> getDataSet() {
+    public ArrayList<SportExercise> getDataSet() {
 
         List<SportExercise> allExercises = db.sportExerciseDao().getAllFromUser(user.getUid());
 
@@ -111,16 +109,14 @@ public class MainActivity extends AppCompatActivity {
         super.onRestart();
 
         // reload to show done exercises
-        cardsAdapter = new CardsRecyclerViewAdapter(getDataSet(), this);
-        cardRecyclerView.setAdapter(cardsAdapter);
-        finish();
-        startActivity(getIntent());
+        cardsAdapter.setSportExercises(getDataSet());
+        cardsAdapter.notifyDataSetChanged();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        ((CardsRecyclerViewAdapter) cardsAdapter).setOnItemClickListener(new DoneExerciseCardClickListener(this));
+        cardsAdapter.setOnItemClickListener(new DoneExerciseCardClickListener(this));
     }
 
     @Override

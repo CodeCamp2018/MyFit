@@ -22,7 +22,7 @@ public class DoneExerciseCardClickListener implements CardsRecyclerViewAdapter.M
 
         Log.i("ClickEvent on Card:", " Clicked on Item " + position);
 
-        // change to DetailActivity and send index (== position) of Exercise also
+        // change to DetailActivity and send index (== exerciseId) of Exercise also
 
         Intent showDetails = new Intent(v.getContext(), DetailActivity.class);
         showDetails.putExtra("POSITION", position);

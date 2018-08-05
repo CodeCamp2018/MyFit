@@ -32,6 +32,10 @@ public class CardsRecyclerViewAdapter extends RecyclerView.Adapter<CardsRecycler
         this.mainActivity = mainActivity;
     }
 
+    public void setSportExercises(ArrayList<SportExercise> sportExercises) {
+        this.sportExercises = sportExercises;
+    }
+
     public static class DataObjectHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView exerciseIcon;
         TextView date;
