@@ -50,6 +50,7 @@ public class MapsController implements OnMapReadyCallback, LocationListener {
 
     private boolean firstLocation = true;
     private Polyline polyline;
+    private int maxSpeed;
 
     private ArrayList<LocationData> linePoints = new ArrayList<>();
 
@@ -60,6 +61,7 @@ public class MapsController implements OnMapReadyCallback, LocationListener {
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         mapFragment = (SupportMapFragment) SupportMapFragment.newInstance();
         mapFragment.getMapAsync(this);
+        maxSpeed = 0;
     }
 
     public void init() {
@@ -151,7 +153,13 @@ public class MapsController implements OnMapReadyCallback, LocationListener {
             return 0;
         }
 
-        return (int) (3.6 * location.getSpeed()); // speed in km/h
+        int currSpeed = (int) (3.6 * location.getSpeed()); // speed in km/h
+
+        if (currSpeed > maxSpeed) {
+            maxSpeed = currSpeed;
+        }
+
+        return currSpeed;
     }
 
     public List getPath() {
@@ -199,6 +207,10 @@ public class MapsController implements OnMapReadyCallback, LocationListener {
 
     public ArrayList<LocationData> getLinePoints() {
         return linePoints;
+    }
+
+    public int getMaxSpeed() {
+        return maxSpeed;
     }
 }
 
