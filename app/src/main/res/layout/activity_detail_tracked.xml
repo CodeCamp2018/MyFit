@@ -109,7 +109,7 @@
                     android:text="@string/kcal" />
 
                 <TextView
-                    android:id="@+id/exercise_ended_time"
+                    android:id="@+id/exercise_kcal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
             </LinearLayout>
@@ -136,7 +136,7 @@
             android:textSize="24sp" />
 
         <TextView
-            android:id="@+id/exercise_calories"
+            android:id="@+id/exercise_avg_speed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
