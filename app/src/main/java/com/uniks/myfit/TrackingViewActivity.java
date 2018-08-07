@@ -26,6 +26,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class TrackingViewActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -343,7 +344,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
         newSportExercise.setUserId(db.userDao().getAll().get(0).getUid());
         newSportExercise.setMode(exerciseMode);
         long exerciseId = db.sportExerciseDao().insert(newSportExercise);
-        Log.e("stopBtnClicked", "exerciseId: " + exerciseId + "; mode: " + exerciseMode);
+        newSportExercise.setId(exerciseId);
 
         switch (exerciseMode) {
             case 0: // running
@@ -397,8 +398,6 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 break;
         }
 
-
-        newSportExercise.setId(exerciseId);
         db.sportExerciseDao().updateSportExercises(newSportExercise);
 
     }

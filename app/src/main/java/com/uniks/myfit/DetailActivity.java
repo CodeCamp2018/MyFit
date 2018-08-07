@@ -6,12 +6,14 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.MapFragment;
 import com.uniks.myfit.controller.DetailViewMapsController;
 import com.uniks.myfit.database.AppDatabase;
+import com.uniks.myfit.database.LocationData;
 import com.uniks.myfit.database.SportExercise;
 import com.uniks.myfit.database.User;
 
@@ -19,6 +21,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Locale;
 
 public class DetailActivity extends AppCompatActivity implements View.OnClickListener {
@@ -26,6 +29,8 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     AppDatabase db;
     User user;
     SportExercise exercise;
+    List<LocationData> allLocation;
+
 
     DetailViewMapsController detailViewMapsController;
 
@@ -42,6 +47,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
         exercise = db.sportExerciseDao().getAllFromUser(user.getUid()).get(index); // get the clicked exercise of all user exercises
 
+        allLocation = db.locationDataDao().getAllFromExercise(exercise.getId());
 
         // View
         switch (exercise.getMode()) {
@@ -67,8 +73,6 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
             setContentView(R.layout.activity_detail_repetitions);
         }
 
-        setExerciseData();
-
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -83,12 +87,12 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
             mapFragment.getMapAsync(detailViewMapsController);
         }
 
+        setExerciseData();
     }
 
     private void setExerciseData() {
         TextView startTime = findViewById(R.id.exercise_started_time);
         TextView duration = findViewById(R.id.exercise_duration);
-        // TODO: no endtime
 
         startTime.setText(formattedDate());
         duration.setText(exercise.getTripTime());
