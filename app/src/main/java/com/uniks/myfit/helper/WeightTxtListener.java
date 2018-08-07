@@ -6,12 +6,15 @@ import android.text.TextWatcher;
 import com.uniks.myfit.database.AppDatabase;
 import com.uniks.myfit.database.User;
 
+/**
+ * helper class to save user weight, when user changes value in UI
+ */
 public class WeightTxtListener implements TextWatcher {
 
     private AppDatabase db;
     private User user;
 
-    CharSequence changedTxt = "";
+    private CharSequence changedTxt = "";
 
     public WeightTxtListener(AppDatabase db, User user) {
         this.db = db;
@@ -30,13 +33,11 @@ public class WeightTxtListener implements TextWatcher {
 
     @Override
     public void afterTextChanged(Editable s) {
-        System.out.println("textChange to " + changedTxt);
+
         // user is done change the weight -> save the new weight
         if (changedTxt.length() != 0) {
             user.setWeight(Integer.parseInt(changedTxt.toString()));
             db.userDao().updateUser(user);
-        } else {
-
         }
     }
 }

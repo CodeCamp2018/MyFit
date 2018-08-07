@@ -1,16 +1,13 @@
 package com.uniks.myfit.model;
 
+/**
+ * a vector of x, y, z values
+ */
 public class AccTripleVec {
 
     private float x;
     private float y;
     private float z;
-
-    public AccTripleVec() {
-        x = Float.MAX_VALUE;
-        y = Float.MAX_VALUE;
-        z = Float.MAX_VALUE;
-    }
 
     public AccTripleVec(float x, float y, float z) {
         this.x = x;
@@ -43,6 +40,6 @@ public class AccTripleVec {
     }
 
     public float getSquaredMagnitude() {
-        return x*x + y*y + z*z;
+        return x * x + y * y + z * z;
     }
 }

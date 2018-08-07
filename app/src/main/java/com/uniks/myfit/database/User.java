@@ -4,6 +4,9 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
+/**
+ * the user.
+ */
 @Entity
 public class User {
 
@@ -12,9 +15,6 @@ public class User {
 
     @ColumnInfo(name = "weight")
     private int weight; // user weight in kg
-
-    // TODO: maybe the total distance, total time exercising, ... ?
-
 
     public long getUid() {
         return uid;

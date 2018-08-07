@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -16,32 +15,29 @@ import com.uniks.myfit.controller.MapsController;
 import com.uniks.myfit.database.AppDatabase;
 import com.uniks.myfit.database.LocationData;
 import com.uniks.myfit.database.SportExercise;
-import com.uniks.myfit.model.AccTripleVec;
-import com.uniks.myfit.sensors.Accelerometer;
-import com.uniks.myfit.sensors.Gyroscope;
-import com.uniks.myfit.sensors.ProximitySensorService;
+import com.uniks.myfit.sensors.PushupService;
+import com.uniks.myfit.sensors.SitupService;
 import com.uniks.myfit.sensors.StepCounterService;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
+import java.util.Locale;
 
+/**
+ * the activity that shows the current tracked data according exercise mode, incl. map for running and cycling
+ */
 public class TrackingViewActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final int REQUEST_FINE_LOCATION = 351;
-    private static final int MIN_NUMBER_OF_ELEMENTS = 5;
-    private static final String TRACKING_LOG = "TrackingViewActivity: ";
-    private Accelerometer sitUpsCtrl;
-    private Gyroscope gyro;
+    private SitupService sitUpsCtrl;
     private StepCounterService stepCounterService;
     private MapsController mapsController;
-    private ProximitySensorService pushupService;
+    private PushupService pushupService;
 
     private int exerciseMode;
-    private boolean activeStateMachine;
-    private int actualState;
+    private boolean activeProcessing;
     private Date startExercisingTime;
     private String customTitle = "Exercise";
 
@@ -53,21 +49,19 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, MainActivity.databaseName).allowMainThreadQueries().fallbackToDestructiveMigration().build();
-
-        sitUpsCtrl = new Accelerometer(this);
-        gyro = new Gyroscope(this);
-        stepCounterService = new StepCounterService(this);
-        pushupService = new ProximitySensorService(this);
-
-        activeStateMachine = true;
-        actualState = 0;
+        // model
+        db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, MainActivity.DATABASE_NAME).allowMainThreadQueries().fallbackToDestructiveMigration().build();
+        activeProcessing = true;
         startExercisingTime = Calendar.getInstance().getTime();
-
         locationQueue = new ArrayList<>();
-
         exerciseMode = getIntent().getIntExtra("EXERCISE", 0);
 
+        // controller
+        sitUpsCtrl = new SitupService(this);
+        stepCounterService = new StepCounterService(this);
+        pushupService = new PushupService(this);
+
+        // view
         switch (exerciseMode) {
             case 0:
                 customTitle = getString(R.string.running);
@@ -82,8 +76,6 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 customTitle = getString(R.string.situps);
                 break;
         }
-
-        locationQueue = new ArrayList<>();
 
         // set title based on the exercise type
         this.setTitle(customTitle);
@@ -100,17 +92,20 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
         startSensors();
 
         // start the state machine
-        startStateMachine();
+        startProcessingData();
     }
 
+    /**
+     * initiates the sensor services
+     */
     private void startSensors() {
         switch (exerciseMode) {
             case 0: // running
 
                 stepCounterService.onStart();
+                includeMap();
 
                 // set headlines
-                includeMap();
                 // distance
                 TextView runningDistanceTitleUI = findViewById(R.id.title_1);
                 runningDistanceTitleUI.setText(getResources().getString(R.string.distanceHeadline));
@@ -121,8 +116,9 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 break;
             case 1: // cycling
 
-                // set headlines
                 includeMap();
+
+                // set headlines
                 // distance
                 TextView cyclingDistanceTitleUI = findViewById(R.id.title_1);
                 cyclingDistanceTitleUI.setText(getResources().getString(R.string.distanceHeadline));
@@ -144,7 +140,6 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
             case 3: // situps
 
                 sitUpsCtrl.init();
-                gyro.init();
 
                 // set headlines
                 // count
@@ -159,59 +154,26 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
         durationTitleUI.setText(getResources().getString(R.string.timeHeadline));
     }
 
-    private void startStateMachine() {
+    /**
+     * starts processor to show actual calculated data
+     */
+    private void startProcessingData() {
         // start processing-Thread who also updates UI-elements
         new Thread(new Runnable() {
             public void run() {
 
-                while (activeStateMachine) {
-                    switch (actualState) {
-                        case 0: // wait-state
-                            if (isThereEnoughData()) {
-                                actualState = 1;
-                            }
-                            break;
-                        case 1: // processing-state
+                while (activeProcessing) {
 
-                            processSensorData();
-
-                            actualState = 0;
-                            break;
-                    }
+                    processSensorData();
                 }
             }
         }).start();
 
     }
 
-    private boolean isThereEnoughData() {
-        boolean enough = false;
-        switch (exerciseMode) {
-            case 0: // running
-
-                enough = true;
-
-                break;
-            case 1: // cycling
-
-                enough = true;
-
-                break;
-            case 2: // pushups
-
-                enough = true;
-
-                break;
-            case 3: // situps
-//                if (getAccelerometerQueue().size() >= MIN_NUMBER_OF_ELEMENTS) {
-                enough = true;
-//                }
-                break;
-        }
-
-        return enough;
-    }
-
+    /**
+     * gets actual data from services and updates UI
+     */
     private void processSensorData() {
         final String duration = getFormattedCurrentDuration();
         switch (exerciseMode) {
@@ -225,7 +187,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 runningDistanceValueUI.post(new Runnable() {
                     @Override
                     public void run() {
-                        runningDistanceValueUI.setText(String.format("%.2f", mapsController.getTotalDistance()));
+                        runningDistanceValueUI.setText(String.format(Locale.GERMANY, "%.2f", mapsController.getTotalDistance()));
                     }
                 });
 
@@ -249,7 +211,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 cyclingDistanceValueUI.post(new Runnable() {
                     @Override
                     public void run() {
-                        cyclingDistanceValueUI.setText(String.format("%.2f", mapsController.getTotalDistance()));
+                        cyclingDistanceValueUI.setText(String.format(Locale.GERMANY, "%.2f", mapsController.getTotalDistance()));
                     }
                 });
 
@@ -300,10 +262,9 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
         });
     }
 
-    public ArrayList<Location> getLocationQueue() {
-        return locationQueue;
-    }
-
+    /**
+     * load mapsController to show map with live location data
+     */
     private void includeMap() {
         //Insert map in our view
         if (exerciseMode <= 1) {
@@ -322,14 +283,18 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
     @Override
     public void onClick(View v) {
 
-        stopBtnClicked();
+        saveData();
         this.finish();
     }
 
-    private void stopBtnClicked() {
+    /**
+     * saves data to db
+     */
+    private void saveData() {
         //end tracking
         Date now = Calendar.getInstance().getTime();
-        activeStateMachine = false;
+        activeProcessing = false;
+
         // save data to database
         SportExercise newSportExercise = new SportExercise();
         newSportExercise.setTripTime(getFormattedCurrentDuration());
@@ -387,7 +352,6 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
 
                 // stop tracking
                 sitUpsCtrl.stopListening();
-                gyro.stopListening();
                 break;
         }
 
@@ -395,6 +359,12 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
 
     }
 
+    /**
+     * sets the exercise id to each location data
+     *
+     * @param linePoints the gathered location data
+     * @param exerciseId the exercise id of the current exercise
+     */
     private void setExerciseIdToLocationData(ArrayList<LocationData> linePoints, long exerciseId) {
         for (LocationData data :
                 linePoints) {
@@ -403,7 +373,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
         }
     }
 
-    public String getFormattedCurrentDuration() {
+    private String getFormattedCurrentDuration() {
         Date now = Calendar.getInstance().getTime();
         long duration = now.getTime() - startExercisingTime.getTime();
 
@@ -420,19 +390,10 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case REQUEST_FINE_LOCATION: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    mapsController.startLocation();
-
-                } else {
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                }
-                return;
-            }
+        // If request is cancelled, the result arrays are empty.
+        if (requestCode == REQUEST_FINE_LOCATION && grantResults.length > 0
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            mapsController.startLocation();
 
         }
     }
@@ -442,8 +403,8 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
     protected void onDestroy() {
 
         // if stopBtn is not hit before
-        if (activeStateMachine) {
-            stopBtnClicked();
+        if (activeProcessing) {
+            saveData();
         }
 
         super.onDestroy();

@@ -11,9 +11,7 @@ import android.widget.TextView;
 
 import com.uniks.myfit.MainActivity;
 import com.uniks.myfit.R;
-import com.uniks.myfit.database.AppDatabase;
 import com.uniks.myfit.database.SportExercise;
-import com.uniks.myfit.database.User;
 import com.uniks.myfit.helper.DeleteButtonHelper;
 
 import java.text.SimpleDateFormat;
@@ -21,6 +19,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+/**
+ * The Adapter to connect the exercise data to the CardView
+ */
 public class CardsRecyclerViewAdapter extends RecyclerView.Adapter<CardsRecyclerViewAdapter.DataObjectHolder> {
 
     private ArrayList<SportExercise> sportExercises;
@@ -76,6 +77,7 @@ public class CardsRecyclerViewAdapter extends RecyclerView.Adapter<CardsRecycler
     @Override
     public void onBindViewHolder(DataObjectHolder holder, int position) {
 
+        // set icon depending on exercise mode
         switch (sportExercises.get(position).getMode()) {
             case 0:
                 holder.exerciseIcon.setImageDrawable(ResourcesCompat.getDrawable(mainActivity.getResources(), R.drawable.ic_run_black, null));
@@ -91,6 +93,7 @@ public class CardsRecyclerViewAdapter extends RecyclerView.Adapter<CardsRecycler
                 break;
         }
 
+        // set date, time and duration in the Card
         holder.date.setText(getDateString(sportExercises.get(position).getDate()));
         holder.time.setText(getTimeString(sportExercises.get(position).getDate()));
         holder.duration.setText(String.valueOf(sportExercises.get(position).getTripTime()));
@@ -98,25 +101,24 @@ public class CardsRecyclerViewAdapter extends RecyclerView.Adapter<CardsRecycler
         holder.deleteButton.setOnClickListener(new DeleteButtonHelper(mainActivity, sportExercises.get(position).getId()));
     }
 
-    public void addItem(SportExercise sportExercise, int index) {
-        sportExercises.add(index, sportExercise);
-        notifyItemInserted(index);
-    }
-
-    public void deleteItem(int index) {
-        sportExercises.remove(index);
-        notifyItemRemoved(index);
-    }
-
     @Override
     public int getItemCount() {
         return sportExercises.size();
     }
 
+    /**
+     * the click listener for the card
+     */
     public interface MyClickListener {
         void onItemClick(int position, View v);
     }
 
+    /**
+     * formats the given date to dd.MM.yyyy
+     *
+     * @param date the date to format
+     * @return the formatted date
+     */
     private String getDateString(Date date) {
 
         SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMANY);
@@ -125,6 +127,12 @@ public class CardsRecyclerViewAdapter extends RecyclerView.Adapter<CardsRecycler
 
     }
 
+    /**
+     * formats the given date to time format HH:mm
+     *
+     * @param date the date to format
+     * @return the formatted time
+     */
     private String getTimeString(Date date) {
 
         SimpleDateFormat df = new SimpleDateFormat("HH:mm", Locale.GERMANY);

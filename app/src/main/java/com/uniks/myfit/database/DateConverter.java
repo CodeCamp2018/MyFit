@@ -4,6 +4,9 @@ import android.arch.persistence.room.TypeConverter;
 
 import java.util.Date;
 
+/**
+ * converts Date to Long and Long to Date, so database can interpret Date type
+ */
 public class DateConverter {
 
     @TypeConverter

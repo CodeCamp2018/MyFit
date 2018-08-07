@@ -6,6 +6,9 @@ import android.view.View;
 import com.uniks.myfit.MainActivity;
 import com.uniks.myfit.TrackingViewActivity;
 
+/**
+ * helper class to start trackingView according to exercise mode.
+ */
 public class StartButtonHelper implements View.OnClickListener {
 
     private int modeCode;
@@ -18,7 +21,8 @@ public class StartButtonHelper implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        Intent startTracking = new Intent( view.getContext() , TrackingViewActivity.class);
+        // start TrackingViewActivity and also send exercise mode
+        Intent startTracking = new Intent(view.getContext(), TrackingViewActivity.class);
         startTracking.putExtra("EXERCISE", modeCode);
         mainActivity.startActivity(startTracking);
     }

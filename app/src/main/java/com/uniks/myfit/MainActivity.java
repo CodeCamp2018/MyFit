@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -18,26 +17,20 @@ import com.uniks.myfit.database.User;
 import com.uniks.myfit.helper.DoneExerciseCardClickListener;
 import com.uniks.myfit.helper.StartButtonHelper;
 import com.uniks.myfit.helper.WeightTxtListener;
-import com.uniks.myfit.sensors.Gyroscope;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * the main activity of this app.
+ */
 public class MainActivity extends AppCompatActivity {
-    static final String databaseName = "myFitDB";
-    private static final String TAG = "BasicSensorsApi";
-    private static final float NS2S = 1.0f / 1000000000.0f;
-    private final float[] deltaRotationVector = new float[4];
-
-    Gyroscope gyroscopeSensor;
+    static final String DATABASE_NAME = "myFitDB";
 
     public AppDatabase db;
     public User user;
-    List<SportExercise> sportExercises;
 
-    private RecyclerView cardRecyclerView;
     public CardsRecyclerViewAdapter cardsAdapter;
-    private RecyclerView.LayoutManager cardsLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
         // model
         // setup the database
-        db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, databaseName).allowMainThreadQueries().fallbackToDestructiveMigration().build();
+        db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, DATABASE_NAME).allowMainThreadQueries().fallbackToDestructiveMigration().build();
 
         // if there is no user, create one
         List<User> users = db.userDao().getAll();
@@ -58,8 +51,6 @@ public class MainActivity extends AppCompatActivity {
             users = db.userDao().getAll();
         }
         user = users.get(0); // for this small project there is only one user
-        // controllers
-        Log.d(TAG, "onCreate: initializing sensor services");
 
         // view
         setContentView(R.layout.activity_main);
@@ -72,9 +63,7 @@ public class MainActivity extends AppCompatActivity {
         weightTxt.setText(String.valueOf(user.getWeight()), TextView.BufferType.EDITABLE);
         weightTxt.addTextChangedListener(new WeightTxtListener(db, user));
 
-        /*
-         * Listen to buttons to start tracking
-         */
+        // set listener to each button, to start tracking according to mode
         FloatingActionButton startRunning = findViewById(R.id.add_exercise_running);
         setStartListener(0, startRunning);
 
@@ -88,15 +77,20 @@ public class MainActivity extends AppCompatActivity {
         setStartListener(3, startSitups);
 
         // set cards of completed tours
-        cardRecyclerView = findViewById(R.id.cards_recycler_view);
+        RecyclerView cardRecyclerView = findViewById(R.id.cards_recycler_view);
         cardRecyclerView.setHasFixedSize(true);
-        cardsLayoutManager = new LinearLayoutManager(this);
+        RecyclerView.LayoutManager cardsLayoutManager = new LinearLayoutManager(this);
         cardRecyclerView.setLayoutManager(cardsLayoutManager);
         cardsAdapter = new CardsRecyclerViewAdapter(getDataSet(), this);
         cardRecyclerView.setAdapter(cardsAdapter);
 
     }
 
+    /**
+     * gets all exercises for user from db
+     *
+     * @return all exercises for current user
+     */
     public ArrayList<SportExercise> getDataSet() {
 
         List<SportExercise> allExercises = db.sportExerciseDao().getAllFromUser(user.getUid());

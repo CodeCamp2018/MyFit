@@ -1,13 +1,15 @@
 package com.uniks.myfit.helper;
 
 import android.content.Intent;
-import android.util.Log;
 import android.view.View;
 
 import com.uniks.myfit.DetailActivity;
 import com.uniks.myfit.MainActivity;
 import com.uniks.myfit.controller.CardsRecyclerViewAdapter;
 
+/**
+ * helper class to open detailView from click on exercise card.
+ */
 public class DoneExerciseCardClickListener implements CardsRecyclerViewAdapter.MyClickListener {
 
     private MainActivity mainActivity;
@@ -19,10 +21,7 @@ public class DoneExerciseCardClickListener implements CardsRecyclerViewAdapter.M
 
     @Override
     public void onItemClick(int position, View v) {
-
-        Log.i("ClickEvent on Card:", " Clicked on Item " + position);
-
-        // change to DetailActivity and send index (== exerciseId) of Exercise also
+        // change to DetailActivity and also send index of Exercise
 
         Intent showDetails = new Intent(v.getContext(), DetailActivity.class);
         showDetails.putExtra("POSITION", position);
