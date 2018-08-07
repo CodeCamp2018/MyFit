@@ -13,11 +13,11 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.uniks.myfit.controller.MapsController;
-import com.uniks.myfit.controller.SitUpsCtrl;
 import com.uniks.myfit.database.AppDatabase;
 import com.uniks.myfit.database.LocationData;
 import com.uniks.myfit.database.SportExercise;
 import com.uniks.myfit.model.AccTripleVec;
+import com.uniks.myfit.sensors.Accelerometer;
 import com.uniks.myfit.sensors.Gyroscope;
 import com.uniks.myfit.sensors.ProximitySensorService;
 import com.uniks.myfit.sensors.StepCounterService;
@@ -32,7 +32,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
     public static final int REQUEST_FINE_LOCATION = 351;
     private static final int MIN_NUMBER_OF_ELEMENTS = 5;
     private static final String TRACKING_LOG = "TrackingViewActivity: ";
-    private SitUpsCtrl sitUpsCtrl;
+    private Accelerometer sitUpsCtrl;
     private Gyroscope gyro;
     private StepCounterService stepCounterService;
     private MapsController mapsController;
@@ -45,7 +45,6 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
     private String customTitle = "Exercise";
 
     private ArrayList<Location> locationQueue;
-    private ArrayList<AccTripleVec> accelerometerQueue;
 
     public AppDatabase db;
 
@@ -55,7 +54,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
 
         db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, MainActivity.databaseName).allowMainThreadQueries().fallbackToDestructiveMigration().build();
 
-        sitUpsCtrl = new SitUpsCtrl(this);
+        sitUpsCtrl = new Accelerometer(this);
         gyro = new Gyroscope(this);
         stepCounterService = new StepCounterService(this);
         pushupService = new ProximitySensorService(this);
@@ -65,7 +64,6 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
         startExercisingTime = Calendar.getInstance().getTime();
 
         locationQueue = new ArrayList<>();
-        accelerometerQueue = new ArrayList<>();
 
         exerciseMode = getIntent().getIntExtra("EXERCISE", 0);
 
@@ -85,7 +83,6 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
         }
 
         locationQueue = new ArrayList<>();
-        accelerometerQueue = new ArrayList<>();
 
         // set title based on the exercise type
         this.setTitle(customTitle);
@@ -206,7 +203,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 break;
             case 3: // situps
 //                if (getAccelerometerQueue().size() >= MIN_NUMBER_OF_ELEMENTS) {
-                    enough = true;
+                enough = true;
 //                }
                 break;
         }
@@ -279,7 +276,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 break;
             case 3: // situps
 
-                final int situpCount = sitUpsCtrl.calculateSitups();
+                final int situpCount = sitUpsCtrl.getSitupCount();
 
                 // set view - show count
                 final TextView situpCountValueUI = findViewById(R.id.value_1);
@@ -304,10 +301,6 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
 
     public ArrayList<Location> getLocationQueue() {
         return locationQueue;
-    }
-
-    public ArrayList<AccTripleVec> getAccelerometerQueue() {
-        return accelerometerQueue;
     }
 
     private void includeMap() {
@@ -386,13 +379,13 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
                 break;
             case 3: // situps
 
-                int calculatedSitups = sitUpsCtrl.calculateSitups();
+                int calculatedSitups = sitUpsCtrl.getSitupCount();
 
                 // db
                 newSportExercise.setAmountOfRepeats(calculatedSitups);
 
                 // stop tracking
-                sitUpsCtrl.stop();
+                sitUpsCtrl.stopListening();
                 gyro.stopListening();
                 break;
         }

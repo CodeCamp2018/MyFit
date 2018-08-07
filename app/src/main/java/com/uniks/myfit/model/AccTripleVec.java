@@ -41,4 +41,8 @@ public class AccTripleVec {
     public void setZ(float z) {
         this.z = z;
     }
+
+    public float getSquaredMagnitude() {
+        return x*x + y*y + z*z;
+    }
 }

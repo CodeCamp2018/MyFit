@@ -11,6 +11,8 @@ import android.widget.Toast;
 import com.uniks.myfit.TrackingViewActivity;
 import com.uniks.myfit.model.AccTripleVec;
 
+import java.util.ArrayList;
+
 public class Accelerometer implements SensorEventListener {
     private static final String TAG = "MainActivity";
     private SensorManager sensorManager;
@@ -21,17 +23,35 @@ public class Accelerometer implements SensorEventListener {
 
     TrackingViewActivity trackingViewActivity;
     float accelerationX, accelerationY, accelerationZ;
+    float[] lowPass;
     public float TotACC;
     private final float[] accelerometerReading = new float[3];
+
+    private boolean active;
+    private int countIndex;
+    AccTripleVec accTripleVec;
+    AccTripleVec prevTriple;
+    boolean rising;
+    private final float treshold = 0.5f;
+    private boolean skip = false;
+    private int situpCount;
 
     //TextView xValue, yValue, zValue;
 
     public Accelerometer(TrackingViewActivity trackingViewActivity) {
         this.trackingViewActivity = trackingViewActivity;
-        gravity = new float[4];
+        gravity = new float[3];
+        lowPass = new float[3];
+
     }
 
     public void init() {
+        active = true;
+        countIndex = 0;
+        rising = false;
+        situpCount = 0;
+
+
         running = true;
         // Get an instance of the SensorManager
         sensorManager = (SensorManager) trackingViewActivity.getSystemService(Context.SENSOR_SERVICE);
@@ -44,50 +64,62 @@ public class Accelerometer implements SensorEventListener {
     private static SensorEventListener sensorEventListener =
             new SensorEventListener() {
                 public void onAccuracyChanged(Sensor sensor, int accuracy) {}
-                public void onSensorChanged(SensorEvent event)
-                {
+                public void onSensorChanged(SensorEvent event){}
+            };
 
-                } };
-                @Override
-                public void onSensorChanged(SensorEvent sensorEvent) {
-                    if (running) {
-                        final float alpha = (float) 0.8;
-                        /*Store Accelerometer x y z values */
-                        accelerationX = sensorEvent.values[0];
-                        accelerationY = sensorEvent.values[1];
-                        accelerationZ = sensorEvent.values[2];
-                        Log.e("AccelerlormeterData", "\nX: " + accelerationX + "\nY: " + accelerationY + "\nZ: " + accelerationZ);
-                        // Isolate the force of gravity with the low-pass filter.
-                        gravity[0] = alpha * gravity[0] + (1 - alpha) * sensorEvent.values[0];
-                        gravity[1] = alpha * gravity[1] + (1 - alpha) * sensorEvent.values[1];
-                        gravity[2] = alpha * gravity[2] + (1 - alpha) * sensorEvent.values[2];
-                        // Remove the gravity contribution with the high-pass filter.
-                        accelerationX = sensorEvent.values[0] - gravity[0];
-                        accelerationY = sensorEvent.values[1] - gravity[1];
-                        accelerationZ = sensorEvent.values[2] - gravity[2];
-                        // store it into a list to send it to controller
-                        trackingViewActivity.getAccelerometerQueue().add(new AccTripleVec(accelerationX, accelerationY,accelerationZ));
-                        displayAccValues();
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        if (running) {
+            final float beta = (float) 0.8;
 
-                        TotACC = (float) Math.sqrt(accelerationX * accelerationX + accelerationY * accelerationY + accelerationZ * accelerationZ);
-                        if(TotACC>0.5) {
-                            Log.d("Device motion detected!", "TotalAcc: " + TotACC);
-                        }
-                    }
+            // Smooth out readings with a low-pass filter.
+            accelerationX = beta * accelerationX + (1 - beta) * sensorEvent.values[0];
+            accelerationY = beta * accelerationY + (1 - beta) * sensorEvent.values[1];
+            accelerationZ = beta * accelerationZ + (1 - beta) * sensorEvent.values[2];
+
+            lowPass[0] = beta * lowPass[0] + (1 - beta) * accelerationX;
+
+            accTripleVec = new AccTripleVec(accelerationX, accelerationY,accelerationZ);
+            displayAccValues();
+
+            if (prevTriple == null) {
+                prevTriple = accTripleVec;
+                return;
+            }
+
+            if (accTripleVec.getSquaredMagnitude() > (prevTriple.getSquaredMagnitude() + treshold) && !rising) {
+                rising = true;
+            } else if (accTripleVec.getSquaredMagnitude() < (prevTriple.getSquaredMagnitude() - treshold) && rising) {
+                rising = false;
+                if (!skip) {
+                    situpCount++;
                 }
+                skip = !skip;
+            }
 
-                public void displayAccValues() {
-                    //display The data
-                    Log.i(TAG, "onSensorChanged: X:" + accelerationX + "Y:" + accelerationY + "Z:" + accelerationZ);
-                }
-                @Override
-                public void onAccuracyChanged(Sensor sensor, int i) {
+            prevTriple = accTripleVec;
+        }
+    }
 
-                }
+    public void displayAccValues() {
+        //display The data
+        Log.i(TAG, "onSensorChanged: X:" + accelerationX + "Y:" + accelerationY + "Z:" + accelerationZ);
+    }
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
+    }
     //Unregisters listeners close accelerometer
     public void stopListening() {
         running = false;
         sensorManager.unregisterListener(sensorEventListener, accelerometer);
+    }
+
+    public int getSitupCount() {
+        if (situpCount >= 1) {
+            return situpCount - 1;
+        }
+        return  situpCount;
     }
 }
 
