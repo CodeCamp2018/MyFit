@@ -106,7 +106,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/end" />
+                    android:text="@string/kcal" />
 
                 <TextView
                     android:id="@+id/exercise_ended_time"

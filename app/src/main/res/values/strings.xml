@@ -13,6 +13,7 @@
     <string name="start">Start</string>
     <string name="duration">Duration</string>
     <string name="end">End</string>
+    <string name="kcal">kcal</string>
     <string name="distance">Distance</string>
     <string name="speed">Speed</string>
     <string name="title_activity_tracking_view">TrackingViewActivity</string>

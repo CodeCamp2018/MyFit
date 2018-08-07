@@ -18,17 +18,13 @@ public class Accelerometer implements SensorEventListener {
     private SensorManager sensorManager;
     Sensor accelerometer;
     public float[] gravity;
-    public static Context context;
+    public Context context;
     private static boolean running = true;
 
     TrackingViewActivity trackingViewActivity;
     float accelerationX, accelerationY, accelerationZ;
     float[] lowPass;
-    public float TotACC;
-    private final float[] accelerometerReading = new float[3];
 
-    private boolean active;
-    private int countIndex;
     AccTripleVec accTripleVec;
     AccTripleVec prevTriple;
     boolean rising;
@@ -46,8 +42,6 @@ public class Accelerometer implements SensorEventListener {
     }
 
     public void init() {
-        active = true;
-        countIndex = 0;
         rising = false;
         situpCount = 0;
 
@@ -101,7 +95,7 @@ public class Accelerometer implements SensorEventListener {
         }
     }
 
-    public void displayAccValues() {
+    private void displayAccValues() {
         //display The data
         Log.i(TAG, "onSensorChanged: X:" + accelerationX + "Y:" + accelerationY + "Z:" + accelerationZ);
     }
