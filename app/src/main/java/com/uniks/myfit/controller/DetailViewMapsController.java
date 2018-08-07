@@ -1,6 +1,5 @@
 package com.uniks.myfit.controller;
 
-import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -11,13 +10,11 @@ import android.util.Log;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.uniks.myfit.DetailActivity;
-import com.uniks.myfit.R;
 import com.uniks.myfit.database.AppDatabase;
 import com.uniks.myfit.database.LocationData;
 import com.uniks.myfit.database.SportExercise;
@@ -28,6 +25,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -80,7 +78,7 @@ public class DetailViewMapsController extends FragmentActivity implements OnMapR
 
         File mainDir = new File(detailActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "MyFit");
         if (!mainDir.exists()) {
-            if(mainDir.mkdir()) {
+            if (mainDir.mkdir()) {
                 Log.e("Create Directory", "Main Directory Created: " + mainDir);
             }
         }
@@ -102,7 +100,7 @@ public class DetailViewMapsController extends FragmentActivity implements OnMapR
         // share
         String shareBody = null;
         try {
-            shareBody = getJsonFromExerciseData();
+            shareBody = getNiceConclusionTxt();
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -118,18 +116,29 @@ public class DetailViewMapsController extends FragmentActivity implements OnMapR
 
     }
 
-    private String getJsonFromExerciseData() throws JSONException {
+    private String getNiceConclusionTxt() throws JSONException {
+
+        List<LocationData> locationData = db.locationDataDao().getAllFromExercise(exercise.getId());
+
+        SimpleDateFormat dateSdf = new SimpleDateFormat("dd.MM.yyyy");
+        SimpleDateFormat timeSdf = new SimpleDateFormat("hh:mm");
+
+        String message = "Hey there!\nI did some exercise on " + dateSdf.format(exercise.getDate()) + " at " + timeSdf.format(exercise.getDate()) + " for " + exercise.getTripTime() + " hours. Look what I did: ";
 
         JSONObject obj = new JSONObject();
         obj.put("start", exercise.getDate());
         obj.put("duration", exercise.getTripTime());
 
+        String addition = "";
+
+
         switch (exercise.getMode()) {
 
             case 0: // running
-                List<LocationData> runningLocationData = db.locationDataDao().getAllFromExercise(exercise.getId());
 
-                JSONArray runningLocationArray = new JSONArray(runningLocationData);
+                addition = "I ran " + String.format("%.2f", exercise.getDistance()) + " km and did " + exercise.getAmountOfRepeats() + " steps.\n";
+
+                JSONArray runningLocationArray = new JSONArray(locationData);
 
                 obj.put("distance", exercise.getDistance());
                 obj.put("steps", exercise.getAmountOfRepeats());
@@ -137,9 +146,9 @@ public class DetailViewMapsController extends FragmentActivity implements OnMapR
                 break;
             case 1: // cycling
 
-                List<LocationData> cyclingLocationData = db.locationDataDao().getAllFromExercise(exercise.getId());
+                addition = "I cycled " + String.format("%.2f", exercise.getDistance()) + " km with a max speed of " + exercise.getSpeed() + " km/h.\n";
 
-                JSONArray cyclingLocationArray = new JSONArray(cyclingLocationData);
+                JSONArray cyclingLocationArray = new JSONArray(locationData);
 
                 obj.put("distance", exercise.getDistance());
                 obj.put("speed", exercise.getSpeed());
@@ -149,6 +158,21 @@ public class DetailViewMapsController extends FragmentActivity implements OnMapR
 
         }
 
-        return obj.toString();
+
+        StringBuilder route = new StringBuilder("These are the coordinates of my route:\n");
+
+        for (int i = 0; i < locationData.size(); i++) {
+            route.append(locationData.get(i).getLatitude()).append(", ").append(locationData.get(i).getLongitude());
+            if (i != locationData.size() - 1) {
+                // last element
+                route.append("\n");
+            }
+        }
+
+
+        addition += route;
+
+
+        return message + addition;
     }
 }

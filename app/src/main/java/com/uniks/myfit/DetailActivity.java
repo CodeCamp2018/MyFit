@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -152,7 +151,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
             String shareBody = null; // "Write your Body here";
             try {
-                shareBody = getJsonFromExerciseData();
+                shareBody = getNiceConclusionTxt();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -169,28 +168,37 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
     }
 
-    private String getJsonFromExerciseData() throws JSONException {
+    private String getNiceConclusionTxt() throws JSONException {
+
+        SimpleDateFormat dateSdf = new SimpleDateFormat("dd.MM.yyyy");
+        SimpleDateFormat timeSdf = new SimpleDateFormat("hh:mm");
+
+        String message = "Hey there!\nI did some exercise on " + dateSdf.format(exercise.getDate()) + " at " + timeSdf.format(exercise.getDate()) + " for " + exercise.getTripTime() + " hours. Look what I did:\n";
 
         JSONObject obj = new JSONObject();
         obj.put("start", exercise.getDate());
         obj.put("duration", exercise.getTripTime());
 
+        String addition = "";
+
         switch (exercise.getMode()) {
 
             case 2: // pushups
 
+                addition = "I finished " + exercise.getAmountOfRepeats() + " Push ups.";
                 obj.put("pushUps", exercise.getAmountOfRepeats());
 
                 break;
             case 3: // situps
 
+                addition = "I finished " + exercise.getAmountOfRepeats() + " Sit ups.";
                 obj.put("sitUps", exercise.getAmountOfRepeats());
 
                 break;
 
         }
 
-        return obj.toString();
+        return message + addition;
     }
 
 }

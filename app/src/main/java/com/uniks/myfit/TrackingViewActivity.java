@@ -368,7 +368,7 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
 
                 // db
                 newSportExercise.setDistance(mapsController.getTotalDistance());
-                newSportExercise.setSpeed(mapsController.getSpeed());
+                newSportExercise.setSpeed(mapsController.getMaxSpeed());
                 setExerciseIdToLocationData(cyclingLinePoints, exerciseId);
 
 
