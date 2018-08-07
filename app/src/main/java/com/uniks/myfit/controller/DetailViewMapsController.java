@@ -63,10 +63,12 @@ public class DetailViewMapsController extends FragmentActivity implements OnMapR
         polyline = map.addPolyline(new PolylineOptions().color(0xff0564ff));
         polyline.setPoints(tmp);
 
-        // zoom to it
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(allLocation.get(0).getLatLng(), 15));
-        map.addMarker(new MarkerOptions().position(allLocation.get(0).getLatLng())).setVisible(true);
-        map.addMarker(new MarkerOptions().position(allLocation.get(allLocation.size() - 1).getLatLng())).setVisible(true);
+        if (allLocation.size() > 0) {
+            // zoom to it
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(allLocation.get(0).getLatLng(), 15));
+            map.addMarker(new MarkerOptions().position(allLocation.get(0).getLatLng())).setVisible(true);
+            map.addMarker(new MarkerOptions().position(allLocation.get(allLocation.size() - 1).getLatLng())).setVisible(true);
+        }
     }
 
     public void doMapScreenshot() {

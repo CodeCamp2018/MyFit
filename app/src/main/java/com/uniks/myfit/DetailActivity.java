@@ -92,9 +92,11 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     private void setExerciseData() {
         TextView startTime = findViewById(R.id.exercise_started_time);
         TextView duration = findViewById(R.id.exercise_duration);
+        TextView calories = findViewById(R.id.exercise_kcal);
 
         startTime.setText(formattedDate());
         duration.setText(exercise.getTripTime());
+        calories.setText(String.valueOf(calculateCalories()));
 
         switch (exercise.getMode()) {
             case 0:
@@ -102,17 +104,23 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
                 TextView runningDistance = findViewById(R.id.exercise_distance);
                 TextView steps = findViewById(R.id.exercise_steps_count);
+                TextView avgRunningSpeed = findViewById(R.id.exercise_avg_speed);
 
                 runningDistance.setText(String.format("The distance you run was %.2f km.", exercise.getDistance()));
                 steps.setText(String.format("Congratulations you stepped %s steps during your exercise.", String.valueOf(exercise.getAmountOfRepeats())));
+                avgRunningSpeed.setText(String.format("%.2f km/h", getAvgSpeed()));
 
                 break;
             case 1:
                 // Cycling
 
                 TextView cyclingDistance = findViewById(R.id.exercise_distance);
+                TextView cyclingSpeed = findViewById(R.id.exercise_steps_count);
+                TextView avgCyclingSpeed = findViewById(R.id.exercise_avg_speed);
 
                 cyclingDistance.setText(String.format("The distance you cycled was %.2f km.", exercise.getDistance()));
+                cyclingSpeed.setText(String.format("max. speed: %.2f km/h", exercise.getSpeed()));
+                avgCyclingSpeed.setText(String.format("%.2f km/h", getAvgSpeed()));
 
                 break;
             case 2:
@@ -132,6 +140,62 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
                 break;
         }
+    }
+
+    private int calculateCalories() {
+
+        int burntCalories = 0;
+
+        switch (exercise.getMode()) {
+            case 0:
+                // Running
+
+                burntCalories = (int) ((getAvgSpeed() - 0.8) * user.getWeight() * getDurationInHours());
+
+                break;
+            case 1:
+                // Cycling
+
+                burntCalories = (int) ((0.527 * getAvgSpeed() - 1.166) * getDurationInHours() * user.getWeight());
+
+                break;
+            case 2: case 3:
+                // Sit Ups and Push Ups
+
+                burntCalories = (int) (4.5 * user.getWeight() * getDurationInHours());
+
+                break;
+        }
+
+        if (burntCalories < 0) {
+            burntCalories = 0;
+        }
+
+        return burntCalories;
+    }
+
+    private double getAvgSpeed() {
+        // km / h
+
+        return exercise.getDistance() / getDurationInHours();
+    }
+
+    private double getDurationInHours() {
+
+        double hours;
+        double minutes;
+        double seconds;
+
+        String[] split = exercise.getTripTime().split(":");
+
+        hours = Double.valueOf(split[0]);
+        minutes = Double.valueOf(split[1]);
+        seconds = Double.valueOf(split[2]);
+
+        hours = hours + (minutes / 60) + (seconds / 3600);
+
+        return hours;
+
     }
 
     private String formattedDate() {
