@@ -6,8 +6,8 @@ import android.net.Uri;
 import com.uniks.myfit.DetailActivity;
 import com.uniks.myfit.R;
 import com.uniks.myfit.database.AppDatabase;
-import com.uniks.myfit.database.LocationData;
-import com.uniks.myfit.database.SportExercise;
+import com.uniks.myfit.model.LocationData;
+import com.uniks.myfit.model.SportExercise;
 
 import java.io.File;
 import java.text.SimpleDateFormat;

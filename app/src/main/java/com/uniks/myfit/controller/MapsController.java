@@ -20,7 +20,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.uniks.myfit.TrackingViewActivity;
-import com.uniks.myfit.database.LocationData;
+import com.uniks.myfit.model.LocationData;
 
 import java.util.ArrayList;
 import java.util.List;

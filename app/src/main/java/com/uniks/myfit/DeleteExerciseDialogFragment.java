@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 
-import com.uniks.myfit.database.SportExercise;
+import com.uniks.myfit.model.SportExercise;
 
 /**
  * the dialog that asks user confirmation to delete exercise entry.

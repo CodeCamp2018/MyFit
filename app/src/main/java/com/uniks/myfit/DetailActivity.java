@@ -11,9 +11,9 @@ import android.widget.TextView;
 import com.google.android.gms.maps.MapFragment;
 import com.uniks.myfit.controller.DetailViewMapsController;
 import com.uniks.myfit.database.AppDatabase;
-import com.uniks.myfit.database.LocationData;
-import com.uniks.myfit.database.SportExercise;
-import com.uniks.myfit.database.User;
+import com.uniks.myfit.model.LocationData;
+import com.uniks.myfit.model.SportExercise;
+import com.uniks.myfit.model.User;
 import com.uniks.myfit.helper.FittnessDataHelper;
 import com.uniks.myfit.helper.ShareDataHelper;
 

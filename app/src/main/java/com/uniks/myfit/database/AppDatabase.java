@@ -4,6 +4,10 @@ import android.arch.persistence.room.Database;
 import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
 
+import com.uniks.myfit.model.LocationData;
+import com.uniks.myfit.model.SportExercise;
+import com.uniks.myfit.model.User;
+
 /**
  * the apps database, which stores user-, exercise- and location data.
  */

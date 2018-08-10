@@ -1,7 +1,7 @@
 package com.uniks.myfit.helper;
 
-import com.uniks.myfit.database.SportExercise;
-import com.uniks.myfit.database.User;
+import com.uniks.myfit.model.SportExercise;
+import com.uniks.myfit.model.User;
 
 public class FittnessDataHelper {
     private SportExercise exercise;

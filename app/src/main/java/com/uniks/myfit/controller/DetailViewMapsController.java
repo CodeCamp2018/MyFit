@@ -13,8 +13,8 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.uniks.myfit.DetailActivity;
 import com.uniks.myfit.database.AppDatabase;
-import com.uniks.myfit.database.LocationData;
-import com.uniks.myfit.database.SportExercise;
+import com.uniks.myfit.model.LocationData;
+import com.uniks.myfit.model.SportExercise;
 import com.uniks.myfit.helper.ShareDataHelper;
 
 import java.io.File;

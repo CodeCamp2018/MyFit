@@ -6,6 +6,8 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
+import com.uniks.myfit.model.LocationData;
+
 import java.util.List;
 
 @Dao

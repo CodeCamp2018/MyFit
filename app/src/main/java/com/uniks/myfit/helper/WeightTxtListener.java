@@ -4,7 +4,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 
 import com.uniks.myfit.database.AppDatabase;
-import com.uniks.myfit.database.User;
+import com.uniks.myfit.model.User;
 
 /**
  * helper class to save user weight, when user changes value in UI

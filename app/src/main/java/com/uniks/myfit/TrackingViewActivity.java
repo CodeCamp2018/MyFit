@@ -13,8 +13,8 @@ import android.widget.TextView;
 
 import com.uniks.myfit.controller.MapsController;
 import com.uniks.myfit.database.AppDatabase;
-import com.uniks.myfit.database.LocationData;
-import com.uniks.myfit.database.SportExercise;
+import com.uniks.myfit.model.LocationData;
+import com.uniks.myfit.model.SportExercise;
 import com.uniks.myfit.sensors.PushupService;
 import com.uniks.myfit.sensors.SitupService;
 import com.uniks.myfit.sensors.StepCounterService;

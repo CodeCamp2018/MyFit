@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.uniks.myfit.MainActivity;
 import com.uniks.myfit.R;
-import com.uniks.myfit.database.SportExercise;
+import com.uniks.myfit.model.SportExercise;
 import com.uniks.myfit.helper.DeleteButtonHelper;
 
 import java.text.SimpleDateFormat;
