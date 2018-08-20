@@ -14,7 +14,8 @@ import com.uniks.myfit.model.AccTripleVec;
  */
 public class SitupService implements SensorEventListener {
 
-    private static final float THRESHOLD = 0.5f;
+    private static final float THRESHOLD = 0.3f;
+    private static final float ALPHA = 0.98f;
 
     private SensorManager sensorManager;
     private Sensor accelerometer;
@@ -26,7 +27,6 @@ public class SitupService implements SensorEventListener {
 
     private AccTripleVec prevTriple;
     private boolean rising;
-    private boolean skip = false;
     private int situpCount;
 
     public SitupService(TrackingViewActivity trackingViewActivity) {
@@ -46,7 +46,7 @@ public class SitupService implements SensorEventListener {
 
         if (sensorManager != null) {
             accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-            sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+            sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_UI);
         }
 
     }
@@ -54,12 +54,10 @@ public class SitupService implements SensorEventListener {
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         if (running) {
-            final float beta = (float) 0.8;
-
             // Smooth out readings with a low-pass filter.
-            accelerationX = beta * accelerationX + (1 - beta) * sensorEvent.values[0];
-            accelerationY = beta * accelerationY + (1 - beta) * sensorEvent.values[1];
-            accelerationZ = beta * accelerationZ + (1 - beta) * sensorEvent.values[2];
+            accelerationX = ALPHA * accelerationX + (1 - ALPHA) * sensorEvent.values[0];
+            accelerationY = ALPHA * accelerationY + (1 - ALPHA) * sensorEvent.values[1];
+            accelerationZ = ALPHA * accelerationZ + (1 - ALPHA) * sensorEvent.values[2];
 
             AccTripleVec accTripleVec = new AccTripleVec(accelerationX, accelerationY, accelerationZ);
 
@@ -74,10 +72,7 @@ public class SitupService implements SensorEventListener {
             } else if (accTripleVec.getSquaredMagnitude() < (prevTriple.getSquaredMagnitude() - THRESHOLD) && rising) {
                 // if there was rising before and now there is a falling, means there is a peak -> sit up
                 rising = false;
-                if (!skip) {
-                    situpCount++;
-                }
-                skip = !skip;
+                situpCount++;
             }
 
             prevTriple = accTripleVec;
