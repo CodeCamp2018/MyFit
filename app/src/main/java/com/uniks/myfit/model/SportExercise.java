@@ -37,8 +37,6 @@ public class SportExercise {
     @ColumnInfo(name = "amount_of_repeats")
     private int amountOfRepeats; // for steps, push-ups and sit-ups
 
-    // TODO: the burnt calories??
-
     public long getId() {
         return id;
     }

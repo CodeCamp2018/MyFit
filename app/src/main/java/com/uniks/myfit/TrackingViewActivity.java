@@ -41,8 +41,6 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
     private Date startExercisingTime;
     private String customTitle = "Exercise";
 
-    private ArrayList<Location> locationQueue;
-
     public AppDatabase db;
 
     @Override
@@ -53,7 +51,6 @@ public class TrackingViewActivity extends AppCompatActivity implements View.OnCl
         db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, MainActivity.DATABASE_NAME).allowMainThreadQueries().fallbackToDestructiveMigration().build();
         activeProcessing = true;
         startExercisingTime = Calendar.getInstance().getTime();
-        locationQueue = new ArrayList<>();
         exerciseMode = getIntent().getIntExtra("EXERCISE", 0);
 
         // controller

@@ -109,7 +109,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 TextView steps = findViewById(R.id.exercise_steps_count);
                 TextView avgRunningSpeed = findViewById(R.id.exercise_avg_speed);
 
-                runningDistance.setText(getResources().getString(R.string.detail_distance, "run", exercise.getDistance()));
+                runningDistance.setText(getResources().getString(R.string.detail_distance, exercise.getDistance()));
                 steps.setText(getResources().getString(R.string.detail_steps, exercise.getAmountOfRepeats()));
                 avgRunningSpeed.setText(getResources().getString(R.string.detail_avg_speed, fittnessDataHelper.getAvgSpeed()));
 
@@ -121,7 +121,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 TextView cyclingSpeed = findViewById(R.id.exercise_steps_count);
                 TextView avgCyclingSpeed = findViewById(R.id.exercise_avg_speed);
 
-                cyclingDistance.setText(getResources().getString(R.string.detail_distance, "cycled", exercise.getDistance()));
+                cyclingDistance.setText(getResources().getString(R.string.detail_distance, exercise.getDistance()));
                 cyclingSpeed.setText(getResources().getString(R.string.detail_max_speed, exercise.getSpeed()));
                 avgCyclingSpeed.setText(getResources().getString(R.string.detail_avg_speed, fittnessDataHelper.getAvgSpeed()));
 

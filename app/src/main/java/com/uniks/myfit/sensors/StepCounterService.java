@@ -17,7 +17,7 @@ public class StepCounterService implements SensorEventListener {
     private SensorManager sensorManager;
     private Sensor sensorCount;
     private TrackingViewActivity trackingViewActivity;
-    private float startStepCounter = 0;
+    private float startStepCounter;
     private int actualCount;
 
     public StepCounterService(TrackingViewActivity trackingViewActivity) {
@@ -26,6 +26,7 @@ public class StepCounterService implements SensorEventListener {
 
     public void onStart() {
 
+        startStepCounter = 0;
         PackageManager pm = trackingViewActivity.getPackageManager();
         if (pm.hasSystemFeature(PackageManager.FEATURE_SENSOR_STEP_COUNTER)) {
             //If it's available we can retrieve the value using following code
@@ -52,7 +53,7 @@ public class StepCounterService implements SensorEventListener {
     @Override
     public void onSensorChanged(SensorEvent event) {
 
-        if (event.sensor.getType() == sensorCount.TYPE_STEP_COUNTER) {
+        if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
             //tolerance can be put here after testing walking
             if (startStepCounter == 0) {
                 startStepCounter = event.values[0];
