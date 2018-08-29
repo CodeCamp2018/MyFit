@@ -54,7 +54,7 @@ public class StepCounterService implements SensorEventListener {
     public void onSensorChanged(SensorEvent event) {
 
         if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
-            //tolerance can be put here after testing walking
+
             if (startStepCounter == 0) {
                 startStepCounter = event.values[0];
             }

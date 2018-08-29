@@ -47,11 +47,8 @@ public class PushupService implements SensorEventListener {
     public void onSensorChanged(SensorEvent event) {
         if (isSensorPresent) {
             float distanceFromPhone = event.values[0];
-            if (distanceFromPhone <= proximity.getMaximumRange()) {
                 if (distanceFromPhone == 0) {
                     pushupCount++;
-
-                }
             }
 
         }
