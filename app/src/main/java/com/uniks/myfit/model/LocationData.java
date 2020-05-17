@@ -9,7 +9,8 @@ import android.arch.persistence.room.PrimaryKey;
 import com.google.android.gms.maps.model.LatLng;
 
 /**
- * the location data, which stores Longitude and Latitude and also generates LatLng Objects.
+ * the location data, which stores Longitude and Latitude and also generates LatLng Objects.#
+ * This is the entity where we have created our Sql lite database
  */
 @Entity(foreignKeys = @ForeignKey(entity = SportExercise.class, parentColumns = "id", childColumns = "exercise_id", onUpdate = ForeignKey.CASCADE, onDelete = ForeignKey.CASCADE), indices = {@Index(value = {"exercise_id"})})
 public class LocationData {
